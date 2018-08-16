@@ -261,23 +261,24 @@ class GameEngine:
 
     def mark_for_clearing(self, ring):
         counter = 0
-        pick = (None, None)
-        clearing = {}
+        pick = (None, None) # (index, stone)
+        clearing = []
 
-        for place, stone in enumerate(ring * 2):
+        for index, stone in enumerate(ring * 2):
             if stone == 0:
                 counter = 0
                 pick = (None, None)
             elif pick[1] == None:
-                pick = (place, stone)
+                pick = (index, stone)
                 counter += 1
             elif stone == pick[1]:
                 counter += 1
             elif stone != pick[1]:
-                pick = (place, stone)
+                pick = (index, stone)
                 counter = 1
             if counter >= 3:
-                clearing[pick] = counter
+                for ind in range(pick[0], (pick[0] + counter)):
+                    clearing.append((ind, pick[1]))
         return clearing
     
     def new_round(self):
