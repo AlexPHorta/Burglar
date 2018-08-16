@@ -73,6 +73,7 @@ class GameScreen(pilasengine.escenas.Escena):
         self.middle_ring = pilas.actores.Grupo()
         self.outer_ring = pilas.actores.Grupo()
 
+        # Each stone in its group
         self.inner_ring.agregar(WhiteStone(pilas, x = 70, y = 70, tag = "i0"))
         self.inner_ring.agregar(WhiteStone(pilas, x = 70, y = -70, tag = "i1"))
         self.inner_ring.agregar(WhiteStone(pilas, x = -70, y = -70, tag = "i2"))
@@ -111,21 +112,6 @@ class GameScreen(pilasengine.escenas.Escena):
 
         pilas.eventos.pulsa_tecla.conectar(self.al_pulsar_tecla)
 
-        #print "############################################"
-        #for element in self.outer_ring:
-            #print element.tag + " - " + str(element.imagen)
-        #print "---"
-        #for element in self.middle_ring:
-            #print element.tag + " - " + str(element.imagen)
-        #print "---"
-        #for element in self.inner_ring:
-            #print element.tag + " - " + str(element.imagen)
-        #print "----------------------------"
-        #print self.game.outer
-        #print self.game.middle
-        #print self.game.inner
-        #print "+++++++++++++++++++++++++++++++++++++++++++"
-
     def actualizar(self):
         pass
 
@@ -143,21 +129,15 @@ class GameScreen(pilasengine.escenas.Escena):
                 continue
         return
 
-    def al_pulsar_tecla(self, tecla):
-        
+    def al_pulsar_tecla(self, tecla):       
         if (tecla.codigo == 1) or (tecla.codigo == 2):
-            print str(tecla.codigo)
             self.game.where_to_turn(tecla.codigo)
-            print "new round bf " + str(self.game.one_place_to_insert) + " - " + str(self.game.no_trades) + " - " + str(self.game.game_over)
             self.game.new_round()
-            print "new round af " + str(self.game.one_place_to_insert) + " - " + str(self.game.no_trades) + " - " + str(self.game.game_over)
             
             if self.game.current_bag == []:
                 self.game.bag()
             
-            print "insert bf " + str(self.game.one_place_to_insert) + " - " + str(self.game.no_trades) + " - " + str(self.game.game_over)
             self.game.insert_stone()
-            print "insert af " + str(self.game.one_place_to_insert) + " - " + str(self.game.no_trades) + " - " + str(self.game.game_over)
             
             self.fill_rings(self.game.outer, self.outer_ring)
             self.fill_rings(self.game.middle, self.middle_ring)
@@ -165,21 +145,6 @@ class GameScreen(pilasengine.escenas.Escena):
             
             if self.game.game_over:
                 self.game_over()
-            
-            #print "############################################"
-            #for element in self.outer_ring:
-                #print element.tag + " - " + str(element.imagen)
-            #print "---"
-            #for element in self.middle_ring:
-                #print element.tag + " - " + str(element.imagen)
-            #print "---"
-            #for element in self.inner_ring:
-                #print element.tag + " - " + str(element.imagen)
-            #print "----------------------------"
-            #print self.game.outer
-            #print self.game.middle
-            #print self.game.inner
-            #print "+++++++++++++++++++++++++++++++++++++++++++"
         else:
             pass
 
@@ -198,8 +163,6 @@ class GameEngine:
         self.outer = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self._bag = []
         self._turn = None
-        self.user_action = False
-        self.refresh_rings = False
         self.no_trades = False
         self.one_place_to_insert = False
         self.game_over = False
@@ -220,29 +183,15 @@ class GameEngine:
     def current_bag(self):
         return self._bag
 
-    @property
-    def ready_to_user_action(self):
-        return self.user_action
-
-    @property
-    def ready_to_refresh_rings(self):
-        return self.refresh_rings
-
     def bag(self):
         colors = (1, 2, 3)
         self._bag = random.sample(colors, len(colors))
         return self.current_bag
 
-    def insert_stone(self):
-        
+    def insert_stone(self):       
         ok = False
         where_to_insert = None
-        
-        #if self.inner.count(0) == 1:
-            #self.one_place_to_insert = True
-        #else:
-            #self.one_place_to_insert = False
-        
+           
         while not ok:
             where_to_insert = random.randrange(4)
             if self.inner[where_to_insert] != 0:
@@ -253,10 +202,6 @@ class GameEngine:
         
         if max(self.inner.count(0), self.middle.count(0), self.outer.count(0)) == 0:
             self.game_over = True
-        #if self.no_trades and self.one_place_to_insert:
-            #self.game_over = True
-        #else:
-            #pass
         
         return where_to_insert
 
@@ -298,7 +243,7 @@ class GameEngine:
     def clear_stones(self, ring):
         ring_intern = ring
         marked_for_clearing = self.mark_for_clearing(ring_intern)
-        #print "marked_for_clearing" + str(marked_for_clearing)
+
         for index, color in sorted(marked_for_clearing.keys()):
             if index > 15:
                 continue
@@ -318,9 +263,8 @@ class GameEngine:
         counter = 0
         pick = (None, None)
         clearing = {}
+
         for place, stone in enumerate(ring * 2):
-            #print "clearing" + str(clearing)
-            #print str(pick) + " - " + str(counter)
             if stone == 0:
                 counter = 0
                 pick = (None, None)
@@ -337,7 +281,6 @@ class GameEngine:
         return clearing
     
     def new_round(self):
-        
         turn_choice = self._turn
         self.outer = self.turn(self.outer, turn_choice)
         self.outer, self.middle, _ = self.trade_stones(self.outer, self.middle, turn_choice)
