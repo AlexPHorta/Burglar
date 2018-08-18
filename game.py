@@ -1,7 +1,8 @@
 import pilasengine
 import random
 
-pilas = pilasengine.iniciar(ancho = 1200, alto = 1600)
+
+pilas = pilasengine.iniciar(ancho = 1200, alto = 1400)
 
 
 class WhiteStone(pilasengine.actores.Actor):
@@ -12,27 +13,6 @@ class WhiteStone(pilasengine.actores.Actor):
         self.y = y
         self.z = -1000
         self.tag = str(tag)
-
-
-class RedStone(pilasengine.actores.Actor):
-    
-    def iniciar(self):
-        self.imagen = "images/red_stone.png"
-        self.z = -1000
-
-
-class BlueStone(pilasengine.actores.Actor):
-    
-    def iniciar(self):
-        self.imagen = "images/blue_stone.png"
-        self.z = -1000
-
-
-class GreenStone(pilasengine.actores.Actor):
-    
-    def iniciar(self):
-        self.imagen = "images/green_stone.png"
-        self.z = -1000
 
 
 class MainMenu(pilasengine.escenas.Escena):
@@ -58,6 +38,18 @@ class MainMenu(pilasengine.escenas.Escena):
 
     def help(self):
         pilas.escenas.HelpScreen()
+
+    def ejecutar(self):
+        pass
+
+
+class GamePauseMenu(pilasengine.escenas.Escena):
+
+    def iniciar(self):
+        pass
+
+    def atualizar(self):
+        pass
 
     def ejecutar(self):
         pass
@@ -110,7 +102,9 @@ class GameScreen(pilasengine.escenas.Escena):
         self.fill_rings(self.game.middle, self.middle_ring)
         self.fill_rings(self.game.inner, self.inner_ring)
 
-        self.score_x = 400
+        self.pause_button = pilas.interfaz.Boton(texto = "Pause", icono = "images/pause.png", x = -408, y = 550)
+
+        self.score_x = 408
         self.score_y = 550
         self.score = pilas.actores.Texto(str(self.game.points), x = self.score_x, y = self.score_y, magnitud = 96)
 
@@ -133,7 +127,7 @@ class GameScreen(pilasengine.escenas.Escena):
                 continue
         return
 
-    def al_pulsar_tecla(self, tecla):       
+    def al_pulsar_tecla(self, tecla):   
         if (tecla.codigo == 1) or (tecla.codigo == 2):
             self.game.where_to_turn(tecla.codigo)
             self.game.new_round()
@@ -153,6 +147,7 @@ class GameScreen(pilasengine.escenas.Escena):
                 self.game_over()
         else:
             pass
+        return
 
     def print_score(self):
         anchor = self.score.obtener_ancho()
@@ -342,11 +337,8 @@ class HelpScreen(pilasengine.escenas.Escena):
         pass
 
 
-pilas.actores.vincular(RedStone)
-pilas.actores.vincular(BlueStone)
-pilas.actores.vincular(GreenStone)
-
 pilas.escenas.vincular(MainMenu)
+pilas.escenas.vincular(GamePauseMenu)
 pilas.escenas.vincular(GameScreen)
 pilas.escenas.vincular(OptionsScreen)
 pilas.escenas.vincular(HelpScreen)
