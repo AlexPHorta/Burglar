@@ -110,6 +110,10 @@ class GameScreen(pilasengine.escenas.Escena):
         self.fill_rings(self.game.middle, self.middle_ring)
         self.fill_rings(self.game.inner, self.inner_ring)
 
+        self.score_x = 400
+        self.score_y = 550
+        self.score = pilas.actores.Texto(str(self.game.points), x = self.score_x, y = self.score_y, magnitud = 96)
+
         pilas.eventos.pulsa_tecla.conectar(self.al_pulsar_tecla)
 
     def actualizar(self):
@@ -143,10 +147,20 @@ class GameScreen(pilasengine.escenas.Escena):
             self.fill_rings(self.game.middle, self.middle_ring)
             self.fill_rings(self.game.inner, self.inner_ring)
             
+            self.print_score()
+            
             if self.game.game_over:
                 self.game_over()
         else:
             pass
+
+    def print_score(self):
+        anchor = self.score.obtener_ancho()
+        right_just = len(str(self.game.points))
+        if right_just > 1:
+            self.score.x = self.score_x - (anchor * (right_just - 1))
+        self.score.texto = str(self.game.points)
+        return
 
     def game_over(self):
         over = pilas.actores.Texto("Game Over", y = 100, magnitud = 64)
@@ -163,6 +177,7 @@ class GameEngine:
         self.outer = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self._bag = []
         self._turn = None
+        self._points = 0
         self.no_trades = False
         self.one_place_to_insert = False
         self.game_over = False
@@ -182,6 +197,10 @@ class GameEngine:
     @property
     def current_bag(self):
         return self._bag
+
+    @property
+    def points(self):
+        return self._points
 
     def bag(self):
         colors = (1, 2, 3)
@@ -240,54 +259,64 @@ class GameEngine:
                         continue
         return external, internal, no_trades
 
+    def mark_for_clearing(self, ring):
+        pick = 0
+        stone = 0
+        count = 0
+        marked = []
+        for index, stone_ in enumerate(ring * 2):
+            if (ring.count(stone_) == len(ring)) and (stone_ != 0):
+                marked.append((0, stone_, len(ring)))
+                break
+            if count >= 3 and stone_ != stone:
+                marked.append((pick, stone, count))
+            if stone_ == stone and stone_ != 0:
+                count += 1
+            elif stone_ != 0:
+                pick, stone, count = index, stone_, 1
+            elif stone_ == 0:
+                pick, stone, count = 0, 0, 0
+        marked = filter(lambda x: x[0] < len(ring), marked)
+        if len(marked) != 0:
+            first, last = marked[0], marked[-1]
+            lgt = last[0] + last[2]
+            diff = lgt - len(ring)
+            if lgt - 1 > len(ring):
+                if first[0] == 0:
+                    last = (last[0], last[1], (diff - 2))
+                    marked.pop()
+                    marked.append(last)
+                else:
+                    marked.insert(0, (0, last[1], (diff)))
+                    marked.pop()
+                    last = (last[0], last[1], last[2] - diff)
+                    marked.append(last)
+        else:
+            pass
+        return marked
+
     def clear_stones(self, ring):
         ring_intern = ring
         marked_for_clearing = self.mark_for_clearing(ring_intern)
-
-        for index, color in sorted(marked_for_clearing.keys()):
-            if index > 15:
-                continue
-            elif (index + marked_for_clearing[(index, color)]) > len(ring):
-                count = marked_for_clearing[(index, color)]
-                for _ in range(index, len(ring)):
-                    ring[_] = 0
-                    count -= 1
-                for _ in range(0, count):
-                    ring[_] = 0
-            else:
-                for _ in range(index, (index + marked_for_clearing[(index, color)])):
-                    ring[_] = 0
+        for index, color, lgt in marked_for_clearing:
+            for _ in range(index, index + lgt):
+                ring[_] = 0
+        self._points += self.calc_points(marked_for_clearing)
         return ring
 
-    def mark_for_clearing(self, ring):
-        counter = 0
-        pick = (None, None) # (index, stone)
-        clearing = []
-
-        for index, stone in enumerate(ring * 2):
-            if stone == 0:
-                counter = 0
-                pick = (None, None)
-            elif pick[1] == None:
-                pick = (index, stone)
-                counter += 1
-            elif stone == pick[1]:
-                counter += 1
-            elif stone != pick[1]:
-                pick = (index, stone)
-                counter = 1
-            if counter >= 3:
-                for ind in range(pick[0], (pick[0] + counter)):
-                    clearing.append((ind, pick[1]))
-        return clearing
+    def calc_points(self, mapping):
+        points = 0
+        for item in mapping:
+            points += item[2] * 10
+        return points
     
     def new_round(self):
         turn_choice = self._turn
-        self.outer = self.turn(self.outer, turn_choice)
         self.outer, self.middle, _ = self.trade_stones(self.outer, self.middle, turn_choice)
+        self.outer = self.turn(self.outer, turn_choice)
         self.outer = self.clear_stones(self.outer)
-        self.middle = self.turn(self.middle, turn_choice)
         self.middle, self.inner, self.no_trades = self.trade_stones(self.middle, self.inner, turn_choice)
+        self.middle = self.turn(self.middle, turn_choice)
         self.middle = self.clear_stones(self.middle)
         self.inner = self.turn(self.inner, turn_choice)
         return
