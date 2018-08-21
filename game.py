@@ -2,7 +2,9 @@ import pilasengine
 import random
 
 
-pilas = pilasengine.iniciar(ancho = 1200, alto = 1400)
+screen_ancho, screen_alto = 1200, 1400
+
+pilas = pilasengine.iniciar(ancho = screen_ancho, alto = screen_alto)
 
 
 class WhiteStone(pilasengine.actores.Actor):
@@ -11,8 +13,39 @@ class WhiteStone(pilasengine.actores.Actor):
         self.imagen = "images/grid.png"
         self.x = x
         self.y = y
-        self.z = -1000
+        self.z = z
         self.tag = str(tag)
+
+
+class PauseButton(pilasengine.actores.Actor):
+
+    def iniciar(self, x = 0, y = 0, z = 0, tag = None):
+        self.imagen = "images/pause.png"
+        self.x = x
+        self.y = y
+        self.z = z
+        self.tag = str(tag)
+
+        pilas.eventos.click_de_mouse.conectar(self.cuando_hace_click)
+
+    def cuando_hace_click(x, y):
+        pause_menu = GamePauseMenu(pilas, z = -10)
+        pause_menu.transparencia = 20
+
+
+class CloseButton(pilasengine.actores.Actor):
+    
+    def iniciar(self, x = 0, y = 0, z = 0, tag = None):
+        self.imagen = "images/close.png"
+        self.x = x
+        self.y = y
+        self.z = z
+        self.tag = str(tag)
+
+        pilas.eventos.click_de_mouse.conectar(self.cuando_hace_click)
+
+    def cuando_hace_click(x, y):
+        pilas.escenas.GameScreen()
 
 
 class MainMenu(pilasengine.escenas.Escena):
@@ -43,9 +76,19 @@ class MainMenu(pilasengine.escenas.Escena):
         pass
 
 
-class GamePauseMenu(pilasengine.escenas.Escena):
+class GamePauseMenu(pilasengine.actores.Actor):
 
-    def iniciar(self):
+    def iniciar(self, x = 0, y = 0, z = 0, tag = None):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.tag = tag
+        imagen_ = pilas.imagenes.cargar_superficie(screen_ancho, screen_alto)
+        imagen_.pintar(pilas.colores.Color(0, 0, 0))
+        self.imagen = imagen_
+        close_button = CloseButton(pilas, x = -408, y = 550)
+        close_button.escala = 0.7
+        close_button.z = -11
         pass
 
     def atualizar(self):
@@ -97,16 +140,26 @@ class GameScreen(pilasengine.escenas.Escena):
         
         self.game.bag()
         self.game.insert_stone()
-        
+
         self.fill_rings(self.game.outer, self.outer_ring)
         self.fill_rings(self.game.middle, self.middle_ring)
         self.fill_rings(self.game.inner, self.inner_ring)
 
-        self.pause_button = pilas.interfaz.Boton(texto = "Pause", icono = "images/pause.png", x = -408, y = 550)
+        pause_button = PauseButton(pilas, x = -408, y = 550)
+        pause_button.escala = 0.7
 
-        self.score_x = 408
-        self.score_y = 550
-        self.score = pilas.actores.Texto(str(self.game.points), x = self.score_x, y = self.score_y, magnitud = 96)
+        guia = pilas.imagenes.cargar_superficie(screen_ancho, screen_alto)
+        guia.linea(0, 185, 1500, 185, pilas.colores.rojo, 2)
+        guia.linea(1048, 0, 1048, 1500, pilas.colores.rojo, 2)
+        guia_ = pilas.actores.Actor(imagen = guia)
+
+        self.score_x = 208
+        self.score_y = 560
+        self.score_sup = pilas.imagenes.cargar_superficie(500, 120)
+        self.score_sup.texto(str(self.game.points), magnitud = 72, color = pilas.colores.blanco)
+        self.score = pilas.actores.Actor(imagen = self.score_sup, x = self.score_x, y = self.score_y)
+        self.score.z = 0
+        self.print_score()
 
         pilas.eventos.pulsa_tecla.conectar(self.al_pulsar_tecla)
 
@@ -127,7 +180,7 @@ class GameScreen(pilasengine.escenas.Escena):
                 continue
         return
 
-    def al_pulsar_tecla(self, tecla):   
+    def al_pulsar_tecla(self, tecla):
         if (tecla.codigo == 1) or (tecla.codigo == 2):
             self.game.where_to_turn(tecla.codigo)
             self.game.new_round()
@@ -150,11 +203,7 @@ class GameScreen(pilasengine.escenas.Escena):
         return
 
     def print_score(self):
-        anchor = self.score.obtener_ancho()
-        right_just = len(str(self.game.points))
-        if right_just > 1:
-            self.score.x = self.score_x - (anchor * (right_just - 1))
-        self.score.texto = str(self.game.points)
+        self.score_sup.texto = self.game.points
         return
 
     def game_over(self):
@@ -176,6 +225,9 @@ class GameEngine:
         self.no_trades = False
         self.one_place_to_insert = False
         self.game_over = False
+
+    def __str__(self):
+        return "%s(direction: %r; inner: %r;middle: %r;outer: %r)" % (self.__class__, self._turn, self.inner, self.middle, self.outer)
 
     @property
     def inner(self):
@@ -202,17 +254,20 @@ class GameEngine:
         self._bag = random.sample(colors, len(colors))
         return self.current_bag
 
-    def insert_stone(self):       
+    def insert_stone(self):
         ok = False
         where_to_insert = None
            
         while not ok:
-            where_to_insert = random.randrange(4)
-            if self.inner[where_to_insert] != 0:
-                continue
-            else:
-                self.inner[where_to_insert] = self._bag.pop()
+            if self.inner.count(0) == 0:
                 ok = True
+            else:
+                where_to_insert = random.randrange(4)
+                if self.inner[where_to_insert] != 0:
+                    continue
+                else:
+                    self.inner[where_to_insert] = self._bag.pop()
+                    ok = True
         
         if max(self.inner.count(0), self.middle.count(0), self.outer.count(0)) == 0:
             self.game_over = True
@@ -276,7 +331,7 @@ class GameEngine:
             first, last = marked[0], marked[-1]
             lgt = last[0] + last[2]
             diff = lgt - len(ring)
-            if lgt - 1 > len(ring):
+            if lgt - 1 >= len(ring):
                 if first[0] == 0:
                     last = (last[0], last[1], (diff - 2))
                     marked.pop()
@@ -338,7 +393,6 @@ class HelpScreen(pilasengine.escenas.Escena):
 
 
 pilas.escenas.vincular(MainMenu)
-pilas.escenas.vincular(GamePauseMenu)
 pilas.escenas.vincular(GameScreen)
 pilas.escenas.vincular(OptionsScreen)
 pilas.escenas.vincular(HelpScreen)
@@ -347,3 +401,11 @@ pilas.escenas.MainMenu()
 
 if __name__ == "__main__":
     pilas.ejecutar()
+
+
+# Para testar
+# antes __main__.GameEngine(direction: 1; inner: [2, 3, 1, 3];middle: [0, 3, 1, 1, 3, 2, 1, 2];outer: [0, 3, 1, 1, 3, 3, 2, 3, 2, 1, 1, 2, 1, 2, 3, 3]) 1
+# antes __main__.GameEngine(direction: 1; inner: [3, 1, 2, 1];middle: [1, 1, 0, 1, 3, 1, 2, 3];outer: [2, 1, 3, 3, 0, 0, 0, 3, 3, 2, 2, 1, 1, 2, 2, 3]) 1
+# antes __main__.GameEngine(direction: 1; inner: [0, 0, 2, 0];middle: [0, 0, 0, 0, 0, 0, 0, 3];outer: [0, 2, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3, 3, 0]) exception
+# antes __main__.GameEngine(direction: 2; inner: [3, 2, 1, 2];middle: [2, 3, 1, 2, 1, 0, 1, 1];outer: [2, 2, 1, 2, 2, 1, 2, 3, 3, 1, 2, 1, 2, 1, 3, 1]) 1 exception
+# antes __main__.GameEngine(direction: 2; inner: [1, 0, 0, 0];middle: [0, 3, 1, 0, 0, 0, 2, 0];outer: [3, 3, 1, 1, 0, 2, 3, 0, 0, 1, 1, 3, 2, 0, 2, 2]) 1 exception
