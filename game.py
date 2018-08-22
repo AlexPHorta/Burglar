@@ -49,7 +49,8 @@ class CloseButton(pilasengine.actores.Actor):
         pilas.eventos.click_de_mouse.conectar(self.cuando_hace_click)
 
     def cuando_hace_click(x, y):
-        pilas.escenas.GameScreen()
+        return True
+        XXXXX
 
 class Score(pilasengine.actores.Texto):
 
@@ -115,13 +116,13 @@ class GamePauseMenu(pilasengine.actores.Actor):
         imagen_ = pilas.imagenes.cargar_superficie(screen_ancho, screen_alto)
         imagen_.pintar(pilas.colores.Color(0, 0, 0))
         self.imagen = imagen_
-        close_button = CloseButton(pilas, x = -408, y = 550)
-        close_button.escala = 0.7
-        close_button.z = -11
-        pass
+        self.close_button = CloseButton(pilas, x = -408, y = 550)
+        self.close_button.escala = 0.7
+        self.close_button.z = -11
 
     def atualizar(self):
-        pass
+        if self.close_button.quando_hace_click():
+            self.eliminar()
 
     def ejecutar(self):
         pass
