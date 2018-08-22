@@ -4,7 +4,11 @@ import random
 
 screen_ancho, screen_alto = 1200, 1400
 
+fps = 15
+
 pilas = pilasengine.iniciar(ancho = screen_ancho, alto = screen_alto)
+
+pilas.widget.fps.frecuencia = 1000 / fps
 
 
 class WhiteStone(pilasengine.actores.Actor):
@@ -46,6 +50,31 @@ class CloseButton(pilasengine.actores.Actor):
 
     def cuando_hace_click(x, y):
         pilas.escenas.GameScreen()
+
+class Score(pilasengine.actores.Texto):
+
+    def iniciar(self, texto = "", x = 0, y = 0, fuente = None, tag = None, anchor = 1):
+        self.texto = str(texto)
+        self.x = x
+        self.y = y
+        self.fuente = fuente
+        self.tag = tag
+        self.anchor = anchor
+        self.ancho_ = None
+
+    def update_score(self, texto):
+        print "update_score in"
+        self.texto = str(texto)
+        if self.anchor == len(str(texto)):
+            pass
+        else:
+            self.anchor = len(str(texto))
+            self.ancho_ = self.obtener_ancho()
+            if self.anchor > 1:
+                self.x -= (self.ancho_) + (3 * self.anchor) # sloppy solution, research a better one, please.
+        print self.anchor, self.ancho_, self.x
+        print "update_score out"
+        return
 
 
 class MainMenu(pilasengine.escenas.Escena):
@@ -153,13 +182,14 @@ class GameScreen(pilasengine.escenas.Escena):
         guia.linea(1048, 0, 1048, 1500, pilas.colores.rojo, 2)
         guia_ = pilas.actores.Actor(imagen = guia)
 
-        self.score_x = 208
-        self.score_y = 560
-        self.score_sup = pilas.imagenes.cargar_superficie(500, 120)
-        self.score_sup.texto(str(self.game.points), magnitud = 72, color = pilas.colores.blanco)
-        self.score = pilas.actores.Actor(imagen = self.score_sup, x = self.score_x, y = self.score_y)
-        self.score.z = 0
-        self.print_score()
+        self.score_x = 395
+        self.score_y = 544
+        # self.score_sup = pilas.imagenes.cargar_superficie(500, 120)
+        # self.score_sup.texto(str(self.game.points), magnitud = 72, color = pilas.colores.blanco)
+        # self.score = pilas.actores.Actor(imagen = self.score_sup, x = self.score_x, y = self.score_y)
+        # self.score.z = 0
+        self.score = Score(pilas, str(self.game.points), fuente = "fonts/Multicolore.otf", x = self.score_x, y = self.score_y, magnitud = 78)
+        self.score.update_score(self.game.points)
 
         pilas.eventos.pulsa_tecla.conectar(self.al_pulsar_tecla)
 
@@ -194,7 +224,7 @@ class GameScreen(pilasengine.escenas.Escena):
             self.fill_rings(self.game.middle, self.middle_ring)
             self.fill_rings(self.game.inner, self.inner_ring)
             
-            self.print_score()
+            self.score.update_score(self.game.points)
             
             if self.game.game_over:
                 self.game_over()
@@ -202,9 +232,13 @@ class GameScreen(pilasengine.escenas.Escena):
             pass
         return
 
-    def print_score(self):
-        self.score_sup.texto = self.game.points
-        return
+    # def print_score(self):
+    #     anchor = len(str(self.game.points))
+    #     ancho_ = self.score.obtener_ancho()
+    #     if anchor > 1:
+    #         self.score.x -= (ancho_ * anchor) / 2
+    #     self.score.definir_texto(str(self.game.points))
+    #     return
 
     def game_over(self):
         over = pilas.actores.Texto("Game Over", y = 100, magnitud = 64)
