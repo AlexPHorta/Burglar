@@ -35,7 +35,7 @@ pygame.display.set_caption('Burglar')
 # The center of the screen. Makes it easier to place the stones.
 Center = namedtuple('Center', 'x y')
 
-
+# Some auxiliary functions
 def load_png(name):
     """ Load image and return image object"""
     fullname = os.path.join('images', name)
@@ -64,6 +64,7 @@ def write(text, size, font = None, color = (255, 255, 255)):
     textpos = text.get_rect()
     return text, textpos
 
+
 class StoneColors:
 
     def __init__(self):
@@ -82,20 +83,15 @@ class Stone(pygame.sprite.Sprite):
     def __init__(self, image = None, x = 0, y = 0, center = None, tag = None):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
-        # self.imageSurf = pygame.Surface(self.image.get_size())
-        # self.tag, self.tagpos = write(tag, 22, font = None, color = (255, 255, 255))
         if (x, y) == center:
             self.rect = self.image.get_rect(center = center)
         else:
             self.rect = self.image.get_rect(center = (center.x + x, center.y + y))
-        # self.imageSurf.blit(self.image, self.rect)
-        # self.imageSurf.blit(self.tag, self.tagpos)
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
 
     def updateImg(self, newStoneType = None):
         self.image = newStoneType
-        # self.imageSurf.blit(self.image, self.rect)
 
 
 class Score:
@@ -132,20 +128,9 @@ class Game:
         self._display_surf = None
         self.size = self.width, self.height = 1500, 1000
         self.frameSize = self.frameWidth, self.frameHeight = 1100, 1000
-        # self.core = []
-        # self.core_coords = (0, 0)
-        # self.neighbors = []
-        # self.neighbors_coords = [(70, 0), (-70, 0)]
         self.inner_ring = []
-        self.inner_ring_coords = [(70, 70), (70, -70), (-70, -70), (-70, 70)]
         self.middle_ring = []
-        self.middle_ring_coords = [(99, 224), (229, 95), (229, -95), (99, -224), \
-            (-99, -224), (-229, -95), (-229, 95), (-99, 224)]
         self.outer_ring = []
-        self.outer_ring_coords = [(85, 396), (230, 338), (338, 230), (396, 85), \
-            (396, -85), (338, -230), (230, -338), (85, -396), (-85, -396), \
-            (-230, -338), (-338, -230), (-396, -85), (-396, 85), (-338, 230), \
-            (-230, 338), (-85, 396)]
 
     def on_init(self):
 
@@ -230,6 +215,28 @@ class Game:
             resumepos.centery = self.background.get_rect().centery + topmenupos
             self.background.blit(resume, resumepos)
 
+        elif self.game.game_over:
+            self.menuOptions = ('normal', 'back')
+
+            for index, item in enumerate(self.menuOptions):
+                if index == self.option:
+                    color.append((255, 255, 0))
+                else:
+                    color.append((255, 255, 255))
+
+            newGame, newGamepos = write('new game', topmenufsize, 'Multicolore.otf', color[0])
+            back, backpos = write('main menu', topmenufsize, 'Multicolore.otf', color[1])
+
+            # Print new game option
+            newGamepos.right = 1400
+            newGamepos.centery = self.background.get_rect().centery + topmenupos
+            self.background.blit(newGame, newGamepos)
+
+            # Print back option
+            backpos.right = 1400
+            backpos.centery = self.background.get_rect().centery + topmenupos + (topmenufsize * 1)
+            self.background.blit(back, backpos)
+
         else:
             self.menuOptions = ('pause', 'options', 'quit')
 
@@ -287,7 +294,8 @@ class Game:
             self.pause = True
         elif option_ == 'resume':
             self.pause = False
-        elif option_ == 'quit':
+            self.menuGameActive = False
+        elif option_ == 'quit' or option_ == 'back':
             self.option = 1
             self.menuGameActive = False
             self.menuMain()
@@ -297,13 +305,8 @@ class Game:
         self.gameOn = True
         self.mainMenu = False
         self.frame = pygame.Surface(self.frameSize)
-        # self.frame = self.frame.convert()
-        # self.frame.fill((5, 5, 5))
         self.frameCENTER = Center(self.frame.get_rect().centerx, self.frame.get_rect().centery)
 
-        # self.core.append(       Stone(image = self.BLANK, x = 0,   y = 0,     center = self.frameCENTER, tag = "c0"))
-        # self.neighbors.append(  Stone(image = self.BLANK, x = -110,   y = 0,   center = self.frameCENTER, tag = "n0"))
-        # self.neighbors.append(  Stone(image = self.BLANK, x = 110,   y = 0,   center = self.frameCENTER, tag = "n1"))
         self.inner_ring[:] = []
         self.middle_ring[:] = []
         self.outer_ring[:] = []
@@ -343,16 +346,12 @@ class Game:
         self.fill_rings(self.game.outer, self.outer_ring)
         self.fill_rings(self.game.middle, self.middle_ring)
         self.fill_rings(self.game.inner, self.inner_ring)
-        # self.fill_rings(self.game.getNeighbors, self.neighbors)
-        # self.fill_rings(self.game.getCore, self.core)
 
         self.score = Score('Multicolore.otf', 98)
         self.score.updateScore(self.game.points)
         self.score.scorepos.right = 1400
         self.score.scorepos.centery = self.background.get_rect().centery
         self.background.blit(self.score.score, self.score.scorepos)
-
-        # self.gameMenu = self.menuGame()
 
         self._running = True
 
@@ -376,32 +375,17 @@ class Game:
                         self.game.insert_stone()
                     elif (event.key == pygame.K_RCTRL) or (event.key == pygame.K_LCTRL):
                         if not self.menuGameActive:
-                            # pygame.key.set_repeat(0, 10)
                             self.option = 0
                             self.menuGameActive = True
                         else:
-                            # pygame.key.set_repeat()
                             self.menuGameActive = False
-                        # self.load(self.menuOptions[0])
 
-            # print(self.game.getCore)
-            # print(self.game.getNeighbors)
-            # print(self.game.inner)
-            # print(self.game.middle)
-            # print(self.game.outer)
-
-        if (self.mainMenu) or (self.menuGameActive):
+        if (self.mainMenu) or (self.menuGameActive) or (self.game.game_over):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.option = abs((self.option - 1) % len(self.menuOptions))
-                    print(self.option)
-                    print(self.menuOptions[self.option])
-                    # self.menuMain()
                 elif event.key == pygame.K_DOWN:
                     self.option = abs((self.option + 1) % len(self.menuOptions))
-                    print(self.option)
-                    print(self.menuOptions[self.option])
-                    # self.menuMain()
                 elif event.key == pygame.K_RETURN:
                     self.load(self.menuOptions[self.option])
 
@@ -417,8 +401,6 @@ class Game:
             self.fill_rings(self.game.outer, self.outer_ring)
             self.fill_rings(self.game.middle, self.middle_ring)
             self.fill_rings(self.game.inner, self.inner_ring)
-            # self.fill_rings(self.game.getNeighbors, self.neighbors)
-            # self.fill_rings(self.game.getCore, self.core)
 
             # Refresh the score
             self.score.updateScore(self.game.points)
@@ -436,7 +418,6 @@ class Game:
         elif self.gameOn:
 
             self.background.fill((5, 5, 5))
-            # self.screen.blit(self.frame, (0, 0))
 
             # Blit score
             self.score.scorepos.right = 1400
