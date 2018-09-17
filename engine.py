@@ -27,13 +27,17 @@ class GameEngine_Easy:
             self.outer_ring = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         else:
             self.outer_ring = outer
+        if not outer:
+            self.big_outer_ring = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        else:
+            self.big_outer_ring = outer
         self._bag = bag
         self._turn = None
         self._points = points
         self.no_trades = no_trades
         self.one_place_to_insert = one_place_to_insert
         self.game_over = game_over
-
 
     def __str__(self):
         return "%s(direction: %r; inner: %r;middle: %r;outer: %r)" % (self.__class__,
@@ -44,14 +48,6 @@ class GameEngine_Easy:
         no_trades = %r, one_place_to_insert = %r, game_over = %r" % (self.inner, \
             self.middle, self.outer, self._bag, self._points, self.no_trades, \
             self.one_place_to_insert, self.game_over)
-
-    # @property
-    # def getCore(self):
-    #     return self.core
-
-    # @property
-    # def getNeighbors(self):
-    #     return self.neighbors
 
     @property
     def inner(self):
@@ -64,6 +60,10 @@ class GameEngine_Easy:
     @property
     def outer(self):
         return self.outer_ring
+
+    @property
+    def big_outer(self):
+        return self.big_outer_ring
 
     @property
     def current_bag(self):
@@ -92,9 +92,9 @@ class GameEngine_Easy:
                 else:
                     self.inner[where_to_insert] = self._bag.pop()
                     ok = True
-        # self.core[0] = self._bag.pop()
 
-        if max(self.inner.count(0), self.middle.count(0), self.outer.count(0)) == 0:
+        if max(self.inner.count(0), self.middle.count(0), self.outer.count(0), \
+            self.big_outer.count(0)) == 0:
             self.game_over = True
 
         return where_to_insert
@@ -189,7 +189,10 @@ class GameEngine_Easy:
 
     def new_round(self):
         turn_choice = self._turn
-        self.outer_ring, self.middle_ring, dummy_ = self.trade_stones(self.outer, self.middle, turn_choice)
+        self.big_outer_ring, self.outer_ring, dummy_ = self.trade_stones(self.big_outer, self.outer, turn_choice)
+        self.big_outer_ring = self.turn(self.big_outer, turn_choice)
+        self.big_outer_ring = self.clear_stones(self.big_outer)
+        self.outer_ring, self.middle_ring, self.no_trades = self.trade_stones(self.outer, self.middle, turn_choice)
         self.outer_ring = self.turn(self.outer, turn_choice)
         self.outer_ring = self.clear_stones(self.outer)
         self.middle_ring, self.inner_ring, self.no_trades = self.trade_stones(self.middle, self.inner, turn_choice)
