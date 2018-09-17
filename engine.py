@@ -11,18 +11,10 @@
 import random
 
 
-class GameEngine_Normal:
+class GameEngine_Easy:
 
     def __init__(self, inner = None, middle = None, outer = None, bag = None,
         points = 0, no_trades = False, one_place_to_insert = False, game_over = False):
-        # if not core:
-        #     self.core = [0]
-        # else:
-        #     self.core = core
-        # if not neighbors:
-        #     self.neighbors = [0, 0]
-        # else:
-        #     self.neighbors = neighbors
         if not inner:
             self.inner_ring = [0, 0, 0, 0]
         else:
@@ -204,7 +196,68 @@ class GameEngine_Normal:
         self.middle_ring = self.turn(self.middle, turn_choice)
         self.middle_ring = self.clear_stones(self.middle)
         self.inner_ring = self.turn(self.inner, turn_choice)
-        # self.inner_ring, self.neighbors, self.no_trades = self.trade_stones(self.inner, self.getNeighbors, turn_choice)
-        # self.inner_ring = self.clear_stones(self.inner)
-        # self.neighbors, self.core, self.no_trades = self.trade_stones(self.getNeighbors, self.getCore, turn_choice)
         return
+
+
+class GameEngine_Normal(GameEngine_Easy):
+
+    def __init__(self):
+        super().__init__()
+
+    def bag(self):
+        colors = (1, 2, 5)
+        self._bag = random.sample(colors, len(colors))
+        return self.current_bag
+
+    def mark_for_clearing(self, ring):
+        pick = 0
+        stone = 0
+        count = 0
+        marked = []
+        for index, stone_ in enumerate(ring * 2):
+            if (ring.count(stone_) == len(ring)) and (stone_ != 0):
+                marked.append((0, stone_, len(ring)))
+                break
+            if stone == 5:
+                if count >= 4 and stone_ != stone:
+                    marked.append((pick, stone, count))
+            else:
+                if count >= 3 and stone_ != stone:
+                    marked.append((pick, stone, count))
+            if stone_ == stone and stone_ != 0:
+                count += 1
+            elif stone_ != 0:
+                pick, stone, count = index, stone_, 1
+            elif stone_ == 0:
+                pick, stone, count = 0, 0, 0
+        marked = list(filter(lambda x: x[0] < len(ring), marked))
+        if len(marked) != 0:
+            first, last = marked[0], marked[-1]
+            lgt = last[0] + last[2]
+            diff = lgt - len(ring)
+            if lgt - 1 >= len(ring):
+                if first[0] == 0:
+                    last = (last[0], last[1], (diff - 2))
+                    marked.pop()
+                    marked.append(last)
+                else:
+                    marked.insert(0, (0, last[1], (diff)))
+                    marked.pop()
+                    last = (last[0], last[1], last[2] - diff)
+                    marked.append(last)
+        else:
+            pass
+        return marked
+
+
+class GameEngine_Hard(GameEngine_Easy):
+
+    def __init__(self):
+        super().__init__()
+
+    def bag(self):
+        colors1_4 = (1, 2, 3, 4)
+        colors3_4 = (1, 2, 3)
+        colors = colors1_4 + colors3_4 + colors3_4 + colors3_4
+        self._bag = random.sample(colors, len(colors))
+        return self.current_bag

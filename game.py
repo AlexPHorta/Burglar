@@ -72,6 +72,8 @@ class StoneColors:
         self.red = load_png('red_stone.png')
         self.blue = load_png('blue_stone.png')
         self.green = load_png('green_stone.png')
+        self.yellow = load_png('yellow_stone.png')
+        self.brown = load_png('brown_stone.png')
 
 
 class Stone(pygame.sprite.Sprite):
@@ -120,11 +122,14 @@ class Game:
     RED = stoneTypes.red
     BLUE = stoneTypes.blue
     GREEN = stoneTypes.green
+    YELLOW = stoneTypes.yellow
+    BROWN = stoneTypes.brown
 
     gameKeys = {"left": 1, "right": 2}
 
-    def __init__(self):
+    def __init__(self, level = 'normal'):
         self._running = True
+        self.level = str(level)
         self._display_surf = None
         self.size = self.width, self.height = 1500, 1000
         self.frameSize = self.frameWidth, self.frameHeight = 1100, 1000
@@ -143,7 +148,6 @@ class Game:
         self.gameOn = False
         self.pause = False
         self.option = 1
-        # self.menuMain()
 
     def menuMain(self):
 
@@ -216,7 +220,8 @@ class Game:
             self.background.blit(resume, resumepos)
 
         elif self.game.game_over:
-            self.menuOptions = ('normal', 'back')
+            newGameoption = self.level
+            self.menuOptions = (newGameoption, 'back')
 
             for index, item in enumerate(self.menuOptions):
                 if index == self.option:
@@ -279,13 +284,16 @@ class Game:
         option_ = str(option)
         if option_ == 'easy':
             self.option = 1
-            self.normalLevel()
+            self.level = 'easy'
+            self.loadGame()
         elif option_ == 'normal':
             self.option = 1
-            self.normalLevel()
+            self.level = 'normal'
+            self.loadGame()
         elif option_ == 'hard':
             self.option = 1
-            self.normalLevel()
+            self.level = 'hard'
+            self.loadGame()
         elif option_ == 'options':
             pass
         elif option_ == 'help':
@@ -300,7 +308,7 @@ class Game:
             self.menuGameActive = False
             self.menuMain()
 
-    def normalLevel(self):
+    def loadGame(self):
 
         self.gameOn = True
         self.mainMenu = False
@@ -339,7 +347,12 @@ class Game:
         self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(33.75)) * 400),  y = -(math.cos(math.radians(33.75)) * 400),  center = self.frameCENTER, tag = "o14"))
         self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(11.25)) * 400),  y = -(math.cos(math.radians(11.25)) * 400),   center = self.frameCENTER, tag = "o15"))
 
-        self.game = engine.GameEngine_Normal()
+        if self.level == 'easy':
+            self.game = engine.GameEngine_Easy()
+        elif self.level == 'normal':
+            self.game = engine.GameEngine_Normal()
+        elif self.level == 'hard':
+            self.game = engine.GameEngine_Hard()
         self.game.bag()
         self.game.insert_stone()
 
@@ -469,6 +482,10 @@ class Game:
                 screen_ring[indice].updateImg(self.BLUE)
             elif engine_ring[indice] == 3:
                 screen_ring[indice].updateImg(self.GREEN)
+            elif engine_ring[indice] == 4:
+                screen_ring[indice].updateImg(self.YELLOW)
+            elif engine_ring[indice] == 5:
+                screen_ring[indice].updateImg(self.BROWN)
             else:
                 continue
         return
