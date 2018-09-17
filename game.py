@@ -8,6 +8,8 @@
 #
 # Website - http://www.buey.net.br/burglar
 
+XXX
+
 VERSION = "0.1"
 
 try:
