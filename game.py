@@ -117,7 +117,7 @@ class Game:
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill(colorScheme.BACKGROUND)
-        self.gamebg = load_png('bg.png')
+        self.gamebg = colorScheme.BGIMAGE
         self.mainMenu = True
         self.menuGameActive = False
         self.gameOn = False

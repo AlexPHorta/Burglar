@@ -74,14 +74,20 @@ stones = StoneColors()
 class Colors:
 
     def __init__(self):
-        self.BACKGROUND = (0, 7, 10)
-        self.GAMEBG = (246,175,108)
-        self.TITLE = (11, 181, 255)
-        self.MENU = (76, 152, 193)
-        self.MENUACTIVE = (37, 94, 118)
-        self.MENUOFF = (245, 166, 92)
-        self.SCORE = (9, 21, 26)
-        self.MENUWARNING = (27, 65, 75)
-        self.GAMEOVER = (251, 219, 189)
+        self.setScheme()
+
+    def setScheme(self, bgimg = 'bg_light.png', bg = (0, 7, 10), gbg = (246,175,108), tt = (11, 181, 255), \
+            mn = (76, 152, 193), mna = (37, 94, 118), mno = (245, 166, 92), \
+            sc = (9, 21, 26), mnw = (27, 65, 75), go = (251, 219, 189)):
+        self.BGIMAGE = load_png(str(bgimg))
+        self.BACKGROUND = bg
+        self.GAMEBG = gbg
+        self.TITLE = tt
+        self.MENU = mn
+        self.MENUACTIVE = mna
+        self.MENUOFF = mno
+        self.SCORE = sc
+        self.MENUWARNING = mnw
+        self.GAMEOVER = go
 
 colorScheme = Colors()
