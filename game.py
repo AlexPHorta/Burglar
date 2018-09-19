@@ -27,6 +27,7 @@ except (ImportError, err):
 import engine
 
 from collections import namedtuple
+from itertools import islice
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -66,6 +67,18 @@ def write(text, size, font = None, color = (255, 255, 255)):
     return text, textpos
 
 
+class Colors:
+
+    def __init__(self):
+        self.BACKGROUND = (0, 7, 10)
+        self.GAMEBG = (246,175,108)
+        self.TITLE = (11, 181, 255)
+        self.MENU = (76, 152, 193)
+        self.MENUACTIVE = (37, 94, 118)
+        self.MENUOFF = (245, 166, 92)
+        self.SCORE = (9, 21, 26)
+        self.MENUWARNING = (27, 65, 75)
+
 class StoneColors:
 
     def __init__(self):
@@ -99,17 +112,19 @@ class Stone(pygame.sprite.Sprite):
 
 class Score:
 
-    def __init__(self, font = None, size = 10):
+    def __init__(self, font = None, size = 10, color = (0, 0, 0), bgcolor = (255, 255, 255)):
         fullname = os.path.join('fonts', font)
         self.font = pygame.font.Font(fullname, size)
+        self.color = color
+        self.bgcolor = bgcolor
         self.points = 0
-        self.score = self.font.render(str(self.points), True, (255, 255, 255), (5, 5, 5))
+        self.score = self.font.render(str(self.points), True, self.color, self.bgcolor)
         self.score = self.score.convert_alpha()
         self.scorepos = self.score.get_rect()
 
     def updateScore(self, newScore):
         self.points = newScore
-        self.score = self.font.render(str(self.points), True, (255, 255, 255), (5, 5, 5))
+        self.score = self.font.render(str(self.points), True, self.color, self.bgcolor)
         self.score = self.score.convert_alpha()
         self.scorepos = self.score.get_rect()
         return
@@ -117,6 +132,7 @@ class Score:
 
 class Game:
 
+    syscolors = Colors()
     stoneTypes = StoneColors()
 
     BLANK = stoneTypes.blank
@@ -144,12 +160,13 @@ class Game:
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
-        self.background.fill((5, 5, 5))
+        self.background.fill(self.syscolors.BACKGROUND)
+        self.gamebg = load_png('bg.png')
         self.mainMenu = True
         self.menuGameActive = False
         self.gameOn = False
         self.pause = False
-        self.option = 1
+        self.option = 0
 
     def menuMain(self):
 
@@ -159,62 +176,65 @@ class Game:
         self.mainMenu = True
 
         # Print game name
-        title, titlepos = write('Burglar', 124, 'Multicolore.otf')
+        title, titlepos = write('Burglar', 124, 'Multicolore.otf', self.syscolors.TITLE)
         titlepos.centerx, titlepos.centery = self.background.get_rect().center
         self.background.blit(title, titlepos)
 
         self.menuOptions = ('easy', 'normal', 'hard', 'options', 'help')
         color = []
+        fsize = []
         topmenupos = 150
-        topmenufsize = 56
 
         for index, item in enumerate(self.menuOptions):
             if index == self.option:
-                color.append((255, 255, 0))
+                color.append(self.syscolors.MENUACTIVE)
+                fsize.append(68)
             else:
-                color.append((255, 255, 255))
+                color.append(self.syscolors.MENU)
+                fsize.append(53)
 
-        easy, easypos = write('easy', topmenufsize, 'Multicolore.otf', color[0])
-        normal, normalpos = write('normal', topmenufsize, 'Multicolore.otf', color[1])
-        hard, hardpos = write('hard', topmenufsize, 'Multicolore.otf', color[2])
-        options, optionspos = write('options', topmenufsize, 'Multicolore.otf', color[3])
-        help_, help_pos = write('help', topmenufsize, 'Multicolore.otf', color[4])
+        easy, easypos = write('easy', fsize[0], 'Multicolore.otf', color[0])
+        normal, normalpos = write('normal', fsize[1], 'Multicolore.otf', color[1])
+        hard, hardpos = write('hard', fsize[2], 'Multicolore.otf', color[2])
+        options, optionspos = write('options', fsize[3], 'Multicolore.otf', color[3])
+        help_, help_pos = write('help', fsize[4], 'Multicolore.otf', color[4])
 
         # Print easy option
         easypos.centerx = self.background.get_rect().centerx
-        easypos.centery = self.background.get_rect().centery + topmenupos
+        easypos.top = self.background.get_rect().centery + topmenupos
         self.background.blit(easy, easypos)
 
         # Print normal option
         normalpos.centerx = self.background.get_rect().centerx
-        normalpos.centery = self.background.get_rect().centery + topmenupos + topmenufsize
+        normalpos.top = self.background.get_rect().centery + topmenupos + fsize[0]
         self.background.blit(normal, normalpos)
 
         # Print hard option
         hardpos.centerx = self.background.get_rect().centerx
-        hardpos.centery = self.background.get_rect().centery + topmenupos + (topmenufsize * 2)
+        hardpos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 2))
         self.background.blit(hard, hardpos)
 
         # Print options option
         optionspos.centerx = self.background.get_rect().centerx
-        optionspos.centery = self.background.get_rect().centery + topmenupos + (topmenufsize * 3)
+        optionspos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 3))
         self.background.blit(options, optionspos)
 
         # Print help option
         help_pos.centerx = self.background.get_rect().centerx
-        help_pos.centery = self.background.get_rect().centery + topmenupos + (topmenufsize * 4)
+        help_pos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 4))
         self.background.blit(help_, help_pos)
 
     def menuGame(self):
 
         color = []
-        topmenupos = 200
-        topmenufsize = 56
+        fsize = []
+        topmenupos = 150
+        topmenufsize = 68
 
         if self.pause:
             self.menuOptions = ('resume',)
 
-            resume, resumepos = write('resume', topmenufsize, 'Multicolore.otf', (255, 255, 0))
+            resume, resumepos = write('resume', topmenufsize, 'Multicolore.otf', self.syscolors.MENUACTIVE)
 
             # Print resume option
             resumepos.right = 1400
@@ -227,21 +247,23 @@ class Game:
 
             for index, item in enumerate(self.menuOptions):
                 if index == self.option:
-                    color.append((255, 255, 0))
+                    color.append(self.syscolors.MENUACTIVE)
+                    fsize.append(68)
                 else:
-                    color.append((255, 255, 255))
+                    color.append(self.syscolors.MENU)
+                    fsize.append(53)
 
-            newGame, newGamepos = write('new game', topmenufsize, 'Multicolore.otf', color[0])
-            back, backpos = write('main menu', topmenufsize, 'Multicolore.otf', color[1])
+            newGame, newGamepos = write('new game', fsize[0], 'Multicolore.otf', color[0])
+            back, backpos = write('main menu', fsize[1], 'Multicolore.otf', color[1])
 
             # Print new game option
             newGamepos.right = 1400
-            newGamepos.centery = self.background.get_rect().centery + topmenupos
+            newGamepos.centery = self.background.get_rect().centery + fsize[0]
             self.background.blit(newGame, newGamepos)
 
             # Print back option
             backpos.right = 1400
-            backpos.centery = self.background.get_rect().centery + topmenupos + (topmenufsize * 1)
+            backpos.centery = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 1))
             self.background.blit(back, backpos)
 
         else:
@@ -250,50 +272,56 @@ class Game:
             if self.menuGameActive:
                 for index, item in enumerate(self.menuOptions):
                     if index == self.option:
-                        color.append((255, 255, 0))
+                        color.append(self.syscolors.MENUACTIVE)
+                        fsize.append(68)
                     else:
-                        color.append((255, 255, 255))
+                        color.append(self.syscolors.MENU)
+                        fsize.append(53)
             else:
                 for index, item in enumerate(self.menuOptions):
-                    color.append((10, 10, 10))
+                    color.append(self.syscolors.MENUOFF)
+                    if index == self.option:
+                        fsize.append(68)
+                    else:
+                        fsize.append(53)
 
-            pause, pausepos = write('pause', topmenufsize, 'Multicolore.otf', color[0])
-            options, optionspos = write('options', topmenufsize, 'Multicolore.otf', color[1])
-            quit, quitpos = write('quit', topmenufsize, 'Multicolore.otf', color[2])
-            warning, warningpos = write('Press CTRL to toggle menu on/off.', 18, None, (255, 255, 255))
+            pause, pausepos = write('pause', fsize[0], 'Multicolore.otf', color[0])
+            options, optionspos = write('options', fsize[1], 'Multicolore.otf', color[1])
+            quit, quitpos = write('quit', fsize[2], 'Multicolore.otf', color[2])
+            warning, warningpos = write('Press CTRL to toggle menu on/off.', 22, 'MankSans-Medium.ttf', self.syscolors.MENUWARNING)
 
             # Print pause option
             pausepos.right = 1400
-            pausepos.centery = self.background.get_rect().centery + topmenupos
+            pausepos.top = self.background.get_rect().centery + topmenupos
             self.background.blit(pause, pausepos)
 
             # Print options option
             optionspos.right = 1400
-            optionspos.centery = self.background.get_rect().centery + topmenupos + (topmenufsize * 1)
+            optionspos.top = self.background.get_rect().centery + topmenupos + fsize[0]
             self.background.blit(options, optionspos)
 
             # Print quit option
             quitpos.right = 1400
-            quitpos.centery = self.background.get_rect().centery + topmenupos + (topmenufsize * 2)
+            quitpos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 2))
             self.background.blit(quit, quitpos)
 
             # Print menu warning
             warningpos.right = 1400
-            warningpos.bottom = 946
+            warningpos.bottom = 950
             self.background.blit(warning, warningpos)
 
     def load(self, option):
         option_ = str(option)
         if option_ == 'easy':
-            self.option = 1
+            self.option = 0
             self.level = 'easy'
             self.loadGame()
         elif option_ == 'normal':
-            self.option = 1
+            self.option = 0
             self.level = 'normal'
             self.loadGame()
         elif option_ == 'hard':
-            self.option = 1
+            self.option = 0
             self.level = 'hard'
             self.loadGame()
         elif option_ == 'options':
@@ -306,7 +334,7 @@ class Game:
             self.pause = False
             self.menuGameActive = False
         elif option_ == 'quit' or option_ == 'back':
-            self.option = 1
+            self.option = 0
             self.menuGameActive = False
             self.menuMain()
 
@@ -326,64 +354,64 @@ class Game:
         self.inner_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(45)) * 80),       y =  (math.cos(math.radians(45)) * 80),  center = self.frameCENTER, tag = "i2"))
         self.inner_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(45)) * 80),       y = -(math.cos(math.radians(45)) * 80),   center = self.frameCENTER, tag = "i3"))
 
-        self.middle_ring.append(Stone(image = self.BLANK, x =  (math.sin(math.radians(22.5)) * 180),   y = -(math.cos(math.radians(22.5)) * 180),   center = self.frameCENTER, tag = "m0"))
-        self.middle_ring.append(Stone(image = self.BLANK, x =  (math.sin(math.radians(67.5)) * 180),   y = -(math.cos(math.radians(67.5)) * 180), center = self.frameCENTER, tag = "m1"))
-        self.middle_ring.append(Stone(image = self.BLANK, x =  (math.sin(math.radians(67.5)) * 180),    y = (math.cos(math.radians(67.5)) * 180),  center = self.frameCENTER, tag = "m2"))
-        self.middle_ring.append(Stone(image = self.BLANK, x =  (math.sin(math.radians(22.5)) * 180),    y = (math.cos(math.radians(22.5)) * 180),  center = self.frameCENTER, tag = "m3"))
-        self.middle_ring.append(Stone(image = self.BLANK, x = -(math.sin(math.radians(22.5)) * 180),    y = (math.cos(math.radians(22.5)) * 180),  center = self.frameCENTER, tag = "m4"))
-        self.middle_ring.append(Stone(image = self.BLANK, x = -(math.sin(math.radians(67.5)) * 180),    y = (math.cos(math.radians(67.5)) * 180),  center = self.frameCENTER, tag = "m5"))
-        self.middle_ring.append(Stone(image = self.BLANK, x = -(math.sin(math.radians(67.5)) * 180),   y = -(math.cos(math.radians(67.5)) * 180), center = self.frameCENTER, tag = "m6"))
-        self.middle_ring.append(Stone(image = self.BLANK, x = -(math.sin(math.radians(22.5)) * 180),   y = -(math.cos(math.radians(22.5)) * 180),   center = self.frameCENTER, tag = "m7"))
+        self.middle_ring.append(Stone(image = self.BLANK, x =  (math.sin(math.radians(22.5)) * 195),   y = -(math.cos(math.radians(22.5)) * 195),   center = self.frameCENTER, tag = "m0"))
+        self.middle_ring.append(Stone(image = self.BLANK, x =  (math.sin(math.radians(67.5)) * 195),   y = -(math.cos(math.radians(67.5)) * 195), center = self.frameCENTER, tag = "m1"))
+        self.middle_ring.append(Stone(image = self.BLANK, x =  (math.sin(math.radians(67.5)) * 195),    y = (math.cos(math.radians(67.5)) * 195),  center = self.frameCENTER, tag = "m2"))
+        self.middle_ring.append(Stone(image = self.BLANK, x =  (math.sin(math.radians(22.5)) * 195),    y = (math.cos(math.radians(22.5)) * 195),  center = self.frameCENTER, tag = "m3"))
+        self.middle_ring.append(Stone(image = self.BLANK, x = -(math.sin(math.radians(22.5)) * 195),    y = (math.cos(math.radians(22.5)) * 195),  center = self.frameCENTER, tag = "m4"))
+        self.middle_ring.append(Stone(image = self.BLANK, x = -(math.sin(math.radians(67.5)) * 195),    y = (math.cos(math.radians(67.5)) * 195),  center = self.frameCENTER, tag = "m5"))
+        self.middle_ring.append(Stone(image = self.BLANK, x = -(math.sin(math.radians(67.5)) * 195),   y = -(math.cos(math.radians(67.5)) * 195), center = self.frameCENTER, tag = "m6"))
+        self.middle_ring.append(Stone(image = self.BLANK, x = -(math.sin(math.radians(22.5)) * 195),   y = -(math.cos(math.radians(22.5)) * 195),   center = self.frameCENTER, tag = "m7"))
 
-        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(11.25)) * 290),   y = -(math.cos(math.radians(11.25)) * 290),  center = self.frameCENTER, tag = "o0"))
-        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(33.75)) * 290),   y = -(math.cos(math.radians(33.75)) * 290),  center = self.frameCENTER, tag = "o1"))
-        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(56.25)) * 290),   y = -(math.cos(math.radians(56.25)) * 290), center = self.frameCENTER, tag = "o2"))
-        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(78.75)) * 290),   y = -(math.cos(math.radians(78.75)) * 290), center = self.frameCENTER, tag = "o3"))
-        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(78.75)) * 290),    y = (math.cos(math.radians(78.75)) * 290),  center = self.frameCENTER, tag = "o4"))
-        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(56.25)) * 290),    y = (math.cos(math.radians(56.25)) * 290),  center = self.frameCENTER, tag = "o5"))
-        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(33.75)) * 290),    y = (math.cos(math.radians(33.75)) * 290), center = self.frameCENTER, tag = "o6"))
-        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(11.25)) * 290),    y = (math.cos(math.radians(11.25)) * 290), center = self.frameCENTER, tag = "o7"))
-        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(11.25)) * 290),   y =  (math.cos(math.radians(11.25)) * 290),  center = self.frameCENTER, tag = "o8"))
-        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(33.75)) * 290),   y =  (math.cos(math.radians(33.75)) * 290), center = self.frameCENTER, tag = "o9"))
-        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(56.25)) * 290),   y =  (math.cos(math.radians(56.25)) * 290), center = self.frameCENTER, tag = "o10"))
-        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(78.75)) * 290),   y =  (math.cos(math.radians(78.75)) * 290),  center = self.frameCENTER, tag = "o11"))
-        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(78.75)) * 290),  y = - (math.cos(math.radians(78.75)) * 290),   center = self.frameCENTER, tag = "o12"))
-        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(56.25)) * 290),  y = - (math.cos(math.radians(56.25)) * 290),  center = self.frameCENTER, tag = "o13"))
-        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(33.75)) * 290),  y = - (math.cos(math.radians(33.75)) * 290),  center = self.frameCENTER, tag = "o14"))
-        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(11.25)) * 290),  y = - (math.cos(math.radians(11.25)) * 290),   center = self.frameCENTER, tag = "o15"))
+        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(11.25)) * 310),   y = -(math.cos(math.radians(11.25)) * 310),  center = self.frameCENTER, tag = "o0"))
+        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(33.75)) * 310),   y = -(math.cos(math.radians(33.75)) * 310),  center = self.frameCENTER, tag = "o1"))
+        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(56.25)) * 310),   y = -(math.cos(math.radians(56.25)) * 310), center = self.frameCENTER, tag = "o2"))
+        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(78.75)) * 310),   y = -(math.cos(math.radians(78.75)) * 310), center = self.frameCENTER, tag = "o3"))
+        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(78.75)) * 310),    y = (math.cos(math.radians(78.75)) * 310),  center = self.frameCENTER, tag = "o4"))
+        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(56.25)) * 310),    y = (math.cos(math.radians(56.25)) * 310),  center = self.frameCENTER, tag = "o5"))
+        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(33.75)) * 310),    y = (math.cos(math.radians(33.75)) * 310), center = self.frameCENTER, tag = "o6"))
+        self.outer_ring.append( Stone(image = self.BLANK, x =  (math.sin(math.radians(11.25)) * 310),    y = (math.cos(math.radians(11.25)) * 310), center = self.frameCENTER, tag = "o7"))
+        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(11.25)) * 310),   y =  (math.cos(math.radians(11.25)) * 310),  center = self.frameCENTER, tag = "o8"))
+        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(33.75)) * 310),   y =  (math.cos(math.radians(33.75)) * 310), center = self.frameCENTER, tag = "o9"))
+        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(56.25)) * 310),   y =  (math.cos(math.radians(56.25)) * 310), center = self.frameCENTER, tag = "o10"))
+        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(78.75)) * 310),   y =  (math.cos(math.radians(78.75)) * 310),  center = self.frameCENTER, tag = "o11"))
+        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(78.75)) * 310),  y = - (math.cos(math.radians(78.75)) * 310),   center = self.frameCENTER, tag = "o12"))
+        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(56.25)) * 310),  y = - (math.cos(math.radians(56.25)) * 310),  center = self.frameCENTER, tag = "o13"))
+        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(33.75)) * 310),  y = - (math.cos(math.radians(33.75)) * 310),  center = self.frameCENTER, tag = "o14"))
+        self.outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(11.25)) * 310),  y = - (math.cos(math.radians(11.25)) * 310),   center = self.frameCENTER, tag = "o15"))
 
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(11.25)) * 400),   y = -(math.cos(math.radians(11.25)) * 400),  center = self.frameCENTER, tag = "b0"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(33.75)) * 400),   y = -(math.cos(math.radians(33.75)) * 400),  center = self.frameCENTER, tag = "b1"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(56.25)) * 400),   y = -(math.cos(math.radians(56.25)) * 400), center = self.frameCENTER, tag = "b2"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(78.75)) * 400),   y = -(math.cos(math.radians(78.75)) * 400), center = self.frameCENTER, tag = "b3"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(78.75)) * 400),    y = (math.cos(math.radians(78.75)) * 400),  center = self.frameCENTER, tag = "b4"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(56.25)) * 400),    y = (math.cos(math.radians(56.25)) * 400),  center = self.frameCENTER, tag = "b5"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(33.75)) * 400),    y = (math.cos(math.radians(33.75)) * 400), center = self.frameCENTER, tag = "b6"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(11.25)) * 400),    y = (math.cos(math.radians(11.25)) * 400), center = self.frameCENTER, tag = "b7"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(11.25)) * 400),   y = (math.cos(math.radians(11.25)) * 400),  center = self.frameCENTER, tag = "b8"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(33.75)) * 400),   y = (math.cos(math.radians(33.75)) * 400), center = self.frameCENTER, tag = "b9"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(56.25)) * 400),   y = (math.cos(math.radians(56.25)) * 400), center = self.frameCENTER, tag = "b10"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(78.75)) * 400),   y = (math.cos(math.radians(78.75)) * 400),  center = self.frameCENTER, tag = "b11"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(78.75)) * 400),  y = -(math.cos(math.radians(78.75)) * 400),   center = self.frameCENTER, tag = "b12"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(56.25)) * 400),  y = -(math.cos(math.radians(56.25)) * 400),  center = self.frameCENTER, tag = "b13"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(33.75)) * 400),  y = -(math.cos(math.radians(33.75)) * 400),  center = self.frameCENTER, tag = "b14"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(11.25)) * 400),  y = -(math.cos(math.radians(11.25)) * 400),   center = self.frameCENTER, tag = "b15"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(11.25)) * 400),   y = -(math.cos(math.radians(11.25)) * 400),  center = self.frameCENTER, tag = "b15"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(33.75)) * 400),   y = -(math.cos(math.radians(33.75)) * 400),  center = self.frameCENTER, tag = "b17"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(56.25)) * 400),   y = -(math.cos(math.radians(56.25)) * 400), center = self.frameCENTER, tag = "b18"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(78.75)) * 400),   y = -(math.cos(math.radians(78.75)) * 400), center = self.frameCENTER, tag = "b19"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(78.75)) * 400),    y = (math.cos(math.radians(78.75)) * 400),  center = self.frameCENTER, tag = "b20"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(56.25)) * 400),    y = (math.cos(math.radians(56.25)) * 400),  center = self.frameCENTER, tag = "b21"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(33.75)) * 400),    y = (math.cos(math.radians(33.75)) * 400), center = self.frameCENTER, tag = "b22"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(11.25)) * 400),    y = (math.cos(math.radians(11.25)) * 400), center = self.frameCENTER, tag = "b23"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(11.25)) * 400),   y = (math.cos(math.radians(11.25)) * 400),  center = self.frameCENTER, tag = "b24"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(33.75)) * 400),   y = (math.cos(math.radians(33.75)) * 400), center = self.frameCENTER, tag = "b25"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(56.25)) * 400),   y = (math.cos(math.radians(56.25)) * 400), center = self.frameCENTER, tag = "b26"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(78.75)) * 400),   y = (math.cos(math.radians(78.75)) * 400),  center = self.frameCENTER, tag = "b27"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(78.75)) * 400),  y = -(math.cos(math.radians(78.75)) * 400),   center = self.frameCENTER, tag = "b28"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(56.25)) * 400),  y = -(math.cos(math.radians(56.25)) * 400),  center = self.frameCENTER, tag = "b29"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(33.75)) * 400),  y = -(math.cos(math.radians(33.75)) * 400),  center = self.frameCENTER, tag = "b30"))
-        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(11.25)) * 400),  y = -(math.cos(math.radians(11.25)) * 400),   center = self.frameCENTER, tag = "b31"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(5.625)) *   430),   y = -(math.cos(math.radians(5.625)) *  430),  center = self.frameCENTER, tag = "b0"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(16.875)) *  430),   y = -(math.cos(math.radians(16.875)) * 430),  center = self.frameCENTER, tag = "b1"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(28.125)) *  430),   y = -(math.cos(math.radians(28.125)) * 430), center = self.frameCENTER, tag = "b2"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(39.375)) *  430),   y = -(math.cos(math.radians(39.375)) * 430), center = self.frameCENTER, tag = "b3"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(50.625)) *  430),   y = -(math.cos(math.radians(50.625)) * 430),  center = self.frameCENTER, tag = "b4"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(61.875)) *  430),   y = -(math.cos(math.radians(61.875)) * 430),  center = self.frameCENTER, tag = "b5"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(73.125)) *  430),   y = -(math.cos(math.radians(73.125)) * 430), center = self.frameCENTER, tag = "b6"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(84.375)) *  430),   y = -(math.cos(math.radians(84.375)) * 430), center = self.frameCENTER, tag = "b7"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(84.375)) *  430),    y = (math.cos(math.radians(84.375)) * 430), center = self.frameCENTER, tag = "b8"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(73.125)) *  430),    y = (math.cos(math.radians(73.125)) * 430), center = self.frameCENTER, tag = "b9"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(61.875)) *  430),    y = (math.cos(math.radians(61.875)) * 430),  center = self.frameCENTER, tag = "b10"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(50.625)) *  430),    y = (math.cos(math.radians(50.625)) * 430),  center = self.frameCENTER, tag = "b11"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(39.375)) *  430),    y = (math.cos(math.radians(39.375)) * 430), center = self.frameCENTER, tag = "b12"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(28.125)) *  430),    y = (math.cos(math.radians(28.125)) * 430), center = self.frameCENTER, tag = "b13"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(16.875)) *  430),    y = (math.cos(math.radians(16.875)) * 430),  center = self.frameCENTER, tag = "b14"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = (math.sin(math.radians(5.625)) *   430),     y = (math.cos(math.radians(5.625)) * 430),  center = self.frameCENTER, tag = "b15"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(5.625)) *  430),     y = (math.cos(math.radians(5.625)) * 430),  center = self.frameCENTER, tag = "b16"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(16.875)) * 430),    y = (math.cos(math.radians(16.875)) * 430),  center = self.frameCENTER, tag = "b17"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(28.125)) * 430),    y = (math.cos(math.radians(28.125)) * 430), center = self.frameCENTER, tag = "b18"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(39.375)) * 430),    y = (math.cos(math.radians(39.375)) * 430), center = self.frameCENTER, tag = "b19"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(50.625)) * 430),    y = (math.cos(math.radians(50.625)) * 430),  center = self.frameCENTER, tag = "b20"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(61.875)) * 430),    y = (math.cos(math.radians(61.875)) * 430),  center = self.frameCENTER, tag = "b21"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(73.125)) * 430),    y = (math.cos(math.radians(73.125)) * 430), center = self.frameCENTER, tag = "b22"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(84.375)) * 430),    y = (math.cos(math.radians(84.375)) * 430), center = self.frameCENTER, tag = "b23"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(84.375)) * 430),   y = -(math.cos(math.radians(84.375)) * 430), center = self.frameCENTER, tag = "b24"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(73.125)) * 430),   y = -(math.cos(math.radians(73.125)) * 430), center = self.frameCENTER, tag = "b25"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(61.875)) * 430),   y = -(math.cos(math.radians(61.875)) * 430),  center = self.frameCENTER, tag = "b26"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(50.625)) * 430),   y = -(math.cos(math.radians(50.625)) * 430),  center = self.frameCENTER, tag = "b27"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(39.375)) * 430),   y = -(math.cos(math.radians(39.375)) * 430), center = self.frameCENTER, tag = "b28"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(28.125)) * 430),   y = -(math.cos(math.radians(28.125)) * 430), center = self.frameCENTER, tag = "b29"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(16.875)) * 430),   y = -(math.cos(math.radians(16.875)) * 430),  center = self.frameCENTER, tag = "b30"))
+        self.big_outer_ring.append( Stone(image = self.BLANK, x = -(math.sin(math.radians(5.625)) *  430),    y = -(math.cos(math.radians(5.625)) * 430),  center = self.frameCENTER, tag = "b31"))
 
         if self.level == 'easy':
             self.game = engine.GameEngine_Easy()
@@ -397,8 +425,9 @@ class Game:
         self.fill_rings(self.game.outer, self.outer_ring)
         self.fill_rings(self.game.middle, self.middle_ring)
         self.fill_rings(self.game.inner, self.inner_ring)
+        self.fill_rings(self.game.big_outer, self.big_outer_ring)
 
-        self.score = Score('Multicolore.otf', 98)
+        self.score = Score('Multicolore.otf', 98, self.syscolors.SCORE, self.syscolors.GAMEBG)
         self.score.updateScore(self.game.points)
         self.score.scorepos.right = 1400
         self.score.scorepos.centery = self.background.get_rect().centery
@@ -452,6 +481,7 @@ class Game:
             self.fill_rings(self.game.outer, self.outer_ring)
             self.fill_rings(self.game.middle, self.middle_ring)
             self.fill_rings(self.game.inner, self.inner_ring)
+            self.fill_rings(self.game.big_outer, self.big_outer_ring)
 
             # Refresh the score
             self.score.updateScore(self.game.points)
@@ -463,12 +493,13 @@ class Game:
         self.screen.blit(self.background, (0, 0))
 
         if self.mainMenu:
-            self.background.fill((5, 5, 5))
+            self.background.fill(self.syscolors.BACKGROUND)
             self.menuMain()
 
         elif self.gameOn:
 
-            self.background.fill((5, 5, 5))
+            # self.background.fill(self.syscolors.BACKGROUND)
+            self.background.blit(self.gamebg, (0, 0))
 
             # Blit score
             self.score.scorepos.right = 1400
@@ -476,7 +507,7 @@ class Game:
             self.background.blit(self.score.score, self.score.scorepos)
 
             # Blit rings
-            for ring in (self.outer_ring, self.middle_ring, self.inner_ring):
+            for ring in (self.big_outer_ring, self.outer_ring, self.middle_ring, self.inner_ring):
                 for element in ring:
                     self.background.blit(element.image, element.rect)
 
