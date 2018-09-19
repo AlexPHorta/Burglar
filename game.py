@@ -20,64 +20,23 @@ try:
     import pygame
     from socket import *
     from pygame.locals import *
-except (ImportError, err):
+except ImportError as err:
     print("Couldn't load module. %s") % (err)
     sys.exit(2)
 
 import engine
 
+from utils import load_png, write, Center, colorScheme
+
 from collections import namedtuple
 from itertools import islice
+
 
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
 pygame.display.set_caption('Burglar')
 
-# The center of the screen. Makes it easier to place the stones.
-Center = namedtuple('Center', 'x y')
-
-# Some auxiliary functions
-def load_png(name):
-    """ Load image and return image object"""
-    fullname = os.path.join('images', name)
-    try:
-        image = pygame.image.load(fullname)
-        if image.get_alpha() is None:
-            image = image.convert()
-        else:
-            image = image.convert_alpha()
-    except (pygame.error, message):
-        print ('Cannot load image: %s') % (fullname)
-        raise (SystemExit, message)
-    return image
-
-def write(text, size, font = None, color = (255, 255, 255)):
-    if not font:
-        font = pygame.font.SysFont('helvetica', size)
-    else:
-        fullname = os.path.join('fonts', font)
-        font = pygame.font.Font(fullname, size)
-    text = font.render(str(text), True, color)
-    if text.get_alpha() is None:
-        text = text.convert()
-    else:
-        text = text.convert_alpha()
-    textpos = text.get_rect()
-    return text, textpos
-
-
-class Colors:
-
-    def __init__(self):
-        self.BACKGROUND = (0, 7, 10)
-        self.GAMEBG = (246,175,108)
-        self.TITLE = (11, 181, 255)
-        self.MENU = (76, 152, 193)
-        self.MENUACTIVE = (37, 94, 118)
-        self.MENUOFF = (245, 166, 92)
-        self.SCORE = (9, 21, 26)
-        self.MENUWARNING = (27, 65, 75)
 
 class StoneColors:
 
@@ -132,7 +91,6 @@ class Score:
 
 class Game:
 
-    syscolors = Colors()
     stoneTypes = StoneColors()
 
     BLANK = stoneTypes.blank
@@ -160,7 +118,7 @@ class Game:
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
-        self.background.fill(self.syscolors.BACKGROUND)
+        self.background.fill(colorScheme.BACKGROUND)
         self.gamebg = load_png('bg.png')
         self.mainMenu = True
         self.menuGameActive = False
@@ -176,7 +134,7 @@ class Game:
         self.mainMenu = True
 
         # Print game name
-        title, titlepos = write('Burglar', 124, 'Multicolore.otf', self.syscolors.TITLE)
+        title, titlepos = write('Burglar', 124, 'Multicolore.otf', colorScheme.TITLE)
         titlepos.centerx, titlepos.centery = self.background.get_rect().center
         self.background.blit(title, titlepos)
 
@@ -187,10 +145,10 @@ class Game:
 
         for index, item in enumerate(self.menuOptions):
             if index == self.option:
-                color.append(self.syscolors.MENUACTIVE)
+                color.append(colorScheme.MENUACTIVE)
                 fsize.append(68)
             else:
-                color.append(self.syscolors.MENU)
+                color.append(colorScheme.MENU)
                 fsize.append(53)
 
         easy, easypos = write('easy', fsize[0], 'Multicolore.otf', color[0])
@@ -228,17 +186,18 @@ class Game:
 
         color = []
         fsize = []
-        topmenupos = 150
-        topmenufsize = 68
+        topmenupos = 250
+        topmenufsize = 60
+        right = 1300
 
         if self.pause:
             self.menuOptions = ('resume',)
 
-            resume, resumepos = write('resume', topmenufsize, 'Multicolore.otf', self.syscolors.MENUACTIVE)
+            resume, resumepos = write('resume', topmenufsize, 'Multicolore.otf', colorScheme.MENUACTIVE)
 
             # Print resume option
-            resumepos.right = 1400
-            resumepos.centery = self.background.get_rect().centery + topmenupos
+            resumepos.right = right
+            resumepos.top = self.background.get_rect().centery + topmenupos
             self.background.blit(resume, resumepos)
 
         elif self.game.game_over:
@@ -247,23 +206,23 @@ class Game:
 
             for index, item in enumerate(self.menuOptions):
                 if index == self.option:
-                    color.append(self.syscolors.MENUACTIVE)
-                    fsize.append(68)
+                    color.append(colorScheme.MENUACTIVE)
+                    fsize.append(60)
                 else:
-                    color.append(self.syscolors.MENU)
-                    fsize.append(53)
+                    color.append(colorScheme.MENU)
+                    fsize.append(50)
 
             newGame, newGamepos = write('new game', fsize[0], 'Multicolore.otf', color[0])
             back, backpos = write('main menu', fsize[1], 'Multicolore.otf', color[1])
 
             # Print new game option
-            newGamepos.right = 1400
-            newGamepos.centery = self.background.get_rect().centery + fsize[0]
+            newGamepos.right = right
+            newGamepos.top = self.background.get_rect().centery + topmenupos + 100
             self.background.blit(newGame, newGamepos)
 
             # Print back option
-            backpos.right = 1400
-            backpos.centery = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 1))
+            backpos.right = right
+            backpos.top = self.background.get_rect().centery + topmenupos + 100 + sum(islice(fsize, 1))
             self.background.blit(back, backpos)
 
         else:
@@ -272,41 +231,41 @@ class Game:
             if self.menuGameActive:
                 for index, item in enumerate(self.menuOptions):
                     if index == self.option:
-                        color.append(self.syscolors.MENUACTIVE)
-                        fsize.append(68)
+                        color.append(colorScheme.MENUACTIVE)
+                        fsize.append(60)
                     else:
-                        color.append(self.syscolors.MENU)
-                        fsize.append(53)
+                        color.append(colorScheme.MENU)
+                        fsize.append(50)
             else:
                 for index, item in enumerate(self.menuOptions):
-                    color.append(self.syscolors.MENUOFF)
+                    color.append(colorScheme.MENUOFF)
                     if index == self.option:
-                        fsize.append(68)
+                        fsize.append(60)
                     else:
-                        fsize.append(53)
+                        fsize.append(50)
 
             pause, pausepos = write('pause', fsize[0], 'Multicolore.otf', color[0])
             options, optionspos = write('options', fsize[1], 'Multicolore.otf', color[1])
             quit, quitpos = write('quit', fsize[2], 'Multicolore.otf', color[2])
-            warning, warningpos = write('Press CTRL to toggle menu on/off.', 22, 'MankSans-Medium.ttf', self.syscolors.MENUWARNING)
+            warning, warningpos = write('Press CTRL to toggle menu on/off.', 22, 'MankSans-Medium.ttf', colorScheme.MENUWARNING)
 
             # Print pause option
-            pausepos.right = 1400
+            pausepos.right = right
             pausepos.top = self.background.get_rect().centery + topmenupos
             self.background.blit(pause, pausepos)
 
             # Print options option
-            optionspos.right = 1400
+            optionspos.right = right
             optionspos.top = self.background.get_rect().centery + topmenupos + fsize[0]
             self.background.blit(options, optionspos)
 
             # Print quit option
-            quitpos.right = 1400
+            quitpos.right = right
             quitpos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 2))
             self.background.blit(quit, quitpos)
 
             # Print menu warning
-            warningpos.right = 1400
+            warningpos.right = right
             warningpos.bottom = 950
             self.background.blit(warning, warningpos)
 
@@ -427,9 +386,9 @@ class Game:
         self.fill_rings(self.game.inner, self.inner_ring)
         self.fill_rings(self.game.big_outer, self.big_outer_ring)
 
-        self.score = Score('Multicolore.otf', 98, self.syscolors.SCORE, self.syscolors.GAMEBG)
+        self.score = Score('Multicolore.otf', 98, colorScheme.SCORE, colorScheme.GAMEBG)
         self.score.updateScore(self.game.points)
-        self.score.scorepos.right = 1400
+        self.score.scorepos.right = 1300
         self.score.scorepos.centery = self.background.get_rect().centery
         self.background.blit(self.score.score, self.score.scorepos)
 
@@ -493,7 +452,7 @@ class Game:
         self.screen.blit(self.background, (0, 0))
 
         if self.mainMenu:
-            self.background.fill(self.syscolors.BACKGROUND)
+            self.background.fill(colorScheme.BACKGROUND)
             self.menuMain()
 
         elif self.gameOn:
@@ -502,7 +461,7 @@ class Game:
             self.background.blit(self.gamebg, (0, 0))
 
             # Blit score
-            self.score.scorepos.right = 1400
+            self.score.scorepos.right = 1300
             self.score.scorepos.centery = self.background.get_rect().centery
             self.background.blit(self.score.score, self.score.scorepos)
 
