@@ -39,8 +39,8 @@ def load_png(name):
         else:
             image = image.convert_alpha()
     except pygame.error as message:
-        print ('Cannot load image: %s') % (fullname)
-        raise (SystemExit, message)
+        print ('Cannot load image: {}'.format(fullname))
+        raise SystemExit(message)
     return image
 
 def write(text, size, font = None, color = (255, 255, 255)):
@@ -56,6 +56,19 @@ def write(text, size, font = None, color = (255, 255, 255)):
         text = text.convert_alpha()
     textpos = text.get_rect()
     return text, textpos
+
+
+class StoneColors:
+
+    def __init__(self):
+        self.BLANK = load_png('grid.png')
+        self.RED = load_png('red_stone.png')
+        self.BLUE = load_png('blue_stone.png')
+        self.GREEN = load_png('green_stone.png')
+        self.YELLOW = load_png('yellow_stone.png')
+        self.BROWN = load_png('brown_stone.png')
+
+stones = StoneColors()
 
 
 class Colors:
