@@ -106,7 +106,7 @@ class Game:
         self._running = True
         self.level = str(level)
         self._display_surf = None
-        self.size = self.width, self.height = 1500, 1000
+        self.size = self.width, self.height = 1350, 1000
         self.frameSize = self.frameWidth, self.frameHeight = 1100, 1000
         self.inner_ring = []
         self.middle_ring = []
@@ -386,11 +386,11 @@ class Game:
         self.fill_rings(self.game.inner, self.inner_ring)
         self.fill_rings(self.game.big_outer, self.big_outer_ring)
 
-        self.score = Score('Multicolore.otf', 98, colorScheme.SCORE, colorScheme.GAMEBG)
+        self.score = Score('Multicolore.otf', 106, colorScheme.SCORE, colorScheme.GAMEBG)
         self.score.updateScore(self.game.points)
-        self.score.scorepos.right = 1300
-        self.score.scorepos.centery = self.background.get_rect().centery
-        self.background.blit(self.score.score, self.score.scorepos)
+        # self.score.scorepos.right = 1300
+        # self.score.scorepos.top = 150 #self.background.get_rect().centery
+        # self.background.blit(self.score.score, self.score.scorepos)
 
         self._running = True
 
@@ -462,7 +462,7 @@ class Game:
 
             # Blit score
             self.score.scorepos.right = 1300
-            self.score.scorepos.centery = self.background.get_rect().centery
+            self.score.scorepos.top = 50 #self.background.get_rect().centery
             self.background.blit(self.score.score, self.score.scorepos)
 
             # Blit rings
@@ -475,7 +475,7 @@ class Game:
 
             # Blit game over
             if self.game.game_over:
-                gOver, gOverpos = write('Game Over', 124, 'Multicolore.otf')
+                gOver, gOverpos = write('Game Over', 124, 'Multicolore.otf', colorScheme.GAMEOVER)
                 gOverpos.centerx, gOverpos.centery = self.frame.get_rect().center
 
                 self.background.blit(gOver, gOverpos)

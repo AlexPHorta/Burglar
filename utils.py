@@ -69,5 +69,6 @@ class Colors:
         self.MENUOFF = (245, 166, 92)
         self.SCORE = (9, 21, 26)
         self.MENUWARNING = (27, 65, 75)
+        self.GAMEOVER = (251, 219, 189)
 
 colorScheme = Colors()
