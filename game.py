@@ -303,36 +303,33 @@ class Game:
         dark, darkpos = write('dark', fsize[1], 'Multicolore.otf', color[1])
 
         # Print theme tag
-        themeTagpos.right = 400
+        themeTagpos.right = 500
         themeTagpos.centery = self.background.get_rect().centery + topmenupos
         self.background.blit(themeTag, themeTagpos)
 
         # Print light option
-        lightpos.right = themeTagpos.right + 200
+        lightpos.left = themeTagpos.right + 100
         lightpos.centery = self.background.get_rect().centery + topmenupos
         self.background.blit(light, lightpos)
 
         # Print dark option
-        darkpos.right = themeTagpos.right + 200 + 200
+        darkpos.left = lightpos.right + 50
         darkpos.centery = self.background.get_rect().centery + topmenupos
         self.background.blit(dark, darkpos)
 
     def load(self, option):
         option_ = str(option)
+        self.option = 0
         if option_ == 'easy':
-            self.option = 0
             self.level = 'easy'
             self.loadGame()
         elif option_ == 'normal':
-            self.option = 0
             self.level = 'normal'
             self.loadGame()
         elif option_ == 'hard':
-            self.option = 0
             self.level = 'hard'
             self.loadGame()
         elif option_ == 'options':
-            self.option = 0
             self.optionsScreen = True
             self.options()
         elif option_ == 'help':
@@ -343,7 +340,6 @@ class Game:
             self.pause = False
             self.menuGameActive = False
         elif option_ == 'quit' or option_ == 'back':
-            self.option = 0
             self.menuGameActive = False
             self.menuMain()
 
