@@ -121,8 +121,10 @@ class Game:
         self.background.fill(colorScheme.BACKGROUND)
         self.gamebg = load_png('bg.png')
         self.mainMenu = True
+        self.optionsScreen = False
         self.menuGameActive = False
         self.gameOn = False
+        self.gameOver = False
         self.pause = False
         self.option = 0
 
@@ -132,6 +134,7 @@ class Game:
 
         self.gameOn = False
         self.mainMenu = True
+        self.optionsScreen = False
 
         # Print game name
         title, titlepos = write('Burglar', 124, 'Multicolore.otf', colorScheme.TITLE)
@@ -269,6 +272,51 @@ class Game:
             warningpos.bottom = 950
             self.background.blit(warning, warningpos)
 
+    def options(self):
+        self.game = None
+
+        self.gameOn = False
+        self.mainMenu = False
+        self.optionsScreen = True
+
+        # Print game name
+        title, titlepos = write('Options', 82, 'Multicolore.otf', colorScheme.TITLE)
+        titlepos.centerx = self.background.get_rect().centerx
+        titlepos.top = 200
+        self.background.blit(title, titlepos)
+
+        self.menuOptions = ('light', 'dark')
+        color = []
+        fsize = []
+        topmenupos = 0
+
+        for index, item in enumerate(self.menuOptions):
+            if index == self.option:
+                color.append(colorScheme.MENUACTIVE)
+                fsize.append(46)
+            else:
+                color.append(colorScheme.MENU)
+                fsize.append(42)
+
+        themeTag, themeTagpos = write('Theme', 48, 'Multicolore.otf', colorScheme.TITLE)
+        light, lightpos = write('light', fsize[0], 'Multicolore.otf', color[0])
+        dark, darkpos = write('dark', fsize[1], 'Multicolore.otf', color[1])
+
+        # Print theme tag
+        themeTagpos.right = 400
+        themeTagpos.centery = self.background.get_rect().centery + topmenupos
+        self.background.blit(themeTag, themeTagpos)
+
+        # Print light option
+        lightpos.right = themeTagpos.right + 200
+        lightpos.centery = self.background.get_rect().centery + topmenupos
+        self.background.blit(light, lightpos)
+
+        # Print dark option
+        darkpos.right = themeTagpos.right + 200 + 200
+        darkpos.centery = self.background.get_rect().centery + topmenupos
+        self.background.blit(dark, darkpos)
+
     def load(self, option):
         option_ = str(option)
         if option_ == 'easy':
@@ -284,7 +332,9 @@ class Game:
             self.level = 'hard'
             self.loadGame()
         elif option_ == 'options':
-            pass
+            self.option = 0
+            self.optionsScreen = True
+            self.options()
         elif option_ == 'help':
             pass
         elif option_ == 'pause':
@@ -419,7 +469,7 @@ class Game:
                         else:
                             self.menuGameActive = False
 
-        if (self.mainMenu) or (self.menuGameActive) or (self.game.game_over):
+        if (self.mainMenu) or (self.menuGameActive) or (self.gameOver):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.option = abs((self.option - 1) % len(self.menuOptions))
@@ -427,6 +477,15 @@ class Game:
                     self.option = abs((self.option + 1) % len(self.menuOptions))
                 elif event.key == pygame.K_RETURN:
                     self.load(self.menuOptions[self.option])
+
+        if self.optionsScreen:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.option = abs((self.option - 1) % len(self.menuOptions))
+                elif event.key == pygame.K_RIGHT:
+                    self.option = abs((self.option + 1) % len(self.menuOptions))
+                # elif event.key == pygame.K_RETURN:
+                #     self.load(self.menuOptions[self.option])
 
 
     def on_loop(self):
@@ -445,6 +504,8 @@ class Game:
             # Refresh the score
             self.score.updateScore(self.game.points)
 
+            self.gameOver = self.game.game_over
+
         return
 
     def on_render(self):
@@ -454,6 +515,10 @@ class Game:
         if self.mainMenu:
             self.background.fill(colorScheme.BACKGROUND)
             self.menuMain()
+
+        if self.optionsScreen:
+            self.background.fill(colorScheme.BACKGROUND)
+            self.options()
 
         elif self.gameOn:
 
@@ -474,7 +539,7 @@ class Game:
             self.menuGame()
 
             # Blit game over
-            if self.game.game_over:
+            if self.gameOver:
                 gOver, gOverpos = write('Game Over', 124, 'Multicolore.otf', colorScheme.GAMEOVER)
                 gOverpos.centerx, gOverpos.centery = self.frame.get_rect().center
 
