@@ -478,6 +478,10 @@ class Game:
                     self.option = abs((self.option - 1) % len(self.menuOptions))
                 elif event.key == pygame.K_RIGHT:
                     self.option = abs((self.option + 1) % len(self.menuOptions))
+            if self.option == 0:
+                colorScheme.setScheme()
+            elif self.option == 1:
+                colorScheme.setScheme(1)
                 # elif event.key == pygame.K_RETURN:
                 #     self.load(self.menuOptions[self.option])
 

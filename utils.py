@@ -80,18 +80,22 @@ class Colors:
         self.dark = {'bgimg': 'bg_light.png', 'bg': (0, 7, 10), 'gbg': (246,175,108), \
             'tt': (94, 29, 22), 'mn': (76, 152, 193), 'mna': (37, 94, 118), \
             'mno': (245, 166, 92), 'sc': (9, 21, 26), 'mnw': (27, 65, 75), 'go': (251, 219, 189)}
-        self.setScheme(self.light)
+        self.setScheme()
 
-    def setScheme(self, **kwargs):
-        self.BGIMAGE = load_png(bgimg)
-        self.BACKGROUND = bg
-        self.GAMEBG = gbg
-        self.TITLE = tt
-        self.MENU = mn
-        self.MENUACTIVE = mna
-        self.MENUOFF = mno
-        self.SCORE = sc
-        self.MENUWARNING = mnw
-        self.GAMEOVER = go
+    def setScheme(self, arg = None):
+        if arg == None:
+            arg = self.light
+        else:
+            arg = self.dark
+        self.BGIMAGE = load_png(arg['bgimg'])
+        self.BACKGROUND = arg['bg']
+        self.GAMEBG = arg['gbg']
+        self.TITLE = arg['tt']
+        self.MENU = arg['mn']
+        self.MENUACTIVE = arg['mna']
+        self.MENUOFF = arg['mno']
+        self.SCORE = arg['sc']
+        self.MENUWARNING = arg['mnw']
+        self.GAMEOVER = arg['go']
 
 colorScheme = Colors()
