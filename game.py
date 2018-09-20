@@ -301,7 +301,7 @@ class Game:
         dark, darkpos = write('dark', fsize[1], 'Multicolore.otf', color[1])
 
         # Print theme tag
-        themeTagpos.right = 500
+        themeTagpos.right = 550
         themeTagpos.centery = self.background.get_rect().centery + topmenupos
         self.background.blit(themeTag, themeTagpos)
 
