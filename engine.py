@@ -184,7 +184,7 @@ class GameEngine_Easy:
     def calc_points(self, mapping):
         points = 0
         for item in mapping:
-            points += item[2] * 10
+            points += (item[2] ** 2) * 5
         return points
 
     def new_round(self):
