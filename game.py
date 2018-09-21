@@ -129,6 +129,8 @@ class Game:
 
     def menuMain(self):
 
+        from menus import ListMenu
+
         self.game = None
 
         self.gameOn = False
@@ -140,49 +142,55 @@ class Game:
         titlepos.centerx, titlepos.centery = self.background.get_rect().center
         self.background.blit(title, titlepos)
 
-        self.menuOptions = ('easy', 'normal', 'hard', 'options', 'help')
-        color = []
-        fsize = []
-        topmenupos = 150
+        self.m = ListMenu(('easy', 'normal', 'hard', 'options', 'help'), align = 'center')
+        self.m.menuPos.top = titlepos.bottom + 100
+        self.m.menuPos.centerx = self.background.get_rect().centerx
+        self.background.blit(self.m.menu, self.m.menuPos)
 
-        for index, item in enumerate(self.menuOptions):
-            if index == self.option:
-                color.append(colorScheme.MENUACTIVE)
-                fsize.append(68)
-            else:
-                color.append(colorScheme.MENU)
-                fsize.append(53)
 
-        easy, easypos = write('easy', fsize[0], 'Multicolore.otf', color[0])
-        normal, normalpos = write('normal', fsize[1], 'Multicolore.otf', color[1])
-        hard, hardpos = write('hard', fsize[2], 'Multicolore.otf', color[2])
-        options, optionspos = write('options', fsize[3], 'Multicolore.otf', color[3])
-        help_, help_pos = write('help', fsize[4], 'Multicolore.otf', color[4])
+        # self.menuOptions = ('easy', 'normal', 'hard', 'options', 'help')
+        # color = []
+        # fsize = []
+        # topmenupos = 150
 
-        # Print easy option
-        easypos.centerx = self.background.get_rect().centerx
-        easypos.top = self.background.get_rect().centery + topmenupos
-        self.background.blit(easy, easypos)
+        # for index, item in enumerate(self.menuOptions):
+        #     if index == self.option:
+        #         color.append(colorScheme.MENUACTIVE)
+        #         fsize.append(68)
+        #     else:
+        #         color.append(colorScheme.MENU)
+        #         fsize.append(53)
 
-        # Print normal option
-        normalpos.centerx = self.background.get_rect().centerx
-        normalpos.top = self.background.get_rect().centery + topmenupos + fsize[0]
-        self.background.blit(normal, normalpos)
+        # easy, easypos = write('easy', fsize[0], 'Multicolore.otf', color[0])
+        # normal, normalpos = write('normal', fsize[1], 'Multicolore.otf', color[1])
+        # hard, hardpos = write('hard', fsize[2], 'Multicolore.otf', color[2])
+        # options, optionspos = write('options', fsize[3], 'Multicolore.otf', color[3])
+        # help_, help_pos = write('help', fsize[4], 'Multicolore.otf', color[4])
 
-        # Print hard option
-        hardpos.centerx = self.background.get_rect().centerx
-        hardpos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 2))
-        self.background.blit(hard, hardpos)
+        # # Print easy option
+        # easypos.centerx = self.background.get_rect().centerx
+        # easypos.top = self.background.get_rect().centery + topmenupos
+        # self.background.blit(easy, easypos)
 
-        # Print options option
-        optionspos.centerx = self.background.get_rect().centerx
-        optionspos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 3))
-        self.background.blit(options, optionspos)
+        # # Print normal option
+        # normalpos.centerx = self.background.get_rect().centerx
+        # normalpos.top = self.background.get_rect().centery + topmenupos + fsize[0]
+        # self.background.blit(normal, normalpos)
 
-        # Print help option
-        help_pos.centerx = self.background.get_rect().centerx
-        help_pos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 4))
-        self.background.blit(help_, help_pos)
+        # # Print hard option
+        # hardpos.centerx = self.background.get_rect().centerx
+        # hardpos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 2))
+        # self.background.blit(hard, hardpos)
+
+        # # Print options option
+        # optionspos.centerx = self.background.get_rect().centerx
+        # optionspos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 3))
+        # self.background.blit(options, optionspos)
+
+        # # Print help option
+        # help_pos.centerx = self.background.get_rect().centerx
+        # help_pos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 4))
+        # self.background.blit(help_, help_pos)
 
     def menuGame(self):
 
@@ -458,6 +466,15 @@ class Game:
         if event.type == pygame.QUIT:
             self._running = False
 
+        if self.mainMenu:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.m.up()
+                elif event.key == pygame.K_DOWN:
+                    self.m.down()
+                elif event.key == pygame.K_RETURN:
+                    self.m.select()
+
         if self.gameOn:
             # Check if user pressed the right keys, turn things accordingly
             if event.type == pygame.KEYDOWN:
@@ -478,7 +495,7 @@ class Game:
                         else:
                             self.menuGameActive = False
 
-        if (self.mainMenu) or (self.menuGameActive) or (self.gameOver):
+        if (self.menuGameActive) or (self.gameOver):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.option = abs((self.option - 1) % len(self.menuOptions))
