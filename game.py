@@ -27,7 +27,7 @@ except ImportError as err:
 import engine
 
 from collections import namedtuple
-from itertools import islice
+from itertools import islice, chain
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -120,6 +120,7 @@ class Game:
         self.gamebg = colorScheme.BGIMAGE
         self.mainMenu = True
         self.optionsScreen = False
+        self.activeOption = 0
         self.menuGameActive = False
         self.gameOn = False
         self.gameOver = False
@@ -277,28 +278,36 @@ class Game:
         self.mainMenu = False
         self.optionsScreen = True
 
+
         # Print game name
         title, titlepos = write('Options', 82, 'Multicolore.otf', colorScheme.TITLE)
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.top = 200
         self.background.blit(title, titlepos)
 
-        self.menuOptions = ('light', 'dark')
+        self.menuOptions = (('light', 'dark'), ('back',))
         color = []
         fsize = []
         topmenupos = 0
 
         for index, item in enumerate(self.menuOptions):
-            if index == self.option:
-                color.append(colorScheme.MENUACTIVE)
-                fsize.append(46)
-            else:
-                color.append(colorScheme.MENU)
-                fsize.append(42)
+            for i, elem in enumerate(item):
+                if index == self.activeOption:
+                    if i == self.option:
+                        color.append(colorScheme.MENUACTIVE)
+                        fsize.append(46)
+                    else:
+                        color.append(colorScheme.MENU)
+                        fsize.append(42)
+                else:
+                    color.append(colorScheme.MENUINACTIVE)
+                    fsize.append(42)
 
         themeTag, themeTagpos = write('Theme', 48, 'Multicolore.otf', colorScheme.TITLE)
         light, lightpos = write('light', fsize[0], 'Multicolore.otf', color[0])
         dark, darkpos = write('dark', fsize[1], 'Multicolore.otf', color[1])
+
+        back, backpos = write('back', fsize[0], 'Multicolore.otf', color[0])
 
         # Print theme tag
         themeTagpos.right = 550
@@ -314,6 +323,11 @@ class Game:
         darkpos.left = lightpos.right + 50
         darkpos.centery = self.background.get_rect().centery + topmenupos
         self.background.blit(dark, darkpos)
+
+        #Print back option
+        backpos.centerx = self.background.get_rect().centerx
+        backpos.centery = self.background.get_rect().centery + topmenupos + 100
+        self.background.blit(back, backpos)
 
     def load(self, option):
         option_ = str(option)
@@ -447,7 +461,7 @@ class Game:
         if self.gameOn:
             # Check if user pressed the right keys, turn things accordingly
             if event.type == pygame.KEYDOWN:
-                if not (self.game.game_over or self.pause):
+                if not (self.gameOver or self.pause):
                     if (event.key == pygame.K_LEFT) or (event.key == pygame.K_RIGHT):
                         self.game.where_to_turn(self.gameKeys[pygame.key.name(event.key)])
                         self.game.new_round()
@@ -456,6 +470,7 @@ class Game:
                             self.game.bag()
 
                         self.game.insert_stone()
+
                     elif (event.key == pygame.K_RCTRL) or (event.key == pygame.K_LCTRL):
                         if not self.menuGameActive:
                             self.option = 0
@@ -475,9 +490,22 @@ class Game:
         if self.optionsScreen:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    self.option = abs((self.option - 1) % len(self.menuOptions))
+                    self.option = abs((self.option - 1) % len(self.menuOptions[self.activeOption]))
                 elif event.key == pygame.K_RIGHT:
-                    self.option = abs((self.option + 1) % len(self.menuOptions))
+                    self.option = abs((self.option + 1) % len(self.menuOptions[self.activeOption]))
+
+                if event.key == pygame.K_UP:
+                    self.activeOption = abs((self.activeOption - 1) % len(self.menuOptions))
+                    print(len(self.menuOptions))
+                    print(self.activeOption)
+                elif event.key == pygame.K_DOWN:
+                    self.activeOption = abs((self.activeOption + 1) % len(self.menuOptions))
+                    print(len(self.menuOptions))
+                    print(self.activeOption)
+                elif event.key == pygame.K_RETURN:
+                    if self.activeOption == 1:
+                        self.load(self.menuOptions[self.activeOption][self.option])
+
             if self.option == 0:
                 colorScheme.setScheme()
             elif self.option == 1:
