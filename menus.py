@@ -37,16 +37,19 @@ class ListMenu:
         self.fontSelected = {'size': 68, 'color': colorScheme.MENUACTIVE}
         self.bg = bg
         self.prepare()
-        self.menuFrame = pygame.Surface((self.menuWidth, self.menuHeight)).convert()
         self.menu, self.menuPos = self.show()
 
     def up(self):
-        self.selected = abs((self.selected - 1) % len(self.options))
+        selected = abs((self.selected - 1) % len(self.options))
+        self.selected = selected
         self.prepare()
+        self.menu, self.menuPos = self.show()
 
     def down(self):
-        self.selected = abs((self.selected + 1) % len(self.options))
+        selected = abs((self.selected + 1) % len(self.options))
+        self.selected = selected
         self.prepare()
+        self.menu, self.menuPos = self.show()
 
     def select(self):
         return self.options[self.selected]
@@ -65,6 +68,7 @@ class ListMenu:
 
     def show(self):
         dispBy = 0
+        self.menuFrame = pygame.Surface((self.menuWidth, self.menuHeight)).convert()
         self.menuFrame.fill(self.bg)
         for item in self.toPrint:
             if self.align == 'center':
@@ -79,9 +83,9 @@ class ListMenu:
 # menu = ListMenu(('easy', 'normal', 'hard', 'options', 'help'), align = 'center')
 
 # count = 0
-# while count < 1600:
+# while count < 91600:
 #     print(count)
-#     background.blit(menu.show(), (0, 0))
+#     background.blit(menu.menu, (0, 0))
 #     screen.blit(background, (0, 0))
 #     pygame.display.flip()
 #     count += 1
