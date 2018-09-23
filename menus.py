@@ -160,36 +160,26 @@ class FlattenedMenu(ListMenu):
                     self.signals.append(opts)
                     if index == self.selected:
                         tag, tagPos = write(tag, self.fontSelected['size'], self.font, colorScheme.OPTMENUTAG)
-                        if opts[0] == self.active:
+                        if 0 == self.active:
                             menuItem1, menuItem1Pos = write(opts[0], self.fontSelected['size'], self.font, colorScheme.MENUACTIVE)
                             menuItem2, menuItem2Pos = write(opts[1], self.fontDefault['size'], self.font, colorScheme.MENUINACTIVE)
                         else:
-                            menuItem1, menuItem1Pos = write(opts[0], self.fontSelected['size'], self.font, colorScheme.MENUINACTIVE)
-                            menuItem2, menuItem2Pos = write(opts[1], self.fontDefault['size'], self.font, colorScheme.MENUACTIVE)
-                        menuItem1Pos.left = tagPos.right
-                        menuItem2Pos.left = menuItem1Pos.right
-                        menuItemWidth = int(sum([x.get_width() for x in (tag, menuItem1, menuItem2)]))
-                        menuItemHeight = int(max([x.get_height() for x in (tag, menuItem1, menuItem2)]))
-                        menuItem = pygame.Surface((menuItemWidth, menuItemHeight)).convert()
-                        menuItem.fill(self.bg)
-                        menuItem.blit(tag, (0, 0))
-                        menuItem.blit(menuItem1, menuItem1Pos)
-                        menuItem.blit(menuItem2, menuItem2Pos)
-                        menuItemPos = menuItem.get_rect()
+                            menuItem1, menuItem1Pos = write(opts[0], self.fontDefault['size'], self.font, colorScheme.MENUINACTIVE)
+                            menuItem2, menuItem2Pos = write(opts[1], self.fontSelected['size'], self.font, colorScheme.MENUACTIVE)
                     else:
                         tag, tagPos = write(tag, self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
                         menuItem1, menuItem1Pos = write(opts[0], self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
-                        menuItem1Pos.left = tagPos.right
                         menuItem2, menuItem2Pos = write(opts[1], self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
-                        menuItem2Pos.left = menuItem1Pos.right
-                        menuItemWidth = int(sum([x.get_width() for x in (tag, menuItem1, menuItem2)]))
-                        menuItemHeight = int(max([x.get_height() for x in (tag, menuItem1, menuItem2)]))
-                        menuItem = pygame.Surface((menuItemWidth, menuItemHeight)).convert()
-                        menuItem.fill(self.bg)
-                        menuItem.blit(tag, (0, 0))
-                        menuItem.blit(menuItem1, menuItem1Pos)
-                        menuItem.blit(menuItem2, menuItem2Pos)
-                        menuItemPos = menuItem.get_rect()
+                    menuItem1Pos.left = tagPos.right
+                    menuItem2Pos.left = menuItem1Pos.right
+                    menuItemWidth = int(sum([x.get_width() for x in (tag, menuItem1, menuItem2)]))
+                    menuItemHeight = int(max([x.get_height() for x in (tag, menuItem1, menuItem2)]))
+                    menuItem = pygame.Surface((menuItemWidth, menuItemHeight)).convert()
+                    menuItem.fill(self.bg)
+                    menuItem.blit(tag, (0, 0))
+                    menuItem.blit(menuItem1, menuItem1Pos)
+                    menuItem.blit(menuItem2, menuItem2Pos)
+                    menuItemPos = menuItem.get_rect()
             self.toPrint.append((menuItem, menuItemPos))
         self.menuWidth = int(max([x[0].get_width() for x in self.toPrint]))
         self.menuHeight = int(sum([x[0].get_height() for x in self.toPrint]))
