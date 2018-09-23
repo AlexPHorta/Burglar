@@ -89,20 +89,11 @@ class Score:
 
 class Game:
 
-    # stoneTypes = StoneColors()
-
-    # BLANK = stoneTypes.blank
-    # RED = stoneTypes.red
-    # BLUE = stoneTypes.blue
-    # GREEN = stoneTypes.green
-    # YELLOW = stoneTypes.yellow
-    # BROWN = stoneTypes.brown
-
     gameKeys = {"left": 1, "right": 2}
 
-    def __init__(self, level = 'normal'):
+    def __init__(self):
         self._running = True
-        self.level = str(level)
+        self.level = 'normal'
         self._display_surf = None
         self.size = self.width, self.height = 1350, 1000
         self.frameSize = self.frameWidth, self.frameHeight = 1100, 1000
@@ -127,12 +118,14 @@ class Game:
         self.pause = False
         self.option = 0
 
-        from menus import ListMenu
+        from menus import ListMenu, SwitchableListMenu
 
-        self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help'), align = 'center')
+        self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help'), sizes = (58, 63), align = 'center')
+        self.gm = SwitchableListMenu(('pause', 'options', 'quit'), sizes = (52, 58, 52), align = 'right', bg = colorScheme.GAMEBG)
+        self.rsm = ListMenu(('resume',), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
+        self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
 
     def menuMain(self):
-
 
         self.game = None
 
@@ -145,98 +138,44 @@ class Game:
         titlepos.centerx, titlepos.centery = self.background.get_rect().center
         self.background.blit(title, titlepos)
 
+        self.mm.assemble()
         self.mm.menuPos.top = titlepos.bottom + 100
         self.mm.menuPos.centerx = self.background.get_rect().centerx
         self.background.blit(self.mm.menu, self.mm.menuPos)
 
     def menuGame(self):
 
-        color = []
-        fsize = []
-        topmenupos = 250
-        topmenufsize = 60
+        bottommenupos = 920
         right = 1300
 
-        if self.pause:
-            self.menuOptions = ('resume',)
+        if not self.gameOver:
+            if not self.pause:
+                self.gm.assemble()
+                self.gm.menuPos.bottom = bottommenupos
+                self.gm.menuPos.right = 1300
+                self.background.blit(self.gm.menu, self.gm.menuPos)
 
-            resume, resumepos = write('resume', topmenufsize, 'Multicolore.otf', colorScheme.MENUACTIVE)
+                warning, warningpos = write('Press CTRL to toggle menu on/off.', 22, 'MankSans-Medium.ttf', colorScheme.MENUWARNING)
 
-            # Print resume option
-            resumepos.right = right
-            resumepos.top = self.background.get_rect().centery + topmenupos
-            self.background.blit(resume, resumepos)
-
-        elif self.game.game_over:
-            newGameoption = self.level
-            self.menuOptions = (newGameoption, 'back')
-
-            for index, item in enumerate(self.menuOptions):
-                if index == self.option:
-                    color.append(colorScheme.MENUACTIVE)
-                    fsize.append(60)
-                else:
-                    color.append(colorScheme.MENU)
-                    fsize.append(50)
-
-            newGame, newGamepos = write('new game', fsize[0], 'Multicolore.otf', color[0])
-            back, backpos = write('main menu', fsize[1], 'Multicolore.otf', color[1])
-
-            # Print new game option
-            newGamepos.right = right
-            newGamepos.top = self.background.get_rect().centery + topmenupos + 100
-            self.background.blit(newGame, newGamepos)
-
-            # Print back option
-            backpos.right = right
-            backpos.top = self.background.get_rect().centery + topmenupos + 100 + sum(islice(fsize, 1))
-            self.background.blit(back, backpos)
-
-        else:
-            self.menuOptions = ('pause', 'options', 'quit')
-
-            if self.menuGameActive:
-                for index, item in enumerate(self.menuOptions):
-                    if index == self.option:
-                        color.append(colorScheme.MENUACTIVE)
-                        fsize.append(60)
-                    else:
-                        color.append(colorScheme.MENU)
-                        fsize.append(50)
+                # Print menu warning
+                warningpos.right = right
+                warningpos.bottom = 950
+                self.background.blit(warning, warningpos)
             else:
-                for index, item in enumerate(self.menuOptions):
-                    color.append(colorScheme.MENUOFF)
-                    if index == self.option:
-                        fsize.append(60)
-                    else:
-                        fsize.append(50)
+                self.rsm.assemble()
+                self.rsm.menuPos.bottom = bottommenupos
+                self.rsm.menuPos.right = 1300
+                self.background.blit(self.rsm.menu, self.rsm.menuPos)
+        else:
+            self.govm.options = (('new game', self.level), 'back') # Ugly, ugly, ugly!!!!!
+            self.govm.assemble()
+            self.govm.menuPos.bottom = bottommenupos
+            self.govm.menuPos.right = 1300
+            self.background.blit(self.govm.menu, self.govm.menuPos)
 
-            pause, pausepos = write('pause', fsize[0], 'Multicolore.otf', color[0])
-            options, optionspos = write('options', fsize[1], 'Multicolore.otf', color[1])
-            quit, quitpos = write('quit', fsize[2], 'Multicolore.otf', color[2])
-            warning, warningpos = write('Press CTRL to toggle menu on/off.', 22, 'MankSans-Medium.ttf', colorScheme.MENUWARNING)
-
-            # Print pause option
-            pausepos.right = right
-            pausepos.top = self.background.get_rect().centery + topmenupos
-            self.background.blit(pause, pausepos)
-
-            # Print options option
-            optionspos.right = right
-            optionspos.top = self.background.get_rect().centery + topmenupos + fsize[0]
-            self.background.blit(options, optionspos)
-
-            # Print quit option
-            quitpos.right = right
-            quitpos.top = self.background.get_rect().centery + topmenupos + sum(islice(fsize, 2))
-            self.background.blit(quit, quitpos)
-
-            # Print menu warning
-            warningpos.right = right
-            warningpos.bottom = 950
-            self.background.blit(warning, warningpos)
 
     def options(self):
+
         self.game = None
 
         self.gameOn = False
@@ -315,9 +254,9 @@ class Game:
             self.pause = True
         elif option_ == 'resume':
             self.pause = False
-            self.menuGameActive = False
+            self.gm.switch('off')
         elif option_ == 'quit' or option_ == 'back':
-            self.menuGameActive = False
+            self.gm.switch('off')
             self.menuMain()
 
     def loadGame(self):
@@ -411,9 +350,6 @@ class Game:
 
         self.score = Score('Multicolore.otf', 106, colorScheme.SCORE, colorScheme.GAMEBG)
         self.score.updateScore(self.game.points)
-        # self.score.scorepos.right = 1300
-        # self.score.scorepos.top = 150 #self.background.get_rect().centery
-        # self.background.blit(self.score.score, self.score.scorepos)
 
         self._running = True
 
@@ -433,8 +369,10 @@ class Game:
                     self.load(self.mm.select())
 
         if self.gameOn:
+
             # Check if user pressed the right keys, turn things accordingly
             if event.type == pygame.KEYDOWN:
+
                 if not (self.gameOver or self.pause):
                     if (event.key == pygame.K_LEFT) or (event.key == pygame.K_RIGHT):
                         self.game.where_to_turn(self.gameKeys[pygame.key.name(event.key)])
@@ -446,20 +384,30 @@ class Game:
                         self.game.insert_stone()
 
                     elif (event.key == pygame.K_RCTRL) or (event.key == pygame.K_LCTRL):
-                        if not self.menuGameActive:
-                            self.option = 0
-                            self.menuGameActive = True
+                        if self.gm.switchedOn:
+                            self.gm.switch('off')
                         else:
-                            self.menuGameActive = False
+                            self.gm.switch('on')
 
-        if (self.menuGameActive) or (self.gameOver):
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    self.option = abs((self.option - 1) % len(self.menuOptions))
-                elif event.key == pygame.K_DOWN:
-                    self.option = abs((self.option + 1) % len(self.menuOptions))
-                elif event.key == pygame.K_RETURN:
-                    self.load(self.menuOptions[self.option])
+                if self.gameOver:
+                    if event.key == pygame.K_UP:
+                        self.govm.up()
+                    elif event.key == pygame.K_DOWN:
+                        self.govm.down()
+                    elif event.key == pygame.K_RETURN:
+                        self.load(self.govm.select())
+
+                if self.pause:
+                    if event.key == pygame.K_RETURN:
+                        self.load(self.rsm.select())
+
+                if self.gm.switchedOn:
+                    if event.key == pygame.K_UP:
+                        self.gm.up()
+                    elif event.key == pygame.K_DOWN:
+                        self.gm.down()
+                    elif event.key == pygame.K_RETURN:
+                        self.load(self.gm.select())
 
         if self.optionsScreen:
             if event.type == pygame.KEYDOWN:
@@ -484,9 +432,6 @@ class Game:
                 colorScheme.setScheme()
             elif self.option == 1:
                 colorScheme.setScheme(1)
-                # elif event.key == pygame.K_RETURN:
-                #     self.load(self.menuOptions[self.option])
-
 
     def on_loop(self):
 
@@ -534,7 +479,6 @@ class Game:
             for ring in (self.big_outer_ring, self.outer_ring, self.middle_ring, self.inner_ring):
                 for element in ring:
                     self.background.blit(element.image, element.rect)
-
 
             self.menuGame()
 

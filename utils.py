@@ -22,6 +22,7 @@ except ImportError as err:
     sys.exit(2)
 
 from collections import namedtuple
+from itertools import islice
 
 
 # The center of the screen. Makes it easier to place the stones.
@@ -29,6 +30,7 @@ Center = namedtuple('Center', 'x y')
 
 
 # Some auxiliary functions
+
 def load_png(name):
     """ Load image and return image object"""
     fullname = os.path.join('images', name)
@@ -57,6 +59,21 @@ def write(text, size, font = None, color = (255, 255, 255)):
     textpos = text.get_rect()
     return text, textpos
 
+def toRGBA(color):
+    if isinstance(color, tuple) and (len(color) == 3 or len(color) == 4):
+        return color
+    color = list(str(color))
+    it = zip(islice(color, 1, len(color) - 1, 2), islice(color, 2, len(color), 2))
+    if color[0] == '#':
+        r = int(''.join(next(it)), base = 16)
+        g = int(''.join(next(it)), base = 16)
+        b = int(''.join(next(it)), base = 16)
+        try:
+            a = int(''.join(next(it)), base = 16)
+            return (r, g, b, a)
+        except StopIteration:
+            return (r, g, b)
+
 
 class StoneColors:
 
@@ -76,11 +93,11 @@ class Colors:
     def __init__(self):
         self.light = {'bgimg': 'bg_light.png', 'bg': (0, 7, 10), 'gbg': (246,175,108), \
             'tt': (11, 181, 255), 'mn': (76, 152, 193), 'mna': (37, 94, 118), \
-            'mni': (11, 26, 30), 'mno': (245, 166, 92), 'sc': (9, 21, 26), \
+            'mni': (11, 26, 30), 'mns': '#F5A65C', 'mno': (245, 166, 92), 'sc': (9, 21, 26), \
             'mnw': (27, 65, 75), 'go': (251, 219, 189)}
         self.dark = {'bgimg': 'bg_light.png', 'bg': (0, 7, 10), 'gbg': (246,175,108), \
             'tt': (94, 29, 22), 'mn': (76, 152, 193), 'mna': (37, 94, 118), \
-            'mni': (11, 26, 30), 'mno': (245, 166, 92), 'sc': (9, 21, 26), \
+            'mni': (11, 26, 30), 'mns': (0, 0, 0), 'mno': (245, 166, 92), 'sc': (9, 21, 26), \
             'mnw': (27, 65, 75), 'go': (251, 219, 189)}
         self.setScheme()
 
@@ -90,15 +107,16 @@ class Colors:
         else:
             arg = self.dark
         self.BGIMAGE = load_png(arg['bgimg'])
-        self.BACKGROUND = arg['bg']
-        self.GAMEBG = arg['gbg']
-        self.TITLE = arg['tt']
-        self.MENU = arg['mn']
-        self.MENUACTIVE = arg['mna']
-        self.MENUINACTIVE = arg['mni']
-        self.MENUOFF = arg['mno']
-        self.SCORE = arg['sc']
-        self.MENUWARNING = arg['mnw']
-        self.GAMEOVER = arg['go']
+        self.BACKGROUND =           toRGBA(arg['bg']  )
+        self.GAMEBG =               toRGBA(arg['gbg'] )
+        self.TITLE =                toRGBA(arg['tt']  )
+        self.MENU =                 toRGBA(arg['mn']  )
+        self.MENUACTIVE =           toRGBA(arg['mna'] )
+        self.MENUINACTIVE =         toRGBA(arg['mni'] )
+        self.MENUSWITCHEDOFF =      toRGBA(arg['mns'] )
+        self.MENUOFF =              toRGBA(arg['mno'] )
+        self.SCORE =                toRGBA(arg['sc']  )
+        self.MENUWARNING =          toRGBA(arg['mnw'] )
+        self.GAMEOVER =             toRGBA(arg['go']  )
 
 colorScheme = Colors()
