@@ -211,8 +211,12 @@ class Game:
             self.optionsScreen = True
             self.mainMenu = False
             self.gm.switch('off')
-            print('{} - {} - {}'.format(self.gameOn, self.optionsScreen, self.mainMenu))
+            # print('{} - {} - {}'.format(self.gameOn, self.optionsScreen, self.mainMenu))
             self.options()
+        elif option_ == 'light':
+            colorScheme.setScheme()
+        elif option_ == 'dark':
+            colorScheme.setScheme(1)
         elif option_ == 'help':
             pass
         elif option_ == 'pause':

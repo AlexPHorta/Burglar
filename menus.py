@@ -193,4 +193,7 @@ class FlattenedMenu(ListMenu):
         self.active = abs((self.active + 1) % len(self.signals[self.selected]))
 
     def select(self):
-        return self.signals[self.selected]
+        if isinstance(self.signals[self.selected], tuple):
+            return self.signals[self.selected][self.active]
+        else:
+            return self.signals[self.selected]
