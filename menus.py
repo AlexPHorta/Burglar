@@ -51,6 +51,7 @@ class ListMenu:
         self.selected = abs((self.selected + 1) % len(self.options))
 
     def select(self):
+        print(self.signals[self.selected])
         return self.signals[self.selected]
 
     def prepare(self):
@@ -183,7 +184,6 @@ class FlattenedMenu(ListMenu):
             self.toPrint.append((menuItem, menuItemPos))
         self.menuWidth = int(max([x[0].get_width() for x in self.toPrint]))
         self.menuHeight = int(sum([x[0].get_height() for x in self.toPrint]))
-        print('{} - {}'.format(self.selected, self.active))
         return
 
     def left(self):
@@ -192,13 +192,5 @@ class FlattenedMenu(ListMenu):
     def right(self):
         self.active = abs((self.active + 1) % len(self.signals[self.selected]))
 
-
-# menu = ListMenu(('easy', 'normal', 'hard', 'options', 'help'), align = 'center')
-
-# count = 0
-# while count < 91600:
-#     print(count)
-#     background.blit(menu.menu, (0, 0))
-#     screen.blit(background, (0, 0))
-#     pygame.display.flip()
-#     count += 1
+    def select(self):
+        return self.signals[self.selected]

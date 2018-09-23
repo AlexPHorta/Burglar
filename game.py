@@ -130,9 +130,9 @@ class Game:
 
         self.game = None
 
-        self.gameOn = False
-        self.mainMenu = True
-        self.optionsScreen = False
+        # self.gameOn = False
+        # self.mainMenu = True
+        # self.optionsScreen = False
 
         # Print game name
         title, titlepos = write('Burglar', 124, 'Multicolore.otf', colorScheme.TITLE)
@@ -179,9 +179,9 @@ class Game:
 
         self.game = None
 
-        self.gameOn = False
-        self.mainMenu = False
-        self.optionsScreen = True
+        # self.gameOn = False
+        # self.mainMenu = False
+        # self.optionsScreen = True
 
         # Print Options tag
         title, titlepos = write('Options', 82, 'Multicolore.otf', colorScheme.TITLE)
@@ -194,53 +194,9 @@ class Game:
         self.optm.menuPos.centerx = self.background.get_rect().centerx
         self.background.blit(self.optm.menu, self.optm.menuPos)
 
-        # self.menuOptions = (('light', 'dark'), ('back',))
-        # color = []
-        # fsize = []
-        # topmenupos = 0
-
-        # for index, item in enumerate(self.menuOptions):
-        #     for i, elem in enumerate(item):
-        #         if index == self.activeOption:
-        #             if i == self.option:
-        #                 color.append(colorScheme.MENUACTIVE)
-        #                 fsize.append(46)
-        #             else:
-        #                 color.append(colorScheme.MENU)
-        #                 fsize.append(42)
-        #         else:
-        #             color.append(colorScheme.MENUINACTIVE)
-        #             fsize.append(42)
-
-        # themeTag, themeTagpos = write('Theme', 48, 'Multicolore.otf', colorScheme.TITLE)
-        # light, lightpos = write('light', fsize[0], 'Multicolore.otf', color[0])
-        # dark, darkpos = write('dark', fsize[1], 'Multicolore.otf', color[1])
-
-        # back, backpos = write('back', fsize[0], 'Multicolore.otf', color[0])
-
-        # # Print theme tag
-        # themeTagpos.right = 550
-        # themeTagpos.centery = self.background.get_rect().centery + topmenupos
-        # self.background.blit(themeTag, themeTagpos)
-
-        # # Print light option
-        # lightpos.left = themeTagpos.right + 100
-        # lightpos.centery = self.background.get_rect().centery + topmenupos
-        # self.background.blit(light, lightpos)
-
-        # # Print dark option
-        # darkpos.left = lightpos.right + 50
-        # darkpos.centery = self.background.get_rect().centery + topmenupos
-        # self.background.blit(dark, darkpos)
-
-        # #Print back option
-        # backpos.centerx = self.background.get_rect().centerx
-        # backpos.centery = self.background.get_rect().centery + topmenupos + 100
-        # self.background.blit(back, backpos)
-
     def load(self, option):
         option_ = str(option)
-        self.option = 0
+        # self.option = 0
         if option_ == 'easy':
             self.level = 'easy'
             self.loadGame()
@@ -251,7 +207,11 @@ class Game:
             self.level = 'hard'
             self.loadGame()
         elif option_ == 'options':
+            self.gameOn = False
             self.optionsScreen = True
+            self.mainMenu = False
+            self.gm.switch('off')
+            print('{} - {} - {}'.format(self.gameOn, self.optionsScreen, self.mainMenu))
             self.options()
         elif option_ == 'help':
             pass
@@ -261,6 +221,9 @@ class Game:
             self.pause = False
             self.gm.switch('off')
         elif option_ == 'quit' or option_ == 'back':
+            self.gameOn = False
+            self.optionsScreen = False
+            self.mainMenu = True
             self.gm.switch('off')
             self.menuMain()
 
@@ -268,6 +231,7 @@ class Game:
 
         self.gameOn = True
         self.mainMenu = False
+        self.optionsScreen = False
         self.frame = pygame.Surface(self.frameSize)
         self.frameCENTER = Center(self.frame.get_rect().centerx, self.frame.get_rect().centery)
 
@@ -373,6 +337,24 @@ class Game:
                 elif event.key == pygame.K_RETURN:
                     self.load(self.mm.select())
 
+        if self.optionsScreen:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.optm.up()
+                elif event.key == pygame.K_DOWN:
+                    self.optm.down()
+                if event.key == pygame.K_LEFT:
+                    self.optm.left()
+                elif event.key == pygame.K_RIGHT:
+                    self.optm.right()
+                elif event.key == pygame.K_RETURN:
+                    self.load(self.optm.select())
+
+            # if self.option == 0:
+            #     colorScheme.setScheme()
+            # elif self.option == 1:
+            #     colorScheme.setScheme(1)
+
         if self.gameOn:
 
             # Check if user pressed the right keys, turn things accordingly
@@ -414,39 +396,19 @@ class Game:
                     elif event.key == pygame.K_RETURN:
                         self.load(self.gm.select())
 
-        if self.optionsScreen:
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    self.optm.up()
-                elif event.key == pygame.K_DOWN:
-                    self.optm.down()
-                # elif event.key == pygame.K_RETURN:
-                #     if self.activeOption == 1:
-                #         self.load(self.menuOptions[self.activeOption][self.option])
-                if event.key == pygame.K_LEFT:
-                    self.optm.left()
-                elif event.key == pygame.K_RIGHT:
-                    self.optm.right()
-
-
-            if self.option == 0:
-                colorScheme.setScheme()
-            elif self.option == 1:
-                colorScheme.setScheme(1)
 
     def on_loop(self):
 
+        # Slow down things a bit
+        clock.tick(40)
+
         if self.gameOn:
 
-            # Slow down things a bit
-            clock.tick(40)
-
             # Refresh the state of the rings
+            self.fill_rings(self.game.big_outer, self.big_outer_ring)
             self.fill_rings(self.game.outer, self.outer_ring)
             self.fill_rings(self.game.middle, self.middle_ring)
             self.fill_rings(self.game.inner, self.inner_ring)
-            self.fill_rings(self.game.big_outer, self.big_outer_ring)
 
             # Refresh the score
             self.score.updateScore(self.game.points)
@@ -504,7 +466,7 @@ class Game:
     def on_execute(self):
         if self.on_init() == False:
             self._running = False
-        while( self._running ):
+        while self._running:
             for event in pygame.event.get():
                 self.on_event(event)
             self.on_loop()
