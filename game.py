@@ -118,12 +118,13 @@ class Game:
         self.pause = False
         self.option = 0
 
-        from menus import ListMenu, SwitchableListMenu
+        from menus import ListMenu, SwitchableListMenu, FlattenedMenu
 
         self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help'), sizes = (58, 63), align = 'center')
         self.gm = SwitchableListMenu(('pause', 'options', 'quit'), sizes = (52, 58, 52), align = 'right', bg = colorScheme.GAMEBG)
         self.rsm = ListMenu(('resume',), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
         self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
+        self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Music': ('on', 'off')}, 'back'), sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND)
 
     def menuMain(self):
 
@@ -182,56 +183,60 @@ class Game:
         self.mainMenu = False
         self.optionsScreen = True
 
-
-        # Print game name
+        # Print Options tag
         title, titlepos = write('Options', 82, 'Multicolore.otf', colorScheme.TITLE)
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.top = 200
         self.background.blit(title, titlepos)
 
-        self.menuOptions = (('light', 'dark'), ('back',))
-        color = []
-        fsize = []
-        topmenupos = 0
+        self.optm.assemble()
+        self.optm.menuPos.top = titlepos.bottom + 100
+        self.optm.menuPos.centerx = self.background.get_rect().centerx
+        self.background.blit(self.optm.menu, self.optm.menuPos)
 
-        for index, item in enumerate(self.menuOptions):
-            for i, elem in enumerate(item):
-                if index == self.activeOption:
-                    if i == self.option:
-                        color.append(colorScheme.MENUACTIVE)
-                        fsize.append(46)
-                    else:
-                        color.append(colorScheme.MENU)
-                        fsize.append(42)
-                else:
-                    color.append(colorScheme.MENUINACTIVE)
-                    fsize.append(42)
+        # self.menuOptions = (('light', 'dark'), ('back',))
+        # color = []
+        # fsize = []
+        # topmenupos = 0
 
-        themeTag, themeTagpos = write('Theme', 48, 'Multicolore.otf', colorScheme.TITLE)
-        light, lightpos = write('light', fsize[0], 'Multicolore.otf', color[0])
-        dark, darkpos = write('dark', fsize[1], 'Multicolore.otf', color[1])
+        # for index, item in enumerate(self.menuOptions):
+        #     for i, elem in enumerate(item):
+        #         if index == self.activeOption:
+        #             if i == self.option:
+        #                 color.append(colorScheme.MENUACTIVE)
+        #                 fsize.append(46)
+        #             else:
+        #                 color.append(colorScheme.MENU)
+        #                 fsize.append(42)
+        #         else:
+        #             color.append(colorScheme.MENUINACTIVE)
+        #             fsize.append(42)
 
-        back, backpos = write('back', fsize[0], 'Multicolore.otf', color[0])
+        # themeTag, themeTagpos = write('Theme', 48, 'Multicolore.otf', colorScheme.TITLE)
+        # light, lightpos = write('light', fsize[0], 'Multicolore.otf', color[0])
+        # dark, darkpos = write('dark', fsize[1], 'Multicolore.otf', color[1])
 
-        # Print theme tag
-        themeTagpos.right = 550
-        themeTagpos.centery = self.background.get_rect().centery + topmenupos
-        self.background.blit(themeTag, themeTagpos)
+        # back, backpos = write('back', fsize[0], 'Multicolore.otf', color[0])
 
-        # Print light option
-        lightpos.left = themeTagpos.right + 100
-        lightpos.centery = self.background.get_rect().centery + topmenupos
-        self.background.blit(light, lightpos)
+        # # Print theme tag
+        # themeTagpos.right = 550
+        # themeTagpos.centery = self.background.get_rect().centery + topmenupos
+        # self.background.blit(themeTag, themeTagpos)
 
-        # Print dark option
-        darkpos.left = lightpos.right + 50
-        darkpos.centery = self.background.get_rect().centery + topmenupos
-        self.background.blit(dark, darkpos)
+        # # Print light option
+        # lightpos.left = themeTagpos.right + 100
+        # lightpos.centery = self.background.get_rect().centery + topmenupos
+        # self.background.blit(light, lightpos)
 
-        #Print back option
-        backpos.centerx = self.background.get_rect().centerx
-        backpos.centery = self.background.get_rect().centery + topmenupos + 100
-        self.background.blit(back, backpos)
+        # # Print dark option
+        # darkpos.left = lightpos.right + 50
+        # darkpos.centery = self.background.get_rect().centery + topmenupos
+        # self.background.blit(dark, darkpos)
+
+        # #Print back option
+        # backpos.centerx = self.background.get_rect().centerx
+        # backpos.centery = self.background.get_rect().centery + topmenupos + 100
+        # self.background.blit(back, backpos)
 
     def load(self, option):
         option_ = str(option)
@@ -410,23 +415,20 @@ class Game:
                         self.load(self.gm.select())
 
         if self.optionsScreen:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.option = abs((self.option - 1) % len(self.menuOptions[self.activeOption]))
-                elif event.key == pygame.K_RIGHT:
-                    self.option = abs((self.option + 1) % len(self.menuOptions[self.activeOption]))
 
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    self.activeOption = abs((self.activeOption - 1) % len(self.menuOptions))
-                    print(len(self.menuOptions))
-                    print(self.activeOption)
+                    self.optm.up()
                 elif event.key == pygame.K_DOWN:
-                    self.activeOption = abs((self.activeOption + 1) % len(self.menuOptions))
-                    print(len(self.menuOptions))
-                    print(self.activeOption)
-                elif event.key == pygame.K_RETURN:
-                    if self.activeOption == 1:
-                        self.load(self.menuOptions[self.activeOption][self.option])
+                    self.optm.down()
+                # elif event.key == pygame.K_RETURN:
+                #     if self.activeOption == 1:
+                #         self.load(self.menuOptions[self.activeOption][self.option])
+                if event.key == pygame.K_LEFT:
+                    self.optm.left()
+                elif event.key == pygame.K_RIGHT:
+                    self.optm.right()
+
 
             if self.option == 0:
                 colorScheme.setScheme()
