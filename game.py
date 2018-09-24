@@ -29,6 +29,8 @@ import engine
 from collections import namedtuple
 from itertools import islice, chain
 
+
+pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
@@ -101,6 +103,14 @@ class Game:
         self.middle_ring = []
         self.outer_ring = []
         self.big_outer_ring = []
+
+        try:
+            # pygame.mixer.music.load(os.path.join('data', 'an-turr.ogg'))#load music
+            self.flip = pygame.mixer.Sound(os.path.join('sounds','167045__drminky__slime-jump.wav'))
+            self.click = pygame.mixer.Sound(os.path.join('sounds','256116__kwahmah-02__click.wav'))
+            self.toggle = pygame.mixer.Sound(os.path.join('sounds','202312__7778__dbl-click.wav'))
+        except:
+            raise UserWarning("could not load or play soundfiles in 'data' folder :-(")
 
     def on_init(self):
 
@@ -336,22 +346,28 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.mm.up()
+                    self.flip.play()
                 elif event.key == pygame.K_DOWN:
                     self.mm.down()
+                    self.flip.play()
                 elif event.key == pygame.K_RETURN:
+                    self.click.play()
                     self.load(self.mm.select())
 
         if self.optionsScreen:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.optm.up()
+                    self.flip.play()
                 elif event.key == pygame.K_DOWN:
                     self.optm.down()
+                    self.flip.play()
                 if event.key == pygame.K_LEFT:
                     self.optm.left()
                 elif event.key == pygame.K_RIGHT:
                     self.optm.right()
                 elif event.key == pygame.K_RETURN:
+                    self.click.play()
                     self.load(self.optm.select())
 
             # if self.option == 0:
@@ -376,28 +392,37 @@ class Game:
 
                     elif (event.key == pygame.K_RCTRL) or (event.key == pygame.K_LCTRL):
                         if self.gm.switchedOn:
+                            self.toggle.play()
                             self.gm.switch('off')
                         else:
+                            self.toggle.play()
                             self.gm.switch('on')
 
                 if self.gameOver:
                     if event.key == pygame.K_UP:
                         self.govm.up()
+                        self.flip.play()
                     elif event.key == pygame.K_DOWN:
                         self.govm.down()
+                        self.flip.play()
                     elif event.key == pygame.K_RETURN:
+                        self.click.play()
                         self.load(self.govm.select())
 
                 if self.pause:
                     if event.key == pygame.K_RETURN:
+                        self.click.play()
                         self.load(self.rsm.select())
 
                 if self.gm.switchedOn:
                     if event.key == pygame.K_UP:
                         self.gm.up()
+                        self.flip.play()
                     elif event.key == pygame.K_DOWN:
                         self.gm.down()
+                        self.flip.play()
                     elif event.key == pygame.K_RETURN:
+                        self.click.play()
                         self.load(self.gm.select())
 
 
