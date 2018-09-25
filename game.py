@@ -94,9 +94,10 @@ class Game:
         self.middle_ring = []
         self.outer_ring = []
         self.big_outer_ring = []
+        self.music = pygame.mixer.music
 
         try:
-            # pygame.mixer.music.load(os.path.join('data', 'an-turr.ogg'))#load music
+            self.music.load(os.path.join('sounds', '392395__shadydave__cello-marcato-loop.wav'))
             self.flip = pygame.mixer.Sound(os.path.join('sounds','167045__drminky__slime-jump.wav'))
             self.click = pygame.mixer.Sound(os.path.join('sounds','256116__kwahmah-02__click.wav'))
             self.toggle = pygame.mixer.Sound(os.path.join('sounds','202312__7778__dbl-click.wav'))
@@ -313,6 +314,8 @@ class Game:
         self.score = Score('Multicolore.otf', 106, colorScheme.SCORE, colorScheme.GAMEBG)
         self.score.updateScore(self.game.points)
 
+        self.music.play(-1)
+
         self._running = True
 
     def on_event(self, event):
@@ -330,7 +333,6 @@ class Game:
                     self.mm.down()
                     self.flip.play()
                 elif event.key == pygame.K_RETURN: # and self.keyDelay == 0:
-                    print('Doubling mm: {}'.format(self.mm.select()))
                     self.click.play()
                     self.load(self.mm.select())
 
@@ -354,7 +356,6 @@ class Game:
                     #         location = 0
                     # if not self.optDelay:
                     #     self.click.play()
-                    print('Doubling optm: {}'.format(self.optm.select()))
                     self.load(self.optm.select())
 
             # if self.option == 0:
@@ -393,13 +394,11 @@ class Game:
                         self.govm.down()
                         self.flip.play()
                     elif event.key == pygame.K_RETURN:
-                        print('Doubling govm: {}'.format(self.govm.select()))
                         self.click.play()
                         self.load(self.govm.select())
 
                 if self.pause:
                     if event.key == pygame.K_RETURN:
-                        print('Doubling rsm: {}'.format(self.rsm.select()))
                         self.click.play()
                         self.load(self.rsm.select())
 
@@ -411,14 +410,13 @@ class Game:
                         self.gm.down()
                         self.flip.play()
                     elif event.key == pygame.K_RETURN:
-                        print('Doubling gm: {}'.format(self.gm.select()))
                         self.click.play()
                         self.load(self.gm.select())
 
     def on_loop(self):
 
         # Slow down things a bit
-        clock.tick(40)
+        clock.tick(30)
 
         if self.activeScreen == 2: #self.gameOn:
 
