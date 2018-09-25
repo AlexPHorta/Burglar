@@ -12,16 +12,6 @@ except ImportError as err:
     sys.exit(2)
 
 
-# pygame.init()
-# clock = pygame.time.Clock()
-# screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
-# pygame.display.set_caption('Burglar')
-
-# screen = pygame.display.set_mode((1350, 1000), pygame.HWSURFACE | pygame.DOUBLEBUF)
-# background = pygame.Surface(screen.get_size())
-# background = background.convert()
-# background.fill((0, 0, 0))
-
 from utils import colorScheme
 from utils import write
 
@@ -51,7 +41,6 @@ class ListMenu:
         self.selected = abs((self.selected + 1) % len(self.options))
 
     def select(self):
-        print(self.signals[self.selected])
         return self.signals[self.selected]
 
     def prepare(self):

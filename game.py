@@ -27,7 +27,8 @@ except ImportError as err:
 import engine
 
 from collections import namedtuple
-from itertools import islice, chain
+from enum import Enum, unique
+from itertools import islice, chain, cycle
 
 
 pygame.mixer.pre_init(44100, -16, 2, 2048)
@@ -37,16 +38,6 @@ screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
 pygame.display.set_caption('Burglar')
 
 from utils import load_png, write, Center, stones, colorScheme
-
-# class StoneColors:
-
-#     def __init__(self):
-#         self.blank = load_png('grid.png')
-#         self.red = load_png('red_stone.png')
-#         self.blue = load_png('blue_stone.png')
-#         self.green = load_png('green_stone.png')
-#         self.yellow = load_png('yellow_stone.png')
-#         self.brown = load_png('brown_stone.png')
 
 
 class Stone(pygame.sprite.Sprite):
@@ -110,7 +101,7 @@ class Game:
             self.click = pygame.mixer.Sound(os.path.join('sounds','256116__kwahmah-02__click.wav'))
             self.toggle = pygame.mixer.Sound(os.path.join('sounds','202312__7778__dbl-click.wav'))
         except:
-            raise UserWarning("could not load or play soundfiles in 'data' folder :-(")
+            raise UserWarning("could not load or play soundfiles in 'sounds' folder :-(")
 
     def on_init(self):
 
@@ -119,6 +110,7 @@ class Game:
         self.background = self.background.convert()
         self.background.fill(colorScheme.BACKGROUND)
         self.gamebg = colorScheme.BGIMAGE
+        self.activeScreen = 0
         self.mainMenu = True
         self.optionsScreen = False
         self.activeOption = 0
@@ -126,7 +118,6 @@ class Game:
         self.gameOn = False
         self.gameOver = False
         self.pause = False
-        self.option = 0
 
         from menus import ListMenu, SwitchableListMenu, FlattenedMenu
 
@@ -139,10 +130,6 @@ class Game:
     def menuMain(self):
 
         self.game = None
-
-        # self.gameOn = False
-        # self.mainMenu = True
-        # self.optionsScreen = False
 
         # Print game name
         title, titlepos = write('Burglar', 124, 'Multicolore.otf', colorScheme.TITLE)
@@ -189,10 +176,6 @@ class Game:
 
         self.game = None
 
-        # self.gameOn = False
-        # self.mainMenu = False
-        # self.optionsScreen = True
-
         # Print Options tag
         title, titlepos = write('Options', 82, 'Multicolore.otf', colorScheme.TITLE)
         titlepos.centerx = self.background.get_rect().centerx
@@ -208,20 +191,20 @@ class Game:
         option_ = str(option)
         # self.option = 0
         if option_ == 'easy':
+            self.activeScreen = 2
             self.level = 'easy'
             self.loadGame()
         elif option_ == 'normal':
+            self.activeScreen = 2
             self.level = 'normal'
             self.loadGame()
         elif option_ == 'hard':
+            self.activeScreen = 2
             self.level = 'hard'
             self.loadGame()
         elif option_ == 'options':
-            self.gameOn = False
-            self.optionsScreen = True
-            self.mainMenu = False
+            self.activeScreen = 1
             self.gm.switch('off')
-            # print('{} - {} - {}'.format(self.gameOn, self.optionsScreen, self.mainMenu))
             self.options()
         elif option_ == 'light':
             colorScheme.setScheme()
@@ -235,17 +218,13 @@ class Game:
             self.pause = False
             self.gm.switch('off')
         elif option_ == 'quit' or option_ == 'back':
-            self.gameOn = False
-            self.optionsScreen = False
-            self.mainMenu = True
+            self.activeScreen = 0
             self.gm.switch('off')
             self.menuMain()
 
     def loadGame(self):
 
-        self.gameOn = True
-        self.mainMenu = False
-        self.optionsScreen = False
+        self.gameOver = False
         self.frame = pygame.Surface(self.frameSize)
         self.frameCENTER = Center(self.frame.get_rect().centerx, self.frame.get_rect().centery)
 
@@ -326,10 +305,10 @@ class Game:
         self.game.bag()
         self.game.insert_stone()
 
+        self.fill_rings(self.game.big_outer, self.big_outer_ring)
         self.fill_rings(self.game.outer, self.outer_ring)
         self.fill_rings(self.game.middle, self.middle_ring)
         self.fill_rings(self.game.inner, self.inner_ring)
-        self.fill_rings(self.game.big_outer, self.big_outer_ring)
 
         self.score = Score('Multicolore.otf', 106, colorScheme.SCORE, colorScheme.GAMEBG)
         self.score.updateScore(self.game.points)
@@ -342,7 +321,7 @@ class Game:
         if event.type == pygame.QUIT:
             self._running = False
 
-        if self.mainMenu:
+        if self.activeScreen == 0: #self.mainMenu:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.mm.up()
@@ -350,11 +329,12 @@ class Game:
                 elif event.key == pygame.K_DOWN:
                     self.mm.down()
                     self.flip.play()
-                elif event.key == pygame.K_RETURN:
+                elif event.key == pygame.K_RETURN: # and self.keyDelay == 0:
+                    print('Doubling mm: {}'.format(self.mm.select()))
                     self.click.play()
                     self.load(self.mm.select())
 
-        if self.optionsScreen:
+        elif self.activeScreen == 1: #self.optionsScreen:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.optm.up()
@@ -367,7 +347,14 @@ class Game:
                 elif event.key == pygame.K_RIGHT:
                     self.optm.right()
                 elif event.key == pygame.K_RETURN:
-                    self.click.play()
+                    # pass
+                    # delay = 0
+                    #     location -= 1
+                    #     if location == -1:
+                    #         location = 0
+                    # if not self.optDelay:
+                    #     self.click.play()
+                    print('Doubling optm: {}'.format(self.optm.select()))
                     self.load(self.optm.select())
 
             # if self.option == 0:
@@ -375,7 +362,7 @@ class Game:
             # elif self.option == 1:
             #     colorScheme.setScheme(1)
 
-        if self.gameOn:
+        elif self.activeScreen == 2: #self.gameOn:
 
             # Check if user pressed the right keys, turn things accordingly
             if event.type == pygame.KEYDOWN:
@@ -406,11 +393,13 @@ class Game:
                         self.govm.down()
                         self.flip.play()
                     elif event.key == pygame.K_RETURN:
+                        print('Doubling govm: {}'.format(self.govm.select()))
                         self.click.play()
                         self.load(self.govm.select())
 
                 if self.pause:
                     if event.key == pygame.K_RETURN:
+                        print('Doubling rsm: {}'.format(self.rsm.select()))
                         self.click.play()
                         self.load(self.rsm.select())
 
@@ -422,16 +411,16 @@ class Game:
                         self.gm.down()
                         self.flip.play()
                     elif event.key == pygame.K_RETURN:
+                        print('Doubling gm: {}'.format(self.gm.select()))
                         self.click.play()
                         self.load(self.gm.select())
-
 
     def on_loop(self):
 
         # Slow down things a bit
         clock.tick(40)
 
-        if self.gameOn:
+        if self.activeScreen == 2: #self.gameOn:
 
             # Refresh the state of the rings
             self.fill_rings(self.game.big_outer, self.big_outer_ring)
@@ -450,15 +439,15 @@ class Game:
         # Empty screen
         self.screen.blit(self.background, (0, 0))
 
-        if self.mainMenu:
+        if self.activeScreen == 0: #self.mainMenu:
             self.background.fill(colorScheme.BACKGROUND)
             self.menuMain()
 
-        if self.optionsScreen:
+        elif self.activeScreen == 1: #self.optionsScreen:
             self.background.fill(colorScheme.BACKGROUND)
             self.options()
 
-        elif self.gameOn:
+        elif self.activeScreen == 2: #self.gameOn:
 
             # self.background.fill(self.syscolors.BACKGROUND)
             self.background.blit(self.gamebg, (0, 0))

@@ -30,7 +30,6 @@ Center = namedtuple('Center', 'x y')
 
 
 # Some auxiliary functions
-
 def load_png(name):
     """ Load image and return image object"""
     fullname = os.path.join('images', name)
