@@ -126,7 +126,9 @@ class Game:
         self.gm = SwitchableListMenu(('pause', 'options', 'quit'), sizes = (52, 58, 52), align = 'right', bg = colorScheme.GAMEBG)
         self.rsm = ListMenu(('resume',), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
         self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
-        self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Music': ('on', 'off')}, 'back'), sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND, hpad = 20, vpad = 20)
+        self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Music': ('on', 'off')}, 'back'), \
+            sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND, hpad = 20, vpad = 20)
+        self.hm = ListMenu(('back',), sizes = (58, 63), align = 'center')
 
     def menuMain(self):
 
@@ -189,6 +191,27 @@ class Game:
         self.optm.menuPos.centery = 2 * (self.background.get_rect().height / 3)
         self.background.blit(self.optm.menu, self.optm.menuPos)
 
+    def help(self):
+
+        self.game = None
+
+        # Print Options tag
+        title, titlepos = write('Help', 96, 'Multicolore.otf', colorScheme.TITLE)
+        titlepos.centerx = self.background.get_rect().centerx
+        titlepos.centery = self.background.get_rect().height / 6
+        self.background.blit(title, titlepos)
+
+        helpImage = load_png('help01.png')
+        helpImagePos = helpImage.get_rect()
+        helpImagePos.centerx = self.background.get_rect().centerx
+        helpImagePos.centery = self.background.get_rect().centery
+        self.background.blit(helpImage, helpImagePos)
+
+        self.hm.assemble()
+        self.hm.menuPos.centerx = self.background.get_rect().centerx
+        self.hm.menuPos.centery = 5 * (self.background.get_rect().height / 6)
+        self.background.blit(self.hm.menu, self.hm.menuPos)
+
     def load(self, option):
         option_ = str(option)
         # self.option = 0
@@ -213,7 +236,9 @@ class Game:
         elif option_ == 'dark':
             colorScheme.setScheme(1)
         elif option_ == 'help':
-            pass
+            self.activeScreen = 3
+            self.gm.switch('off')
+            self.options()
         elif option_ == 'pause':
             self.pause = True
         elif option_ == 'resume':
@@ -350,19 +375,7 @@ class Game:
                 elif event.key == pygame.K_RIGHT:
                     self.optm.right()
                 elif event.key == pygame.K_RETURN:
-                    # pass
-                    # delay = 0
-                    #     location -= 1
-                    #     if location == -1:
-                    #         location = 0
-                    # if not self.optDelay:
-                    #     self.click.play()
                     self.load(self.optm.select())
-
-            # if self.option == 0:
-            #     colorScheme.setScheme()
-            # elif self.option == 1:
-            #     colorScheme.setScheme(1)
 
         elif self.activeScreen == 2: #self.gameOn:
 
@@ -413,6 +426,13 @@ class Game:
                     elif event.key == pygame.K_RETURN:
                         self.click.play()
                         self.load(self.gm.select())
+
+        elif self.activeScreen == 3:
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                        self.click.play()
+                        self.load(self.hm.select())
 
     def on_loop(self):
 
@@ -469,6 +489,11 @@ class Game:
                 gOverpos.centerx, gOverpos.centery = self.frame.get_rect().center
 
                 self.background.blit(gOver, gOverpos)
+
+        elif self.activeScreen == 3:
+
+            self.background.fill(colorScheme.BACKGROUND)
+            self.help()
 
         self.screen.blit(self.background, (0, 0))
 
