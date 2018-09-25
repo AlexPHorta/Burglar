@@ -18,11 +18,13 @@ from utils import write
 
 class ListMenu:
 
-    def __init__(self, opt, align = 'left', font = 'Multicolore.otf', sizes = (10, 10), bg = colorScheme.BACKGROUND):
+    def __init__(self, opt, align = 'left', font = 'Multicolore.otf', sizes = (10, 10), bg = colorScheme.BACKGROUND, hpad = 0, vpad = 0):
         self.options = opt
         self.selected = 0
         self.align = str(align)
         self.font = str(font)
+        self.hpad = hpad
+        self.vpad = vpad
 
         try:
             default, selected = sizes
@@ -61,7 +63,7 @@ class ListMenu:
                     menuItem, menuItemPos = write(item[0], self.fontDefault['size'], self.font, self.fontDefault['color'])
             self.toPrint.append((menuItem, menuItemPos))
         self.menuWidth = int(max([x[0].get_width() for x in self.toPrint]))
-        self.menuHeight = int(sum([x[0].get_height() for x in self.toPrint]))
+        self.menuHeight = int(sum([x[0].get_height() for x in self.toPrint]) + (len(self.toPrint) * self.vpad))
         return
 
     def assemble(self):
@@ -75,7 +77,7 @@ class ListMenu:
             elif self.align == 'right':
                 item[1].right = self.menuFrame.get_rect().right
             self.menuFrame.blit(item[0], (item[1].x, (item[1].y + dispBy)))
-            dispBy += item[0].get_height()
+            dispBy += item[0].get_height() + self.vpad
         self.menu, self.menuPos = self.menuFrame, self.menuFrame.get_rect()
 
 
@@ -160,9 +162,9 @@ class FlattenedMenu(ListMenu):
                         tag, tagPos = write(tag, self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
                         menuItem1, menuItem1Pos = write(opts[0], self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
                         menuItem2, menuItem2Pos = write(opts[1], self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
-                    menuItem1Pos.left = tagPos.right
-                    menuItem2Pos.left = menuItem1Pos.right
-                    menuItemWidth = int(sum([x.get_width() for x in (tag, menuItem1, menuItem2)]))
+                    menuItem1Pos.left = tagPos.right + (2 * self.hpad)
+                    menuItem2Pos.left = menuItem1Pos.right + self.hpad
+                    menuItemWidth = int(sum([x.get_width() for x in (tag, menuItem1, menuItem2)]) + (3 * self.hpad))
                     menuItemHeight = int(max([x.get_height() for x in (tag, menuItem1, menuItem2)]))
                     menuItem = pygame.Surface((menuItemWidth, menuItemHeight)).convert()
                     menuItem.fill(self.bg)
@@ -172,7 +174,7 @@ class FlattenedMenu(ListMenu):
                     menuItemPos = menuItem.get_rect()
             self.toPrint.append((menuItem, menuItemPos))
         self.menuWidth = int(max([x[0].get_width() for x in self.toPrint]))
-        self.menuHeight = int(sum([x[0].get_height() for x in self.toPrint]))
+        self.menuHeight = int(sum([x[0].get_height() for x in self.toPrint]) + (len(self.toPrint) * self.vpad))
         return
 
     def left(self):

@@ -122,11 +122,11 @@ class Game:
 
         from menus import ListMenu, SwitchableListMenu, FlattenedMenu
 
-        self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help'), sizes = (58, 63), align = 'center')
+        self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help', 'credits'), sizes = (58, 63), align = 'center')
         self.gm = SwitchableListMenu(('pause', 'options', 'quit'), sizes = (52, 58, 52), align = 'right', bg = colorScheme.GAMEBG)
         self.rsm = ListMenu(('resume',), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
         self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
-        self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Music': ('on', 'off')}, 'back'), sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND)
+        self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Music': ('on', 'off')}, 'back'), sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND, hpad = 20, vpad = 20)
 
     def menuMain(self):
 
@@ -134,11 +134,12 @@ class Game:
 
         # Print game name
         title, titlepos = write('Burglar', 124, 'Multicolore.otf', colorScheme.TITLE)
-        titlepos.centerx, titlepos.centery = self.background.get_rect().center
+        titlepos.centerx = self.background.get_rect().centerx
+        titlepos.centery = self.background.get_rect().height / 3
         self.background.blit(title, titlepos)
 
         self.mm.assemble()
-        self.mm.menuPos.top = titlepos.bottom + 100
+        self.mm.menuPos.centery = 2 * (self.background.get_rect().height / 3)
         self.mm.menuPos.centerx = self.background.get_rect().centerx
         self.background.blit(self.mm.menu, self.mm.menuPos)
 
@@ -178,14 +179,14 @@ class Game:
         self.game = None
 
         # Print Options tag
-        title, titlepos = write('Options', 82, 'Multicolore.otf', colorScheme.TITLE)
+        title, titlepos = write('Options', 96, 'Multicolore.otf', colorScheme.TITLE)
         titlepos.centerx = self.background.get_rect().centerx
-        titlepos.top = 200
+        titlepos.centery = self.background.get_rect().height / 3
         self.background.blit(title, titlepos)
 
         self.optm.assemble()
-        self.optm.menuPos.top = titlepos.bottom + 100
         self.optm.menuPos.centerx = self.background.get_rect().centerx
+        self.optm.menuPos.centery = 2 * (self.background.get_rect().height / 3)
         self.background.blit(self.optm.menu, self.optm.menuPos)
 
     def load(self, option):
