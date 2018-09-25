@@ -129,6 +129,7 @@ class Game:
         self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Music': ('on', 'off')}, 'back'), \
             sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND, hpad = 20, vpad = 20)
         self.hm = ListMenu(('back',), sizes = (58, 63), align = 'center')
+        self.cm = ListMenu(('back',), sizes = (58, 63), align = 'center')
 
     def menuMain(self):
 
@@ -212,6 +213,27 @@ class Game:
         self.hm.menuPos.centery = 5 * (self.background.get_rect().height / 6)
         self.background.blit(self.hm.menu, self.hm.menuPos)
 
+    def credits(self):
+
+        self.game = None
+
+        # Print Options tag
+        title, titlepos = write('Credits', 96, 'Multicolore.otf', colorScheme.TITLE)
+        titlepos.centerx = self.background.get_rect().centerx
+        titlepos.centery = self.background.get_rect().height / 6
+        self.background.blit(title, titlepos)
+
+        helpImage = load_png('help01.png')
+        helpImagePos = helpImage.get_rect()
+        helpImagePos.centerx = self.background.get_rect().centerx
+        helpImagePos.centery = self.background.get_rect().centery
+        self.background.blit(helpImage, helpImagePos)
+
+        self.cm.assemble()
+        self.cm.menuPos.centerx = self.background.get_rect().centerx
+        self.cm.menuPos.centery = 5 * (self.background.get_rect().height / 6)
+        self.background.blit(self.cm.menu, self.cm.menuPos)
+
     def load(self, option):
         option_ = str(option)
         # self.option = 0
@@ -239,6 +261,10 @@ class Game:
             self.activeScreen = 3
             self.gm.switch('off')
             self.options()
+        elif option_ == 'credits':
+            self.activeScreen = 4
+            self.gm.switch('off')
+            self.credits()
         elif option_ == 'pause':
             self.pause = True
         elif option_ == 'resume':
@@ -434,6 +460,13 @@ class Game:
                         self.click.play()
                         self.load(self.hm.select())
 
+        elif self.activeScreen == 4:
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                        self.click.play()
+                        self.load(self.cm.select())
+
     def on_loop(self):
 
         # Slow down things a bit
@@ -494,6 +527,11 @@ class Game:
 
             self.background.fill(colorScheme.BACKGROUND)
             self.help()
+
+        elif self.activeScreen == 4:
+
+            self.background.fill(colorScheme.BACKGROUND)
+            self.credits()
 
         self.screen.blit(self.background, (0, 0))
 
