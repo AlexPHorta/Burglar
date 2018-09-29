@@ -255,9 +255,9 @@ class Game:
             self.gm.switch('off')
             self.options()
         elif option_ == 'light':
-            colorScheme.setScheme()
+            colorScheme.setScheme('light')
         elif option_ == 'dark':
-            colorScheme.setScheme(1)
+            colorScheme.setScheme('dark')
         elif option_ == 'help':
             self.activeScreen = 3
             self.gm.switch('off')
