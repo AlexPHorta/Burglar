@@ -101,6 +101,7 @@ class Colors:
             'mni': (11, 26, 30), 'mns': (0, 0, 0), 'mno': (245, 166, 92), 'omt': '#9C3025', 'sc': (9, 21, 26), \
             'mnw': (27, 65, 75), 'go': (251, 219, 189)}
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.active = None
         self.setScheme(self.active)
 =======
@@ -110,6 +111,11 @@ class Colors:
         self.active = 'light'
         # self.setScheme(self.active)
 >>>>>>> Stashed changes
+>>>>>>> theme_change
+=======
+        # self.setScheme()
+        self.active = 'light'
+        # self.setScheme(self.active)
 >>>>>>> theme_change
 
     def setScheme(self, arg = 'light'):
@@ -137,8 +143,11 @@ class Colors:
         self.GAMEOVER =             toRGBA(arg['go']  )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< Updated upstream
+=======
+>>>>>>> theme_change
 =======
 >>>>>>> theme_change
     def __getstate__(self):
@@ -173,21 +182,16 @@ class Colors:
             self.BGIMAGE = load_png(self.light['bgimg'])
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> Stashed changes
+>>>>>>> theme_change
+=======
 >>>>>>> theme_change
 try:
     print('Loading color scheme configuration.')
     colorScheme = loadConfigs()
 except:
-<<<<<<< HEAD
     print('Cannot load saved configurations.')
     colorScheme = Colors()
-=======
-<<<<<<< Updated upstream
-    colorScheme = Colors()
-=======
-    print('Cannot load saved configurations.')
-    colorScheme = Colors().setScheme()
->>>>>>> Stashed changes
->>>>>>> theme_change
+    colorScheme.setScheme()
