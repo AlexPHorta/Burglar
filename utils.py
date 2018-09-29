@@ -146,4 +146,5 @@ try:
     colorScheme = loadConfigs()
 except:
     print('Cannot load saved configurations.')
-    colorScheme = Colors().setScheme()
+    colorScheme = Colors()
+    colorScheme.setScheme()
