@@ -35,7 +35,9 @@ class GameEngine_Easy:
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         else:
             self.big_outer_ring = outer
-        self._bag = bag
+        if bag == None:
+            self._bag = []
+        else: self._bag = bag
         self._turn = None
         self._points = points
         self.no_trades = no_trades
@@ -266,8 +268,8 @@ class GameEngine_Hard(GameEngine_Easy):
         super().__init__()
 
     def bag(self):
-        colors1_4 = (1, 2, 3, 4)
-        colors3_4 = (1, 2, 3)
-        colors = colors1_4 + colors3_4 + colors3_4 + colors3_4
-        self._bag = random.sample(colors, len(colors))
+        colors3 = (1, 2, 3)
+        colors1 = (1, 2, 3, 4)
+        for b in (colors3, colors3, colors3, colors1):
+            self._bag.extend(random.sample(b, len(b)))
         return self.current_bag
