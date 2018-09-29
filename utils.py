@@ -100,23 +100,7 @@ class Colors:
             'tt': (94, 29, 22), 'mn': (76, 152, 193), 'mna': (37, 94, 118), \
             'mni': (11, 26, 30), 'mns': (0, 0, 0), 'mno': (245, 166, 92), 'omt': '#9C3025', 'sc': (9, 21, 26), \
             'mnw': (27, 65, 75), 'go': (251, 219, 189)}
-<<<<<<< HEAD
-<<<<<<< HEAD
-        self.active = None
-        self.setScheme(self.active)
-=======
-<<<<<<< Updated upstream
-        self.setScheme()
-=======
         self.active = 'light'
-        # self.setScheme(self.active)
->>>>>>> Stashed changes
->>>>>>> theme_change
-=======
-        # self.setScheme()
-        self.active = 'light'
-        # self.setScheme(self.active)
->>>>>>> theme_change
 
     def setScheme(self, arg = 'light'):
         if arg == 'light':
@@ -142,14 +126,6 @@ class Colors:
         self.MENUWARNING =          toRGBA(arg['mnw'] )
         self.GAMEOVER =             toRGBA(arg['go']  )
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> theme_change
-=======
->>>>>>> theme_change
     def __getstate__(self):
         # Copy the object's state from self.__dict__ which contains
         # all our instance attributes. Always use the dict.copy()
@@ -160,20 +136,8 @@ class Colors:
         return state
 
     def __setstate__(self, state):
-<<<<<<< HEAD
-        # Restore instance attributes (i.e., filename and lineno).
+        # Restore instance attributes.
         self.__dict__.update(state)
-        # Restore the previously opened file's state. To do so, we need to
-        # reopen it and read from it until the line count is restored.
-        # file = open(self.filename)
-        # for _ in range(self.lineno):
-        #     file.readline()
-        # # Finally, save the file.
-        # self.file = file
-=======
-        # Restore unpickled instance attributes.
-        self.__dict__.update(state)
->>>>>>> theme_change
         if self.active == 'light':
             self.BGIMAGE = load_png(self.light['bgimg'])
         elif arg == 'dark':
@@ -181,13 +145,6 @@ class Colors:
         else:
             self.BGIMAGE = load_png(self.light['bgimg'])
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> theme_change
-=======
->>>>>>> theme_change
 try:
     print('Loading color scheme configuration.')
     colorScheme = loadConfigs()
