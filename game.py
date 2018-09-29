@@ -25,6 +25,7 @@ except ImportError as err:
     sys.exit(2)
 
 import engine
+import tools
 
 from collections import namedtuple
 from enum import Enum, unique
@@ -540,6 +541,7 @@ class Game:
         return
 
     def on_cleanup(self):
+        tools.saveConfigs(colorScheme)
         pygame.quit()
         return
 

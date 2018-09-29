@@ -24,6 +24,8 @@ except ImportError as err:
 from collections import namedtuple
 from itertools import islice
 
+from tools import loadConfigs
+
 
 # The center of the screen. Makes it easier to place the stones.
 Center = namedtuple('Center', 'x y')
@@ -119,4 +121,7 @@ class Colors:
         self.MENUWARNING =          toRGBA(arg['mnw'] )
         self.GAMEOVER =             toRGBA(arg['go']  )
 
-colorScheme = Colors()
+try:
+    colorScheme = loadConfigs()
+except:
+    colorScheme = Colors()
