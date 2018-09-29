@@ -100,7 +100,12 @@ class Colors:
             'tt': (94, 29, 22), 'mn': (76, 152, 193), 'mna': (37, 94, 118), \
             'mni': (11, 26, 30), 'mns': (0, 0, 0), 'mno': (245, 166, 92), 'omt': '#9C3025', 'sc': (9, 21, 26), \
             'mnw': (27, 65, 75), 'go': (251, 219, 189)}
+<<<<<<< Updated upstream
         self.setScheme()
+=======
+        self.active = 'light'
+        # self.setScheme(self.active)
+>>>>>>> Stashed changes
 
     def setScheme(self, arg = None):
         if arg == None:
@@ -121,7 +126,34 @@ class Colors:
         self.MENUWARNING =          toRGBA(arg['mnw'] )
         self.GAMEOVER =             toRGBA(arg['go']  )
 
+<<<<<<< Updated upstream
+=======
+    def __getstate__(self):
+        # Copy the object's state from self.__dict__ which contains
+        # all our instance attributes. Always use the dict.copy()
+        # method to avoid modifying the original state.
+        state = self.__dict__.copy()
+        # Remove the unpicklable entries.
+        del state['BGIMAGE']
+        return state
+
+    def __setstate__(self, state):
+        # Restore unpickled instance attributes.
+        self.__dict__.update(state)
+        if self.active == 'light':
+            self.BGIMAGE = load_png(self.light['bgimg'])
+        elif arg == 'dark':
+            self.BGIMAGE = load_png(self.dark['bgimg'])
+        else:
+            self.BGIMAGE = load_png(self.light['bgimg'])
+
+>>>>>>> Stashed changes
 try:
     colorScheme = loadConfigs()
 except:
+<<<<<<< Updated upstream
     colorScheme = Colors()
+=======
+    print('Cannot load saved configurations.')
+    colorScheme = Colors().setScheme()
+>>>>>>> Stashed changes
