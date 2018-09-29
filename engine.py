@@ -10,26 +10,28 @@
 
 import random
 
+from collections import deque
+
 
 class GameEngine_Easy:
 
     def __init__(self, inner = None, middle = None, outer = None, bag = None,
         points = 0, no_trades = False, one_place_to_insert = False, game_over = False):
         if not inner:
-            self.inner_ring = [0, 0, 0, 0]
+            self.inner_ring = deque([0, 0, 0, 0])
         else:
             self.inner_ring = inner
         if not middle:
-            self.middle_ring = [0, 0, 0, 0, 0, 0, 0, 0]
+            self.middle_ring = deque([0, 0, 0, 0, 0, 0, 0, 0])
         else:
             self.middle_ring = middle
         if not outer:
-            self.outer_ring = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.outer_ring = deque([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         else:
             self.outer_ring = outer
         if not outer:
-            self.big_outer_ring = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.big_outer_ring = deque([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         else:
             self.big_outer_ring = outer
         self._bag = bag
@@ -105,11 +107,13 @@ class GameEngine_Easy:
 
     def turn(self, which_ring, turn_choice):
         if turn_choice == 1:
-            retrieved = which_ring.pop(0)
-            which_ring.append(retrieved)
+            which_ring.rotate(-1)
+            # retrieved = which_ring.popleft()
+            # which_ring.append(retrieved)
         elif turn_choice == 2:
-            retrieved = which_ring.pop()
-            which_ring.insert(0, retrieved)
+            which_ring.rotate(1)
+            # retrieved = which_ring.pop()
+            # which_ring.appendleft(retrieved)
         return which_ring
 
     def trade_stones(self, external, internal, turn_direction):
