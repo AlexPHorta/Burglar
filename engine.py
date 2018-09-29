@@ -223,7 +223,8 @@ class GameEngine_Normal(GameEngine_Easy):
         stone = 0
         count = 0
         marked = []
-        for index, stone_ in enumerate(ring * 2):
+        times = 1 if ring[0] == 0 or ring[-1] == 0 or ring[0] == ring[1] else 2
+        for index, stone_ in enumerate(chain.from_iterable(repeat(tuple(ring), times))):
             if (ring.count(stone_) == len(ring)) and (stone_ != 0):
                 marked.append((0, stone_, len(ring)))
                 break
