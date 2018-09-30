@@ -28,4 +28,5 @@ def saveConfigs(object):
 
 def loadConfigs():
     with open(confFileName, 'rb') as in_s:
+        print('Opening config file.')
         return pickle.load(in_s)

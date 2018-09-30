@@ -140,7 +140,7 @@ class Colors:
         self.__dict__.update(state)
         if self.active == 'light':
             self.BGIMAGE = load_png(self.light['bgimg'])
-        elif arg == 'dark':
+        elif self.active == 'dark':
             self.BGIMAGE = load_png(self.dark['bgimg'])
         else:
             self.BGIMAGE = load_png(self.light['bgimg'])
@@ -148,7 +148,8 @@ class Colors:
 try:
     print('Loading color scheme configuration.')
     colorScheme = loadConfigs()
-except:
-    print('Cannot load saved configurations.')
+    print('Loaded config file.')
+except Exception as e:
+    print('Cannot load saved configurations: {}'.format(e))
     colorScheme = Colors()
     colorScheme.setScheme()
