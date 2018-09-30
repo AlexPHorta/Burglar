@@ -572,8 +572,10 @@ class Game:
         if self.on_init() == False:
             self._running = False
         while self._running:
-            for event in pygame.event.get():
-                self.on_event(event)
+            # for event in pygame.event.wait():
+            #     self.on_event(event)
+            # if pygame.event.peek((KEYDOWN, QUIT)):
+            self.on_event(pygame.event.wait())
             self.on_loop()
             self.on_render()
         self.on_cleanup()
