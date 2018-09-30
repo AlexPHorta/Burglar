@@ -24,7 +24,7 @@ except ImportError as err:
 from collections import namedtuple
 from itertools import islice
 
-from tools import loadConfigs
+# from tools import loadConfigs
 
 
 # The center of the screen. Makes it easier to place the stones.
@@ -145,11 +145,11 @@ class Colors:
         else:
             self.BGIMAGE = load_png(self.light['bgimg'])
 
-try:
-    print('Loading color scheme configuration.')
-    colorScheme = loadConfigs()
-    print('Loaded config file.')
-except Exception as e:
-    print('Cannot load saved configurations: {}'.format(e))
-    colorScheme = Colors()
-    colorScheme.setScheme()
+# try:
+#     print('Loading color scheme configuration.')
+#     colorScheme = loadConfigs()
+#     print('Loaded config file.')
+# except Exception as e:
+#     print('Cannot load saved configurations: {}'.format(e))
+#     colorScheme = Colors()
+#     colorScheme.setScheme()

@@ -12,7 +12,7 @@ except ImportError as err:
     sys.exit(2)
 
 
-from utils import colorScheme
+from tools import colorScheme
 from utils import write
 
 
@@ -149,7 +149,8 @@ class FlattenedMenu(ListMenu):
                     menuItem, menuItemPos = write(item, self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
             else:
                 for tag, opts in item.items():
-                    self.signals.append(opts)
+                    tag_ = tag.lower()
+                    self.signals.append((opts, tag_))
                     if index == self.selected:
                         tag, tagPos = write(tag, self.fontSelected['size'], self.font, colorScheme.OPTMENUTAG)
                         if 0 == self.active:
@@ -185,6 +186,6 @@ class FlattenedMenu(ListMenu):
 
     def select(self):
         if isinstance(self.signals[self.selected], tuple):
-            return self.signals[self.selected][self.active]
+            return self.signals[self.selected][0][self.active], self.signals[self.selected][1]
         else:
-            return self.signals[self.selected]
+            return (self.signals[self.selected],)

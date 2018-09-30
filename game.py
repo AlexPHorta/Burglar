@@ -25,7 +25,6 @@ except ImportError as err:
     sys.exit(2)
 
 import engine
-import tools
 
 from collections import namedtuple
 from enum import Enum, unique
@@ -38,7 +37,8 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
 pygame.display.set_caption('Burglar')
 
-from utils import load_png, write, Center, stones, colorScheme
+from utils import load_png, write, Center, stones
+from tools import saveConfigs, colorScheme, configurations
 
 
 class Stone(pygame.sprite.Sprite):
@@ -95,15 +95,22 @@ class Game:
         self.middle_ring = []
         self.outer_ring = []
         self.big_outer_ring = []
-        self.music = pygame.mixer.music
+        self.track = pygame.mixer.music
 
         try:
-            self.music.load(os.path.join('sounds', '392395__shadydave__cello-marcato-loop.wav'))
+            self.track.load(os.path.join('sounds', '392395__shadydave__cello-marcato-loop.wav'))
             self.flip = pygame.mixer.Sound(os.path.join('sounds','167045__drminky__slime-jump.wav'))
             self.click = pygame.mixer.Sound(os.path.join('sounds','256116__kwahmah-02__click.wav'))
             self.toggle = pygame.mixer.Sound(os.path.join('sounds','202312__7778__dbl-click.wav'))
         except:
             raise UserWarning("could not load or play soundfiles in 'sounds' folder :-(")
+
+        if configurations:
+            self.music = configurations[1]
+            self.sound = configurations[2]
+        else:
+            self.music = True
+            self.sound = True
 
     def on_init(self):
 
@@ -127,7 +134,7 @@ class Game:
         self.gm = SwitchableListMenu(('pause', 'options', 'quit'), sizes = (52, 58, 52), align = 'right', bg = colorScheme.GAMEBG)
         self.rsm = ListMenu(('resume',), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
         self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
-        self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Music': ('on', 'off')}, 'back'), \
+        self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'), \
             sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND, hpad = 20, vpad = 20)
         self.hm = ListMenu(('back',), sizes = (58, 63), align = 'center')
         self.cm = ListMenu(('back',), sizes = (58, 63), align = 'center')
@@ -235,43 +242,55 @@ class Game:
         self.cm.menuPos.centery = 5 * (self.background.get_rect().height / 6)
         self.background.blit(self.cm.menu, self.cm.menuPos)
 
-    def load(self, option):
-        option_ = str(option)
-        # self.option = 0
-        if option_ == 'easy':
+    def load(self, choice, option = None):
+        choice = str(choice)
+        option = str(option)
+        if choice == 'easy':
             self.activeScreen = 2
             self.level = 'easy'
             self.loadGame()
-        elif option_ == 'normal':
+        elif choice == 'normal':
             self.activeScreen = 2
             self.level = 'normal'
             self.loadGame()
-        elif option_ == 'hard':
+        elif choice == 'hard':
             self.activeScreen = 2
             self.level = 'hard'
             self.loadGame()
-        elif option_ == 'options':
+        elif choice == 'options':
             self.activeScreen = 1
             self.gm.switch('off')
             self.options()
-        elif option_ == 'light':
+        elif choice == 'light':
             colorScheme.setScheme('light')
-        elif option_ == 'dark':
+        elif choice == 'dark':
             colorScheme.setScheme('dark')
-        elif option_ == 'help':
+        elif choice == 'help':
             self.activeScreen = 3
             self.gm.switch('off')
             self.options()
-        elif option_ == 'credits':
+        elif choice == 'credits':
             self.activeScreen = 4
             self.gm.switch('off')
             self.credits()
-        elif option_ == 'pause':
+        elif choice == 'pause':
             self.pause = True
-        elif option_ == 'resume':
+        elif choice == 'resume':
             self.pause = False
             self.gm.switch('off')
-        elif option_ == 'quit' or option_ == 'back':
+        elif choice == 'on':
+            if option == 'music':
+                self.music = True
+                self.track.play(-1)
+            elif option == 'sound':
+                self.sound = True
+        elif choice == 'off':
+            if option == 'music':
+                self.music = False
+                self.track.stop()
+            elif option == 'sound':
+                self.sound = False
+        elif choice == 'quit' or choice == 'back':
             self.activeScreen = 0
             self.gm.switch('off')
             self.menuMain()
@@ -367,7 +386,7 @@ class Game:
         self.score = Score('Multicolore.otf', 106, colorScheme.SCORE, colorScheme.GAMEBG)
         self.score.updateScore(self.game.points)
 
-        self.music.play(-1)
+        if self.music: self.track.play(-1)
 
         self._running = True
 
@@ -381,28 +400,28 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.mm.up()
-                    self.flip.play()
+                    if self.sound: self.flip.play()
                 elif event.key == pygame.K_DOWN:
                     self.mm.down()
-                    self.flip.play()
+                    if self.sound: self.flip.play()
                 elif event.key == pygame.K_RETURN: # and self.keyDelay == 0:
-                    self.click.play()
+                    if self.sound: self.click.play()
                     self.load(self.mm.select())
 
         elif self.activeScreen == 1: #self.optionsScreen:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.optm.up()
-                    self.flip.play()
+                    if self.sound: self.flip.play()
                 elif event.key == pygame.K_DOWN:
                     self.optm.down()
-                    self.flip.play()
+                    if self.sound: self.flip.play()
                 if event.key == pygame.K_LEFT:
                     self.optm.left()
                 elif event.key == pygame.K_RIGHT:
                     self.optm.right()
                 elif event.key == pygame.K_RETURN:
-                    self.load(self.optm.select())
+                    self.load(*self.optm.select())
 
         elif self.activeScreen == 2: #self.gameOn:
 
@@ -421,51 +440,51 @@ class Game:
 
                     elif (event.key == pygame.K_RCTRL) or (event.key == pygame.K_LCTRL):
                         if self.gm.switchedOn:
-                            self.toggle.play()
+                            if self.sound: self.toggle.play()
                             self.gm.switch('off')
                         else:
-                            self.toggle.play()
+                            if self.sound: self.toggle.play()
                             self.gm.switch('on')
 
                 if self.gameOver:
                     if event.key == pygame.K_UP:
                         self.govm.up()
-                        self.flip.play()
+                        if self.sound: self.flip.play()
                     elif event.key == pygame.K_DOWN:
                         self.govm.down()
-                        self.flip.play()
+                        if self.sound: self.flip.play()
                     elif event.key == pygame.K_RETURN:
-                        self.click.play()
+                        if self.sound: self.click.play()
                         self.load(self.govm.select())
 
                 if self.pause:
                     if event.key == pygame.K_RETURN:
-                        self.click.play()
+                        if self.sound: self.click.play()
                         self.load(self.rsm.select())
 
                 if self.gm.switchedOn:
                     if event.key == pygame.K_UP:
                         self.gm.up()
-                        self.flip.play()
+                        if self.sound: self.flip.play()
                     elif event.key == pygame.K_DOWN:
                         self.gm.down()
-                        self.flip.play()
+                        if self.sound: self.flip.play()
                     elif event.key == pygame.K_RETURN:
-                        self.click.play()
+                        if self.sound: self.click.play()
                         self.load(self.gm.select())
 
         elif self.activeScreen == 3:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                        self.click.play()
+                        if self.sound: self.click.play()
                         self.load(self.hm.select())
 
         elif self.activeScreen == 4:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                        self.click.play()
+                        if self.sound: self.click.play()
                         self.load(self.cm.select())
 
     def on_loop(self):
@@ -541,7 +560,8 @@ class Game:
         return
 
     def on_cleanup(self):
-        tools.saveConfigs(colorScheme)
+        confs = (colorScheme, self.music, self.sound)
+        saveConfigs(confs)
         pygame.quit()
         return
 
