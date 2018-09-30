@@ -18,7 +18,7 @@ from utils import write
 
 class ListMenu:
 
-    def __init__(self, opt, align = 'left', font = 'Multicolore.otf', sizes = (10, 10), bg = colorScheme.BACKGROUND, hpad = 0, vpad = 0):
+    def __init__(self, opt, align = 'left', font = 'Multicolore.otf', sizes = (10, 10), bg = None, hpad = 0, vpad = 0):
         self.options = opt
         self.selected = 0
         self.align = str(align)
@@ -69,8 +69,11 @@ class ListMenu:
     def assemble(self):
         self.prepare()
         dispBy = 0
-        self.menuFrame = pygame.Surface((self.menuWidth, self.menuHeight)).convert()
-        self.menuFrame.fill(self.bg)
+        self.menuFrame = pygame.Surface((self.menuWidth, self.menuHeight)).convert_alpha()
+        if self.bg:
+            self.menuFrame.fill(self.bg)
+        else:
+            self.menuFrame.fill((0, 0, 0, 0))
         for item in self.toPrint:
             if self.align == 'center':
                 item[1].centerx = self.menuFrame.get_rect().centerx

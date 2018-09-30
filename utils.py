@@ -92,9 +92,9 @@ stones = StoneColors()
 class Colors:
 
     def __init__(self):
-        self.light = {'bgimg': 'bg_light.png', 'bg': '#F8C18D', 'gbg': (246,175,108), \
+        self.light = {'bgimg': 'bg_light.png', 'bg': '#FFFFFF', 'gbg': (246,175,108), \
             'tt': (11, 181, 255), 'mn': (76, 152, 193), 'mna': (37, 94, 118), \
-            'mni': (11, 26, 30), 'mns': '#F5A65C', 'mno': (245, 166, 92), 'omt': '#9C3025', 'sc': (9, 21, 26), \
+            'mni': (11, 26, 30), 'mns': '#E8C7C4', 'mno': (245, 166, 92), 'omt': '#9C3025', 'sc': (9, 21, 26), \
             'mnw': (27, 65, 75), 'go': (251, 219, 189)}
         self.dark = {'bgimg': 'bg_light.png', 'bg': (0, 7, 10), 'gbg': (246,175,108), \
             'tt': (94, 29, 22), 'mn': (76, 152, 193), 'mna': (37, 94, 118), \

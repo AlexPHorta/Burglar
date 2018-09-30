@@ -63,13 +63,16 @@ class Stone(pygame.sprite.Sprite):
 
 class Score:
 
-    def __init__(self, font = None, size = 10, color = (0, 0, 0), bgcolor = (255, 255, 255)):
+    def __init__(self, font = None, size = 10, color = (0, 0, 0), bgcolor = None):
         fullname = os.path.join('fonts', font)
         self.font = pygame.font.Font(fullname, size)
         self.color = color
         self.bgcolor = bgcolor
         self.points = 0
-        self.score = self.font.render(str(self.points), True, self.color, self.bgcolor)
+        if bgcolor:
+            self.score = self.font.render(str(self.points), True, self.color, self.bgcolor)
+        else:
+            self.score = self.font.render(str(self.points), True, self.color)
         self.score = self.score.convert_alpha()
         self.scorepos = self.score.get_rect()
 
@@ -131,9 +134,9 @@ class Game:
         from menus import ListMenu, SwitchableListMenu, FlattenedMenu
 
         self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help', 'credits'), sizes = (58, 63), align = 'center')
-        self.gm = SwitchableListMenu(('pause', 'options', 'quit'), sizes = (52, 58, 52), align = 'right', bg = colorScheme.GAMEBG)
-        self.rsm = ListMenu(('resume',), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
-        self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), align = 'right', bg = colorScheme.GAMEBG)
+        self.gm = SwitchableListMenu(('pause', 'options', 'quit'), sizes = (52, 58, 52), align = 'right')
+        self.rsm = ListMenu(('resume',), sizes = (52, 58), align = 'right')
+        self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), align = 'right')
         self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'), \
             sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND, hpad = 20, vpad = 20)
         self.hm = ListMenu(('back',), sizes = (58, 63), align = 'center')
@@ -383,7 +386,7 @@ class Game:
         self.fill_rings(self.game.middle, self.middle_ring)
         self.fill_rings(self.game.inner, self.inner_ring)
 
-        self.score = Score('Multicolore.otf', 106, colorScheme.SCORE, colorScheme.GAMEBG)
+        self.score = Score('Multicolore.otf', 106, colorScheme.SCORE)
         self.score.updateScore(self.game.points)
 
         if self.music: self.track.play(-1)
