@@ -31,7 +31,7 @@ from enum import Enum, unique
 from itertools import islice, chain, cycle
 
 
-pygame.mixer.pre_init(44100, -16, 2, 2048)
+pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
@@ -59,6 +59,9 @@ class Stone(pygame.sprite.Sprite):
 
     def updateImg(self, newStoneType = None):
         self.image = newStoneType
+
+    def surge(self):
+
 
 
 class Score:
@@ -493,7 +496,7 @@ class Game:
     def on_loop(self):
 
         # Slow down things a bit
-        clock.tick(30)
+        clock.tick(20)
 
         if self.activeScreen == 2: #self.gameOn:
 
