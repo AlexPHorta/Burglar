@@ -61,6 +61,7 @@ class Stone(pygame.sprite.Sprite):
         self.image = newStoneType
 
     def surge(self):
+        pass
 
 
 
