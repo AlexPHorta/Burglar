@@ -84,7 +84,7 @@ class StoneColors:
         self.BLUE = load_png('blue_stone.png')
         self.GREEN = load_png('green_stone.png')
         self.YELLOW = load_png('yellow_stone.png')
-        self.BROWN = load_png('brown_stone.png')
+        self.PURPLE = load_png('purple_stone.png')
 
 stones = StoneColors()
 
@@ -144,12 +144,3 @@ class Colors:
             self.BGIMAGE = load_png(self.dark['bgimg'])
         else:
             self.BGIMAGE = load_png(self.light['bgimg'])
-
-# try:
-#     print('Loading color scheme configuration.')
-#     colorScheme = loadConfigs()
-#     print('Loaded config file.')
-# except Exception as e:
-#     print('Cannot load saved configurations: {}'.format(e))
-#     colorScheme = Colors()
-#     colorScheme.setScheme()

@@ -597,7 +597,7 @@ class Game:
             elif engine_ring[indice] == 4:
                 screen_ring[indice].updateImg(stones.YELLOW)
             elif engine_ring[indice] == 5:
-                screen_ring[indice].updateImg(stones.BROWN)
+                screen_ring[indice].updateImg(stones.PURPLE)
             else:
                 continue
         return
