@@ -124,6 +124,7 @@ class Game:
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
+        self.splashScreen()
         self.background.fill(colorScheme.BACKGROUND)
         self.gamebg = colorScheme.BGIMAGE
         self.activeScreen = 0
@@ -145,6 +146,9 @@ class Game:
             sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND, hpad = 20, vpad = 20)
         self.hm = ListMenu(('back',), sizes = (58, 63), align = 'center')
         self.cm = ListMenu(('back',), sizes = (58, 63), align = 'center')
+
+    def splashScreen(self):
+        pass
 
     def menuMain(self):
 
