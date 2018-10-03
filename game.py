@@ -37,7 +37,7 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
 pygame.display.set_caption('Burglar')
 
-from utils import load_png, write, Center, stones
+from utils import load_png, blit_alpha, write, Center, stones
 from tools import saveConfigs, colorScheme, configurations
 
 
@@ -124,7 +124,9 @@ class Game:
         self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
+
         self.splashScreen()
+
         self.background.fill(colorScheme.BACKGROUND)
         self.gamebg = colorScheme.BGIMAGE
         self.activeScreen = 0
@@ -148,7 +150,44 @@ class Game:
         self.cm = ListMenu(('back',), sizes = (58, 63), align = 'center')
 
     def splashScreen(self):
-        pass
+        self.background.fill((0, 0, 0))
+        bg = load_png('splash_bg.png')
+
+        self.background.blit(bg, (0, 0))
+
+        for i in range(0, 255, 10):
+            self.background.set_alpha(i)
+            self.screen.blit(self.background, (0, 0))
+            pygame.display.flip()
+            pygame.time.wait(10)
+
+        buey_spritesheet = load_png('buey_sprite.png')
+        buey_spritesheetPos = buey_spritesheet.get_rect()
+        buey_spritesheetPos.centerx = self.background.get_rect().centerx
+        buey_spritesheetPos.centery = self.background.get_rect().centery
+
+        for i in range(0, 255, 4):
+            self.background.blit(bg, (0, 0))
+            blit_alpha(self.background, buey_spritesheet, buey_spritesheetPos, i)
+            self.screen.blit(self.background, (0, 0))
+            pygame.display.flip()
+            pygame.time.wait(10)
+
+        pygame.time.wait(1500)
+
+        fadeOut = pygame.Surface(self.screen.get_size())
+
+        for i in range(0, 255, 10):
+            self.background.blit(bg, (0, 0))
+            self.background.blit(buey_spritesheet, buey_spritesheetPos)
+            fadeOut.set_alpha(i)
+            self.background.blit(fadeOut, (0, 0))
+            # blit_alpha(self.background, buey_spritesheet, buey_spritesheetPos, i)
+            self.screen.blit(self.background, (0, 0))
+            pygame.display.flip()
+            pygame.time.wait(10)
+
+        pygame.time.wait(200)
 
     def menuMain(self):
 

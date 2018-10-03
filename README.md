@@ -10,3 +10,6 @@ https://freesound.org/people/7778/sounds/202312/ (https://creativecommons.org/pu
 
 ### Music
 Marcato loop by Shady Dave found on https://www.freesound.org/people/ShadyDave/
+
+### Hacks
+Image with per pixel transparency blitted on lowered transparency surface: https://nerdparadise.com/programming/pygameblitopacity
