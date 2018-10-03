@@ -106,6 +106,7 @@ class Game:
 
         try:
             self.track.load(os.path.join('sounds', '392395__shadydave__cello-marcato-loop.wav'))
+            self.splashTrack = pygame.mixer.Sound(os.path.join('sounds', '270657__shadydave__deep-bass-growl.wav'))
             self.flip = pygame.mixer.Sound(os.path.join('sounds','167045__drminky__slime-jump.wav'))
             self.click = pygame.mixer.Sound(os.path.join('sounds','256116__kwahmah-02__click.wav'))
             self.toggle = pygame.mixer.Sound(os.path.join('sounds','202312__7778__dbl-click.wav'))
@@ -155,6 +156,8 @@ class Game:
 
         self.background.blit(bg, (0, 0))
 
+        self.splashTrack.play(1)
+
         for i in range(0, 255, 10):
             self.background.set_alpha(i)
             self.screen.blit(self.background, (0, 0))
@@ -176,6 +179,13 @@ class Game:
         pygame.time.wait(1500)
 
         fadeOut = pygame.Surface(self.screen.get_size())
+
+        splashTrackVolume = int(self.splashTrack.get_volume())
+        print(splashTrackVolume)
+        for v in range(splashTrackVolume, 0, -10):
+            self.splashTrack.set_volume(float(v))
+            pygame.time.wait(10)
+        # self.splashTrack.stop()
 
         for i in range(0, 255, 10):
             self.background.blit(bg, (0, 0))
