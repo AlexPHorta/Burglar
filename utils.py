@@ -102,8 +102,8 @@ class Colors:
 
     def __init__(self):
         self.light = {
-            'mmbg': '#FEFDF6', 'mmtt': '#3F130F', 'mmna': '#193F4E', 'mmni': '#86572A', \
-            'opbg': '#AAAAAA', 'optt': '#AAAAAA', 'opmt': '#AAAAAA', 'opmna': '#AAAAAA', 'opmni': '#AAAAAA', \
+            'mmbg': '#FEFDF6', 'mmtt': '#3F130F', 'mmna': '#193F4E', 'mmni': '#317588', \
+            'opbg': '#FFFFFF', 'optt': '#AAAAAA', 'opmt': '#AAAAAA', 'opmna': '#AAAAAA', 'opmni': '#AAAAAA', \
             'gbgimg': 'bg_light.png', 'gbg': (246,175,108), 'gmn': '#AAAAAA', 'gmna': '#AAAAAA', \
             'gmni': '#AAAAAA', 'gmns': '#AAAAAA', 'gmno': '#AAAAAA', 'gmnw': '#AAAAAA', \
             'gsc': '#AAAAAA', 'ggo': '#AAAAAA'}

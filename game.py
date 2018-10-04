@@ -243,7 +243,7 @@ class Game:
         self.game = None
 
         # Print Options tag
-        title, titlepos = write('Options', 96, 'Multicolore.otf', colorScheme.TITLE)
+        title, titlepos = write('Options', 96, 'Multicolore.otf', colorScheme.OPTIONSTITLE)
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.centery = self.background.get_rect().height / 3
         self.background.blit(title, titlepos)
