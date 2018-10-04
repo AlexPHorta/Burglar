@@ -128,8 +128,8 @@ class Game:
 
         self.splashScreen()
 
-        self.background.fill(colorScheme.BACKGROUND)
-        self.gamebg = colorScheme.BGIMAGE
+        self.background.fill(colorScheme.GAMEBG)
+        self.gamebg = colorScheme.GAMEBGIMAGE
         self.activeScreen = 0
         self.mainMenu = True
         self.optionsScreen = False
@@ -141,12 +141,13 @@ class Game:
 
         from menus import ListMenu, SwitchableListMenu, FlattenedMenu
 
-        self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help', 'credits'), sizes = (58, 63), align = 'center')
+        self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help', 'credits'), sizes = (58, 63), \
+            bg = colorScheme.MAINMENUBG, mncolors = (colorScheme.MAINMENUINACTIVE, colorScheme.MAINMENUACTIVE), align = 'center')
         self.gm = SwitchableListMenu(('pause', 'options', 'quit'), sizes = (52, 58, 52), align = 'right')
         self.rsm = ListMenu(('resume',), sizes = (52, 58), align = 'right')
         self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), align = 'right')
         self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'), \
-            sizes = (52, 58), align = 'center', bg = colorScheme.BACKGROUND, hpad = 20, vpad = 20)
+            sizes = (52, 58), align = 'center', bg = colorScheme.OPTIONSBG, hpad = 20, vpad = 20)
         self.hm = ListMenu(('back',), sizes = (58, 63), align = 'center')
         self.cm = ListMenu(('back',), sizes = (58, 63), align = 'center')
 
@@ -180,19 +181,11 @@ class Game:
 
         fadeOut = pygame.Surface(self.screen.get_size())
 
-        splashTrackVolume = int(self.splashTrack.get_volume())
-        print(splashTrackVolume)
-        for v in range(splashTrackVolume, 0, -10):
-            self.splashTrack.set_volume(float(v))
-            pygame.time.wait(10)
-        # self.splashTrack.stop()
-
         for i in range(0, 255, 10):
             self.background.blit(bg, (0, 0))
             self.background.blit(buey_spritesheet, buey_spritesheetPos)
             fadeOut.set_alpha(i)
             self.background.blit(fadeOut, (0, 0))
-            # blit_alpha(self.background, buey_spritesheet, buey_spritesheetPos, i)
             self.screen.blit(self.background, (0, 0))
             pygame.display.flip()
             pygame.time.wait(10)
@@ -204,7 +197,7 @@ class Game:
         self.game = None
 
         # Print game name
-        title, titlepos = write('Burglar', 124, 'Multicolore.otf', colorScheme.TITLE)
+        title, titlepos = write('Burglar', 124, 'Multicolore.otf', colorScheme.MAINMENUTITLE)
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.centery = self.background.get_rect().height / 3
         self.background.blit(title, titlepos)
@@ -572,11 +565,11 @@ class Game:
         self.screen.blit(self.background, (0, 0))
 
         if self.activeScreen == 0: #self.mainMenu:
-            self.background.fill(colorScheme.BACKGROUND)
+            self.background.fill(colorScheme.MAINMENUBG)
             self.menuMain()
 
         elif self.activeScreen == 1: #self.optionsScreen:
-            self.background.fill(colorScheme.BACKGROUND)
+            self.background.fill(colorScheme.OPTIONSBG)
             self.options()
 
         elif self.activeScreen == 2: #self.gameOn:
@@ -605,12 +598,12 @@ class Game:
 
         elif self.activeScreen == 3:
 
-            self.background.fill(colorScheme.BACKGROUND)
+            self.background.fill(colorScheme.OPTIONSBG)
             self.help()
 
         elif self.activeScreen == 4:
 
-            self.background.fill(colorScheme.BACKGROUND)
+            self.background.fill(colorScheme.OPTIONSBG)
             self.credits()
 
         self.screen.blit(self.background, (0, 0))

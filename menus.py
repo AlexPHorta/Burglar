@@ -18,7 +18,8 @@ from utils import write
 
 class ListMenu:
 
-    def __init__(self, opt, align = 'left', font = 'Multicolore.otf', sizes = (10, 10), bg = None, hpad = 0, vpad = 0):
+    def __init__(self, opt, align = 'left', font = 'Multicolore.otf', sizes = (10, 10), \
+        bg = None, mncolors = ('#FFFFFF', '#AAAAAA'), hpad = 0, vpad = 0):
         self.options = opt
         self.selected = 0
         self.align = str(align)
@@ -32,8 +33,8 @@ class ListMenu:
             default, selected, off = sizes
             self.off = off
 
-        self.fontDefault = {'size': default, 'color': colorScheme.MENUINACTIVE}
-        self.fontSelected = {'size': selected, 'color': colorScheme.MENUACTIVE}
+        self.fontDefault = {'size': default, 'color': mncolors[0]}
+        self.fontSelected = {'size': selected, 'color': mncolors[1]}
         self.bg = bg
 
     def up(self):
@@ -88,7 +89,7 @@ class SwitchableListMenu(ListMenu):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fontSwitchedOff = {'size': self.off, 'color': colorScheme.MENUSWITCHEDOFF}
+        self.fontSwitchedOff = {'size': self.off, 'color': colorScheme.GAMEMENUSWITCHEDOFF}
         self.switchedOn = False
 
     def switch(self, state):
@@ -149,7 +150,7 @@ class FlattenedMenu(ListMenu):
                 if index == self.selected:
                     menuItem, menuItemPos = write(item, self.fontSelected['size'], self.font, self.fontSelected['color'])
                 else:
-                    menuItem, menuItemPos = write(item, self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
+                    menuItem, menuItemPos = write(item, self.fontDefault['size'], self.font, colorScheme.GAMEMENUSWITCHEDOFF)
             else:
                 for tag, opts in item.items():
                     tag_ = tag.lower()
@@ -157,15 +158,15 @@ class FlattenedMenu(ListMenu):
                     if index == self.selected:
                         tag, tagPos = write(tag, self.fontSelected['size'], self.font, colorScheme.OPTMENUTAG)
                         if 0 == self.active:
-                            menuItem1, menuItem1Pos = write(opts[0], self.fontSelected['size'], self.font, colorScheme.MENUACTIVE)
-                            menuItem2, menuItem2Pos = write(opts[1], self.fontDefault['size'], self.font, colorScheme.MENUINACTIVE)
+                            menuItem1, menuItem1Pos = write(opts[0], self.fontSelected['size'], self.font, colorScheme.OPTMENUACTIVE)
+                            menuItem2, menuItem2Pos = write(opts[1], self.fontDefault['size'], self.font, colorScheme.OPTMENUINACTIVE)
                         else:
-                            menuItem1, menuItem1Pos = write(opts[0], self.fontDefault['size'], self.font, colorScheme.MENUINACTIVE)
-                            menuItem2, menuItem2Pos = write(opts[1], self.fontSelected['size'], self.font, colorScheme.MENUACTIVE)
+                            menuItem1, menuItem1Pos = write(opts[0], self.fontDefault['size'], self.font, colorScheme.OPTMENUINACTIVE)
+                            menuItem2, menuItem2Pos = write(opts[1], self.fontSelected['size'], self.font, colorScheme.OPTMENUACTIVE)
                     else:
-                        tag, tagPos = write(tag, self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
-                        menuItem1, menuItem1Pos = write(opts[0], self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
-                        menuItem2, menuItem2Pos = write(opts[1], self.fontDefault['size'], self.font, colorScheme.MENUSWITCHEDOFF)
+                        tag, tagPos = write(tag, self.fontDefault['size'], self.font, colorScheme.GAMEMENUSWITCHEDOFF)
+                        menuItem1, menuItem1Pos = write(opts[0], self.fontDefault['size'], self.font, colorScheme.GAMEMENUSWITCHEDOFF)
+                        menuItem2, menuItem2Pos = write(opts[1], self.fontDefault['size'], self.font, colorScheme.GAMEMENUSWITCHEDOFF)
                     menuItem1Pos.left = tagPos.right + (2 * self.hpad)
                     menuItem2Pos.left = menuItem1Pos.right + self.hpad
                     menuItemWidth = int(sum([x.get_width() for x in (tag, menuItem1, menuItem2)]) + (3 * self.hpad))

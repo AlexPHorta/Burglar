@@ -101,14 +101,20 @@ stones = StoneColors()
 class Colors:
 
     def __init__(self):
-        self.light = {'bgimg': 'bg_light.png', 'bg': '#FFFFFF', 'gbg': (246,175,108), \
-            'tt': (11, 181, 255), 'mn': (76, 152, 193), 'mna': (37, 94, 118), \
-            'mni': (11, 26, 30), 'mns': '#E8C7C4', 'mno': (245, 166, 92), 'omt': '#9C3025', 'sc': (9, 21, 26), \
-            'mnw': (27, 65, 75), 'go': (251, 219, 189)}
-        self.dark = {'bgimg': 'bg_light.png', 'bg': (0, 7, 10), 'gbg': (246,175,108), \
-            'tt': (94, 29, 22), 'mn': (76, 152, 193), 'mna': (37, 94, 118), \
-            'mni': (11, 26, 30), 'mns': (0, 0, 0), 'mno': (245, 166, 92), 'omt': '#9C3025', 'sc': (9, 21, 26), \
-            'mnw': (27, 65, 75), 'go': (251, 219, 189)}
+        self.light = {
+            'mmbg': '#FEFDF6', 'mmtt': '#3F130F', 'mmna': '#193F4E', 'mmni': '#86572A', \
+            'opbg': '#AAAAAA', 'optt': '#AAAAAA', 'opmt': '#AAAAAA', 'opmna': '#AAAAAA', 'opmni': '#AAAAAA', \
+            'gbgimg': 'bg_light.png', 'gbg': (246,175,108), 'gmn': '#AAAAAA', 'gmna': '#AAAAAA', \
+            'gmni': '#AAAAAA', 'gmns': '#AAAAAA', 'gmno': '#AAAAAA', 'gmnw': '#AAAAAA', \
+            'gsc': '#AAAAAA', 'ggo': '#AAAAAA'}
+
+        self.dark = {
+            'mmbg': '#AAAAAA', 'mmtt': '#AAAAAA', 'mmna': '#AAAAAA', 'mmni': '#AAAAAA', \
+            'opbg': '#AAAAAA', 'optt': '#AAAAAA', 'opmt': '#AAAAAA', 'opmna': '#AAAAAA', 'opmni': '#AAAAAA', \
+            'gbgimg': 'bg_light.png', 'gbg': (246,175,108), 'gmn': '#AAAAAA', 'gmna': '#AAAAAA', \
+            'gmni': '#AAAAAA', 'gmns': '#AAAAAA', 'gmno': '#AAAAAA', 'gmnw': '#AAAAAA', \
+            'gsc': '#AAAAAA', 'ggo': '#AAAAAA'}
+
         self.active = 'light'
 
     def setScheme(self, arg = 'light'):
@@ -121,19 +127,31 @@ class Colors:
         else:
             arg = self.light
             self.active = 'light'
-        self.BGIMAGE =              load_png(arg['bgimg'])
-        self.BACKGROUND =           toRGBA(arg['bg']  )
+
+        # Main menu color options
+        self.MAINMENUBG =           toRGBA(arg['mmbg']  )
+        self.MAINMENUTITLE =        toRGBA(arg['mmtt']  )
+        self.MAINMENUACTIVE =       toRGBA(arg['mmna'] )
+        self.MAINMENUINACTIVE =     toRGBA(arg['mmni'] )
+
+        # Options screen color options
+        self.OPTIONSBG =            toRGBA(arg['opbg']  )
+        self.OPTIONSTITLE =         toRGBA(arg['optt']  )
+        self.OPTMENUTAG =           toRGBA(arg['opmt'])
+        self.OPTMENUACTIVE =        toRGBA(arg['opmna']  )
+        self.OPTMENUINACTIVE =      toRGBA(arg['opmni']  )
+
+        # Game color options
+        self.GAMEBGIMAGE =          load_png(arg['gbgimg'])
         self.GAMEBG =               toRGBA(arg['gbg'] )
-        self.TITLE =                toRGBA(arg['tt']  )
-        self.MENU =                 toRGBA(arg['mn']  )
-        self.MENUACTIVE =           toRGBA(arg['mna'] )
-        self.MENUINACTIVE =         toRGBA(arg['mni'] )
-        self.MENUSWITCHEDOFF =      toRGBA(arg['mns'] )
-        self.MENUOFF =              toRGBA(arg['mno'] )
-        self.OPTMENUTAG =           toRGBA(arg['omt'])
-        self.SCORE =                toRGBA(arg['sc']  )
-        self.MENUWARNING =          toRGBA(arg['mnw'] )
-        self.GAMEOVER =             toRGBA(arg['go']  )
+        self.GAMEMENU =             toRGBA(arg['gmn']  )
+        self.GAMEMENUACTIVE =       toRGBA(arg['gmna'] )
+        self.GAMEMENUINACTIVE =     toRGBA(arg['gmni'] )
+        self.GAMEMENUSWITCHEDOFF =  toRGBA(arg['gmns'] )
+        self.GAMEMENUOFF =          toRGBA(arg['gmno'] )
+        self.GAMEMENUWARNING =      toRGBA(arg['gmnw'] )
+        self.GAMESCORE =            toRGBA(arg['gsc']  )
+        self.GAMEOVER =             toRGBA(arg['ggo']  )
 
     def __getstate__(self):
         # Copy the object's state from self.__dict__ which contains
@@ -141,15 +159,15 @@ class Colors:
         # method to avoid modifying the original state.
         state = self.__dict__.copy()
         # Remove the unpicklable entries.
-        del state['BGIMAGE']
+        del state['GAMEBGIMAGE']
         return state
 
     def __setstate__(self, state):
         # Restore instance attributes.
         self.__dict__.update(state)
         if self.active == 'light':
-            self.BGIMAGE = load_png(self.light['bgimg'])
+            self.GAMEBGIMAGE = load_png(self.light['gbgimg'])
         elif self.active == 'dark':
-            self.BGIMAGE = load_png(self.dark['bgimg'])
+            self.GAMEBGIMAGE = load_png(self.dark['gbgimg'])
         else:
-            self.BGIMAGE = load_png(self.light['bgimg'])
+            self.GAMEBGIMAGE = load_png(self.light['gbgimg'])
