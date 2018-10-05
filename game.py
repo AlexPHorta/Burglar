@@ -143,11 +143,13 @@ class Game:
 
         self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help', 'credits'), sizes = (58, 63), \
             bg = colorScheme.MAINMENUBG, mncolors = (colorScheme.MAINMENUINACTIVE, colorScheme.MAINMENUACTIVE), align = 'center')
-        self.gm = SwitchableListMenu(('pause', 'options', 'quit'), sizes = (52, 58, 52), align = 'right')
-        self.rsm = ListMenu(('resume',), sizes = (52, 58), align = 'right')
-        self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), align = 'right')
+        self.gm = SwitchableListMenu(('pause', 'quit'), sizes = (52, 58, 52), \
+            mncolors = (colorScheme.GAMEMENUINACTIVE, colorScheme.GAMEMENUACTIVE), align = 'right')
+        self.rsm = ListMenu(('resume',), sizes = (52, 58), mncolors = (colorScheme.GAMEMENUINACTIVE, colorScheme.GAMEMENUACTIVE), align = 'right')
+        self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), mncolors = (colorScheme.GAMEMENUINACTIVE, colorScheme.GAMEMENUACTIVE), align = 'right')
         self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'), \
-            sizes = (52, 58), align = 'center', bg = colorScheme.OPTIONSBG, hpad = 20, vpad = 20)
+            sizes = (52, 58), align = 'center', bg = colorScheme.OPTIONSBG, \
+            mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), hpad = 20, vpad = 20)
         self.hm = ListMenu(('back',), sizes = (58, 63), align = 'center')
         self.cm = ListMenu(('back',), sizes = (58, 63), align = 'center')
 
@@ -190,6 +192,8 @@ class Game:
             pygame.display.flip()
             pygame.time.wait(10)
 
+        self.splashTrack.stop()
+
         pygame.time.wait(200)
 
     def menuMain(self):
@@ -219,7 +223,7 @@ class Game:
                 self.gm.menuPos.right = 1300
                 self.background.blit(self.gm.menu, self.gm.menuPos)
 
-                warning, warningpos = write('Press CTRL to toggle menu on/off.', 22, 'MankSans-Medium.ttf', colorScheme.MENUWARNING)
+                warning, warningpos = write('Press CTRL to toggle menu on/off.', 22, 'MankSans-Medium.ttf', colorScheme.GAMEMENUWARNING)
 
                 # Print menu warning
                 warningpos.right = right
@@ -316,8 +320,10 @@ class Game:
             self.options()
         elif choice == 'light':
             colorScheme.setScheme('light')
+            # self.optm.assemble()
         elif choice == 'dark':
             colorScheme.setScheme('dark')
+            # self.optm.assemble()
         elif choice == 'help':
             self.activeScreen = 3
             self.gm.switch('off')
@@ -436,7 +442,7 @@ class Game:
         self.fill_rings(self.game.middle, self.middle_ring)
         self.fill_rings(self.game.inner, self.inner_ring)
 
-        self.score = Score('Multicolore.otf', 106, colorScheme.SCORE)
+        self.score = Score('Multicolore.otf', 106, colorScheme.GAMESCORE)
         self.score.updateScore(self.game.points)
 
         if self.music: self.track.play(-1)
@@ -613,6 +619,7 @@ class Game:
         return
 
     def on_cleanup(self):
+        colorScheme.getScheme()
         confs = (colorScheme, self.music, self.sound)
         saveConfigs(confs)
         pygame.quit()

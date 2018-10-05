@@ -102,11 +102,11 @@ class Colors:
 
     def __init__(self):
         self.light = {
-            'mmbg': '#FEFDF6', 'mmtt': '#3F130F', 'mmna': '#193F4E', 'mmni': '#317588', \
-            'opbg': '#FFFFFF', 'optt': '#AAAAAA', 'opmt': '#AAAAAA', 'opmna': '#AAAAAA', 'opmni': '#AAAAAA', \
-            'gbgimg': 'bg_light.png', 'gbg': (246,175,108), 'gmn': '#AAAAAA', 'gmna': '#AAAAAA', \
-            'gmni': '#AAAAAA', 'gmns': '#AAAAAA', 'gmno': '#AAAAAA', 'gmnw': '#AAAAAA', \
-            'gsc': '#AAAAAA', 'ggo': '#AAAAAA'}
+            'mmbg': '#FEFDF6', 'mmtt': '#8C2B21', 'mmna': '#193F4E', 'mmni': '#317588', \
+            'opbg': '#FEFDF6', 'optt': '#8C2B21', 'opmt': '#4E1813', 'opmna': '#193F4E', 'opmni': '#317588', \
+            'gbgimg': 'bg_light.png', 'gbg': '#FFFFFF', 'gmn': '#E0B5B0', 'gmna': '#193F4E', \
+            'gmni': '#317588', 'gmns': '#E0B5B0', 'gmnw': '#050B0D', \
+            'gsc': '#050B0D', 'ggo': '#8C2B21'}
 
         self.dark = {
             'mmbg': '#AAAAAA', 'mmtt': '#AAAAAA', 'mmna': '#AAAAAA', 'mmni': '#AAAAAA', \
@@ -148,10 +148,12 @@ class Colors:
         self.GAMEMENUACTIVE =       toRGBA(arg['gmna'] )
         self.GAMEMENUINACTIVE =     toRGBA(arg['gmni'] )
         self.GAMEMENUSWITCHEDOFF =  toRGBA(arg['gmns'] )
-        self.GAMEMENUOFF =          toRGBA(arg['gmno'] )
         self.GAMEMENUWARNING =      toRGBA(arg['gmnw'] )
         self.GAMESCORE =            toRGBA(arg['gsc']  )
         self.GAMEOVER =             toRGBA(arg['ggo']  )
+
+    def getScheme(self):
+        print(self.__dict__)
 
     def __getstate__(self):
         # Copy the object's state from self.__dict__ which contains

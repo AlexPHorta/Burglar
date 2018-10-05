@@ -61,7 +61,7 @@ try:
     colorScheme = configurations[0]
     # print('Loaded config file.')
 except Exception as e:
-    # print('Cannot load saved configurations: {}'.format(e))
+    print('Cannot load saved configurations: {}'.format(e))
     configurations = None
     colorScheme = Colors()
     colorScheme.setScheme()

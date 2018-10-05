@@ -26,16 +26,15 @@ class ListMenu:
         self.font = str(font)
         self.hpad = hpad
         self.vpad = vpad
+        self.mncolors = mncolors
+        self.bg = bg
 
         try:
-            default, selected = sizes
+            self.defaultOpt, self.selectedOpt = sizes
         except ValueError:
-            default, selected, off = sizes
+            self.defaultOpt, self.selectedOpt, off = sizes
             self.off = off
 
-        self.fontDefault = {'size': default, 'color': mncolors[0]}
-        self.fontSelected = {'size': selected, 'color': mncolors[1]}
-        self.bg = bg
 
     def up(self):
         self.selected = abs((self.selected - 1) % len(self.options))
@@ -47,6 +46,8 @@ class ListMenu:
         return self.signals[self.selected]
 
     def prepare(self):
+        self.fontDefault = {'size': self.defaultOpt, 'color': self.mncolors[0]}
+        self.fontSelected = {'size': self.selectedOpt, 'color': self.mncolors[1]}
         self.toPrint = []
         self.signals = []
         for index, item in enumerate(self.options):
@@ -99,6 +100,8 @@ class SwitchableListMenu(ListMenu):
             self.switchedOn = False
 
     def prepare(self):
+        self.fontDefault = {'size': self.defaultOpt, 'color': self.mncolors[0]}
+        self.fontSelected = {'size': self.selectedOpt, 'color': self.mncolors[1]}
         self.toPrint = []
         self.signals = []
         if not self.switchedOn:
@@ -142,6 +145,8 @@ class FlattenedMenu(ListMenu):
 
 
     def prepare(self):
+        self.fontDefault = {'size': self.defaultOpt, 'color': self.mncolors[0]}
+        self.fontSelected = {'size': self.selectedOpt, 'color': self.mncolors[1]}
         self.toPrint = []
         self.signals = []
         for index, item in enumerate(self.options):
