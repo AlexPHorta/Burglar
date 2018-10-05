@@ -147,7 +147,7 @@ class Game:
             mncolors = (colorScheme.GAMEMENUINACTIVE, colorScheme.GAMEMENUACTIVE), align = 'right')
         self.rsm = ListMenu(('resume',), sizes = (52, 58), mncolors = (colorScheme.GAMEMENUINACTIVE, colorScheme.GAMEMENUACTIVE), align = 'right')
         self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), mncolors = (colorScheme.GAMEMENUINACTIVE, colorScheme.GAMEMENUACTIVE), align = 'right')
-        self.optm = FlattenedMenu(({'Theme': ('light', 'dark')}, {'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'), \
+        self.optm = FlattenedMenu(({'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'), \
             sizes = (52, 58), align = 'center', bg = colorScheme.OPTIONSBG, \
             mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), hpad = 20, vpad = 20)
         self.hm = ListMenu(('back',), sizes = (58, 63), align = 'center')

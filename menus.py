@@ -13,13 +13,13 @@ except ImportError as err:
 
 
 from tools import colorScheme
-from utils import write
+from utils import write, toRGBA
 
 
 class ListMenu:
 
     def __init__(self, opt, align = 'left', font = 'Multicolore.otf', sizes = (10, 10), \
-        bg = None, mncolors = ('#FFFFFF', '#AAAAAA'), hpad = 0, vpad = 0):
+        bg = '#AAAAAA', mncolors = ('#FFFFFF', '#AAAAAA'), hpad = 0, vpad = 0):
         self.options = opt
         self.selected = 0
         self.align = str(align)
@@ -27,7 +27,7 @@ class ListMenu:
         self.hpad = hpad
         self.vpad = vpad
         self.mncolors = mncolors
-        self.bg = bg
+        self.bg = (0, 0, 0, 0)
 
         try:
             self.defaultOpt, self.selectedOpt = sizes
@@ -72,10 +72,7 @@ class ListMenu:
         self.prepare()
         dispBy = 0
         self.menuFrame = pygame.Surface((self.menuWidth, self.menuHeight)).convert_alpha()
-        if self.bg:
-            self.menuFrame.fill(self.bg)
-        else:
-            self.menuFrame.fill((0, 0, 0, 0))
+        self.menuFrame.fill(self.bg)
         for item in self.toPrint:
             if self.align == 'center':
                 item[1].centerx = self.menuFrame.get_rect().centerx
@@ -176,8 +173,8 @@ class FlattenedMenu(ListMenu):
                     menuItem2Pos.left = menuItem1Pos.right + self.hpad
                     menuItemWidth = int(sum([x.get_width() for x in (tag, menuItem1, menuItem2)]) + (3 * self.hpad))
                     menuItemHeight = int(max([x.get_height() for x in (tag, menuItem1, menuItem2)]))
-                    menuItem = pygame.Surface((menuItemWidth, menuItemHeight)).convert()
-                    menuItem.fill(self.bg)
+                    menuItem = pygame.Surface((menuItemWidth, menuItemHeight)).convert_alpha()
+                    menuItem.fill((0, 0, 0, 0))
                     menuItem.blit(tag, (0, 0))
                     menuItem.blit(menuItem1, menuItem1Pos)
                     menuItem.blit(menuItem2, menuItem2Pos)

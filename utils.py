@@ -106,7 +106,7 @@ class Colors:
             'opbg': '#FEFDF6', 'optt': '#8C2B21', 'opmt': '#4E1813', 'opmna': '#193F4E', 'opmni': '#317588', \
             'gbgimg': 'bg_light.png', 'gbg': '#FFFFFF', 'gmn': '#E0B5B0', 'gmna': '#193F4E', \
             'gmni': '#317588', 'gmns': '#E0B5B0', 'gmnw': '#050B0D', \
-            'gsc': '#050B0D', 'ggo': '#8C2B21'}
+            'gsc': '#153441', 'ggo': '#8C2B21'}
 
         self.dark = {
             'mmbg': '#AAAAAA', 'mmtt': '#AAAAAA', 'mmna': '#AAAAAA', 'mmni': '#AAAAAA', \
