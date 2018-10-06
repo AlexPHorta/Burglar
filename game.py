@@ -608,8 +608,14 @@ class Game:
 
             # Blit game over
             if self.gameOver:
+                gOverSemiTrans = load_png('game_over.png')
+                gOverSemiTransPos = gOverSemiTrans.get_rect()
+                gOverSemiTransPos.center = self.frameCENTER
+
                 gOver, gOverpos = write('Game Over', 124, 'Multicolore.otf', colorScheme.GAMEOVER)
                 gOverpos.centerx, gOverpos.centery = self.frame.get_rect().center
+
+                self.background.blit(gOverSemiTrans, gOverSemiTransPos)
 
                 self.background.blit(gOver, gOverpos)
 
