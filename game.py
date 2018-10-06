@@ -285,7 +285,7 @@ class Game:
         self.game = None
 
         # Print Options tag
-        title, titlepos = write('Credits', 96, 'Multicolore.otf', colorScheme.TITLE)
+        title, titlepos = write('Credits', 96, 'Multicolore.otf', colorScheme.OPTIONSTITLE)
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.centery = self.background.get_rect().height / 6
         self.background.blit(title, titlepos)
@@ -539,11 +539,11 @@ class Game:
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_LEFT:
-                    self.help_ = abs((self.help_ - 1) % 5)
+                    self.help_ = abs((self.help_ - 1) % 6)
                     if self.sound: self.flip.play()
                     self.load('help')
                 elif event.key == pygame.K_RIGHT:
-                    self.help_ = abs((self.help_ + 1) % 5)
+                    self.help_ = abs((self.help_ + 1) % 6)
                     if self.sound: self.flip.play()
                     self.load('help')
                 elif event.key == pygame.K_RETURN:
