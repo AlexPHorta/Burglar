@@ -138,7 +138,7 @@ class Game:
         self.gameOn = False
         self.gameOver = False
         self.pause = False
-        self.help_ = 1
+        self.help_ = 0
 
         from menus import ListMenu, SwitchableListMenu, FlattenedMenu
 
