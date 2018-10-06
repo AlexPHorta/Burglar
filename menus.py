@@ -46,8 +46,8 @@ class ListMenu:
         return self.signals[self.selected]
 
     def prepare(self):
-        self.fontDefault = {'size': self.defaultOpt, 'color': self.mncolors[0]}
-        self.fontSelected = {'size': self.selectedOpt, 'color': self.mncolors[1]}
+        self.fontDefault = {'size': self.defaultOpt, 'color': toRGBA(self.mncolors[0])}
+        self.fontSelected = {'size': self.selectedOpt, 'color': toRGBA(self.mncolors[1])}
         self.toPrint = []
         self.signals = []
         for index, item in enumerate(self.options):

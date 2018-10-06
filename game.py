@@ -138,6 +138,7 @@ class Game:
         self.gameOn = False
         self.gameOver = False
         self.pause = False
+        self.help_ = 1
 
         from menus import ListMenu, SwitchableListMenu, FlattenedMenu
 
@@ -150,8 +151,8 @@ class Game:
         self.optm = FlattenedMenu(({'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'), \
             sizes = (52, 58), align = 'center', bg = colorScheme.OPTIONSBG, \
             mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), hpad = 20, vpad = 20)
-        self.hm = ListMenu(('back',), sizes = (58, 63), align = 'center')
-        self.cm = ListMenu(('back',), sizes = (58, 63), align = 'center')
+        self.hm = ListMenu(('back',), sizes = (58, 63), mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), align = 'center')
+        self.cm = ListMenu(('back',), sizes = (58, 63), mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), align = 'center')
 
     def splashScreen(self):
         self.background.fill((0, 0, 0))
@@ -260,14 +261,15 @@ class Game:
     def help(self):
 
         self.game = None
+        helpFile = 'help0{}.png'.format(str(self.help_))
 
-        # Print Options tag
-        title, titlepos = write('Help', 96, 'Multicolore.otf', colorScheme.TITLE)
+        # Print Title
+        title, titlepos = write('Help', 96, 'Multicolore.otf', colorScheme.OPTIONSTITLE)
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.centery = self.background.get_rect().height / 6
         self.background.blit(title, titlepos)
 
-        helpImage = load_png('help01.png')
+        helpImage = load_png(helpFile)
         helpImagePos = helpImage.get_rect()
         helpImagePos.centerx = self.background.get_rect().centerx
         helpImagePos.centery = self.background.get_rect().centery
@@ -327,7 +329,7 @@ class Game:
         elif choice == 'help':
             self.activeScreen = 3
             self.gm.switch('off')
-            self.options()
+            self.help()
         elif choice == 'credits':
             self.activeScreen = 4
             self.gm.switch('off')
@@ -535,9 +537,18 @@ class Game:
         elif self.activeScreen == 3:
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                        if self.sound: self.click.play()
-                        self.load(self.hm.select())
+
+                if event.key == pygame.K_LEFT:
+                    self.help_ = abs((self.help_ - 1) % 5)
+                    if self.sound: self.flip.play()
+                    self.load('help')
+                elif event.key == pygame.K_RIGHT:
+                    self.help_ = abs((self.help_ + 1) % 5)
+                    if self.sound: self.flip.play()
+                    self.load('help')
+                elif event.key == pygame.K_RETURN:
+                    if self.sound: self.click.play()
+                    self.load(self.hm.select())
 
         elif self.activeScreen == 4:
 
