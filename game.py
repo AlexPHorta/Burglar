@@ -465,7 +465,7 @@ class Game:
                 elif event.key == pygame.K_DOWN:
                     self.mm.down()
                     if self.sound: self.flip.play()
-                elif event.key == pygame.K_RETURN: # and self.keyDelay == 0:
+                elif event.key == pygame.K_RETURN:
                     if self.sound: self.click.play()
                     self.load(self.mm.select())
 
@@ -578,7 +578,7 @@ class Game:
         return
 
     def on_render(self):
-        # Empty screen
+        # Empty the screen
         self.screen.blit(self.background, (0, 0))
 
         if self.activeScreen == 0: #self.mainMenu:
@@ -596,7 +596,7 @@ class Game:
 
             # Blit score
             self.score.scorepos.right = 1300
-            self.score.scorepos.top = 50 #self.background.get_rect().centery
+            self.score.scorepos.top = 50
             self.background.blit(self.score.score, self.score.scorepos)
 
             # Blit rings
@@ -636,7 +636,6 @@ class Game:
         return
 
     def on_cleanup(self):
-        colorScheme.getScheme()
         confs = (colorScheme, self.music, self.sound)
         saveConfigs(confs)
         pygame.quit()
@@ -646,9 +645,6 @@ class Game:
         if self.on_init() == False:
             self._running = False
         while self._running:
-            # for event in pygame.event.wait():
-            #     self.on_event(event)
-            # if pygame.event.peek((KEYDOWN, QUIT)):
             self.on_event(pygame.event.wait())
             self.on_loop()
             self.on_render()
