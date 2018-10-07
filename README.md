@@ -1,5 +1,5 @@
 # Burglar
-Burglar is a game in the '3 equals' style.
+Burglar is a game in the 'match 3' style.
 
 ## Credits
 
