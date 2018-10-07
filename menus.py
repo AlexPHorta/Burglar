@@ -195,3 +195,58 @@ class FlattenedMenu(ListMenu):
             return self.signals[self.selected][0][self.active], self.signals[self.selected][1]
         else:
             return (self.signals[self.selected],)
+
+
+class CreditsTextBlock(FlattenedMenu):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def prepare(self):
+        self.fontDefault = {'size': self.defaultOpt, 'color': self.mncolors[0]}
+        self.toPrint = []
+        for key, value in self.options:
+            self.menuItems = []
+            tag, tagPos = write(key, self.fontDefault['size'], self.font, colorScheme.OPTMENUTAG)
+            if not isinstance(value, tuple):
+                menuItem1, menuItem1Pos = write(value, self.fontDefault['size'], self.font, colorScheme.OPTMENUACTIVE)
+                menuItem1Pos.top = tagPos.bottom + self.vpad
+                menuItemWidth = int(max([x.get_width() for x in (tag, menuItem1)]))
+                menuItemHeight = int(sum([x.get_height() for x in (tag, menuItem1)]) + (3 * self.vpad))
+            else:
+                for item in value:
+                    menuItem1, menuItem1Pos = write(item, self.fontDefault['size'], self.font, colorScheme.OPTMENUACTIVE)
+                    menuItem1Pos.top = tagPos.bottom + self.vpad
+                    self.menuItems.append((menuItem1, menuItem1Pos))
+                    menuItemWidth = int(max([x.get_width() for x in (tag, menuItem1)]))
+                    menuItemHeight = int(sum([x.get_height() for x in (tag, menuItem1)]) + (3 * self.vpad))
+
+            menuItem = pygame.Surface((menuItemWidth, menuItemHeight)).convert_alpha()
+            menuItemPos = menuItem.get_rect()
+            menuItem.fill((0, 0, 0, 0))
+
+            tagPos.centerx = menuItemPos.centerx
+            menuItem1Pos.centerx = menuItemPos.centerx
+
+            menuItem.blit(tag, tagPos)
+            if not isinstance(value, tuple):
+                menuItem.blit(menuItem1, menuItem1Pos)
+            else:
+                for index, item in enumerate(self.menuItems):
+                    itemPos = item[0].get_rect()
+                    itemPos.centerx = menuItemPos.centerx
+                    itemPos.top = tagPos.bottom + self.vpad + (item[0].get_height() * (index))
+                    menuItem.blit(item[0], itemPos)
+            self.toPrint.append((menuItem, menuItemPos))
+        self.menuWidth = int(max([x[0].get_width() for x in self.toPrint]))
+        self.menuHeight = int(sum([x[0].get_height() for x in self.toPrint]) + (len(self.toPrint) * self.vpad))
+        return
+
+    def left(self):
+        pass
+
+    def right(self):
+        pass
+
+    def select(self):
+        return (self.signals[self.selected],)

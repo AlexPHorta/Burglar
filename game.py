@@ -140,7 +140,7 @@ class Game:
         self.pause = False
         self.help_ = 0
 
-        from menus import ListMenu, SwitchableListMenu, FlattenedMenu
+        from menus import ListMenu, SwitchableListMenu, FlattenedMenu, CreditsTextBlock
 
         self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help', 'credits'), sizes = (58, 63), \
             bg = colorScheme.MAINMENUBG, mncolors = (colorScheme.MAINMENUINACTIVE, colorScheme.MAINMENUACTIVE), align = 'center')
@@ -152,6 +152,17 @@ class Game:
             sizes = (52, 58), align = 'center', bg = colorScheme.OPTIONSBG, \
             mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), hpad = 20, vpad = 20)
         self.hm = ListMenu(('back',), sizes = (58, 63), mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), align = 'center')
+
+
+        creditsTexts = (('Produced by', 'BUEY - Games and Stuff'), ('Programming, Testing, Artwork, Coffee', 'Alexandre Paloschi'),
+            ('Website', 'www.buey.net.br'), ('Made with', 'Pygame'),
+            ('Music', ('Marcato loop by Shady Dave', 'https://www.freesound.org/people/ShadyDave/')))
+            # ('Sound Effects', ('https://freesound.org/people/DrMinky/sounds/167045/', '(https://creativecommons.org/licenses/by/3.0/)',
+            #     'https://freesound.org/people/kwahmah_02/sounds/256116/', '(https://creativecommons.org/publicdomain/zero/1.0/)',
+            #     'https://freesound.org/people/7778/sounds/202312/', '(https://creativecommons.org/publicdomain/zero/1.0/)',
+            #     'https://freesound.org/people/ShadyDave/sounds/270657/', '(https://creativecommons.org/licenses/by/3.0/)')))
+        self.credits_ = CreditsTextBlock(creditsTexts, sizes = (26, 26), align = 'center', bg = colorScheme.OPTIONSBG, \
+            mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), hpad = 20, vpad = 10)
         self.cm = ListMenu(('back',), sizes = (58, 63), mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), align = 'center')
 
     def splashScreen(self):
@@ -287,18 +298,17 @@ class Game:
         # Print Options tag
         title, titlepos = write('Credits', 96, 'Multicolore.otf', colorScheme.OPTIONSTITLE)
         titlepos.centerx = self.background.get_rect().centerx
-        titlepos.centery = self.background.get_rect().height / 6
+        titlepos.centery = self.background.get_rect().height / 8
         self.background.blit(title, titlepos)
 
-        helpImage = load_png('help01.png')
-        helpImagePos = helpImage.get_rect()
-        helpImagePos.centerx = self.background.get_rect().centerx
-        helpImagePos.centery = self.background.get_rect().centery
-        self.background.blit(helpImage, helpImagePos)
+        self.credits_.assemble()
+        self.credits_.menuPos.centerx = self.background.get_rect().centerx
+        self.credits_.menuPos.centery = self.background.get_rect().centery
+        self.background.blit(self.credits_.menu, self.credits_.menuPos)
 
         self.cm.assemble()
         self.cm.menuPos.centerx = self.background.get_rect().centerx
-        self.cm.menuPos.centery = 5 * (self.background.get_rect().height / 6)
+        self.cm.menuPos.centery = 7 * (self.background.get_rect().height / 8)
         self.background.blit(self.cm.menu, self.cm.menuPos)
 
     def load(self, choice, option = None):
