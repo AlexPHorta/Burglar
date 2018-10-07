@@ -110,6 +110,7 @@ class Game:
             self.flip = pygame.mixer.Sound(os.path.join('sounds','167045__drminky__slime-jump.wav'))
             self.click = pygame.mixer.Sound(os.path.join('sounds','256116__kwahmah-02__click.wav'))
             self.toggle = pygame.mixer.Sound(os.path.join('sounds','202312__7778__dbl-click.wav'))
+            self.gOverSound = pygame.mixer.Sound(os.path.join('sounds','145438__soughtaftersounds__old-music-box-5.wav'))
         except:
             raise UserWarning("could not load or play soundfiles in 'sounds' folder :-(")
 
@@ -457,7 +458,9 @@ class Game:
         self.score = Score('Multicolore.otf', 106, colorScheme.GAMESCORE)
         self.score.updateScore(self.game.points)
 
-        if self.music: self.track.play(-1)
+        if self.music:
+            self.track.play(-1)
+            self.gOverSoundPlayed = False
 
         self._running = True
 
@@ -584,6 +587,13 @@ class Game:
             self.score.updateScore(self.game.points)
 
             self.gameOver = self.game.game_over
+
+            if self.gameOver:
+                self.track.stop()
+
+                if not self.gOverSoundPlayed:
+                    self.gOverSound.play()
+                    self.gOverSoundPlayed = True
 
         return
 
