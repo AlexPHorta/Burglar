@@ -1,3 +1,4 @@
+#
 # Burglar
 Burglar is a game in the 'match 3' style.
 
