@@ -19,6 +19,7 @@
 #
 # Website - http://www.buey.net.br/burglar
 
+
 try:
     import sys
     import random
@@ -33,6 +34,9 @@ except ImportError as err:
     sys.exit(2)
 
 from collections import namedtuple
+from itertools import islice
+
+# from tools import loadConfigs
 
 
 # The center of the screen. Makes it easier to place the stones.
@@ -54,6 +58,15 @@ def load_png(name):
         raise SystemExit(message)
     return image
 
+def blit_alpha(target, source, location, opacity):
+    x = location[0]
+    y = location[1]
+    temp = pygame.Surface((source.get_width(), source.get_height())).convert()
+    temp.blit(target, (-x, -y))
+    temp.blit(source, (0, 0))
+    temp.set_alpha(opacity)
+    target.blit(temp, location)
+
 def write(text, size, font = None, color = (255, 255, 255)):
     if not font:
         font = pygame.font.SysFont('helvetica', size)
@@ -68,6 +81,21 @@ def write(text, size, font = None, color = (255, 255, 255)):
     textpos = text.get_rect()
     return text, textpos
 
+def toRGBA(color):
+    if isinstance(color, tuple) and (len(color) == 3 or len(color) == 4):
+        return color
+    color = list(str(color))
+    it = zip(islice(color, 1, len(color) - 1, 2), islice(color, 2, len(color), 2))
+    if color[0] == '#':
+        r = int(''.join(next(it)), base = 16)
+        g = int(''.join(next(it)), base = 16)
+        b = int(''.join(next(it)), base = 16)
+        try:
+            a = int(''.join(next(it)), base = 16)
+            return (r, g, b, a)
+        except StopIteration:
+            return (r, g, b)
+
 
 class StoneColors:
 
@@ -77,7 +105,7 @@ class StoneColors:
         self.BLUE = load_png('blue_stone.png')
         self.GREEN = load_png('green_stone.png')
         self.YELLOW = load_png('yellow_stone.png')
-        self.BROWN = load_png('brown_stone.png')
+        self.PURPLE = load_png('purple_stone.png')
 
 stones = StoneColors()
 
@@ -85,20 +113,75 @@ stones = StoneColors()
 class Colors:
 
     def __init__(self):
-        self.setScheme()
+        self.light = {
+            'mmbg': '#FEFDF6', 'mmtt': '#8C2B21', 'mmna': '#193F4E', 'mmni': '#317588', \
+            'opbg': '#FEFDF6', 'optt': '#8C2B21', 'opmt': '#4E1813', 'opmna': '#193F4E', 'opmni': '#317588', \
+            'gbgimg': 'bg_light.png', 'gbg': '#FFFFFF', 'gmn': '#E0B5B0', 'gmna': '#193F4E', \
+            'gmni': '#317588', 'gmns': '#E0B5B0', 'gmnw': '#050B0D', \
+            'gsc': '#153441', 'ggo': '#8C2B21'}
 
-    def setScheme(self, bgimg = 'bg_light.png', bg = (0, 7, 10), gbg = (246,175,108), tt = (11, 181, 255), \
-            mn = (76, 152, 193), mna = (37, 94, 118), mno = (245, 166, 92), \
-            sc = (9, 21, 26), mnw = (27, 65, 75), go = (251, 219, 189)):
-        self.BGIMAGE = load_png(str(bgimg))
-        self.BACKGROUND = bg
-        self.GAMEBG = gbg
-        self.TITLE = tt
-        self.MENU = mn
-        self.MENUACTIVE = mna
-        self.MENUOFF = mno
-        self.SCORE = sc
-        self.MENUWARNING = mnw
-        self.GAMEOVER = go
+        self.dark = {
+            'mmbg': '#AAAAAA', 'mmtt': '#AAAAAA', 'mmna': '#AAAAAA', 'mmni': '#AAAAAA', \
+            'opbg': '#AAAAAA', 'optt': '#AAAAAA', 'opmt': '#AAAAAA', 'opmna': '#AAAAAA', 'opmni': '#AAAAAA', \
+            'gbgimg': 'bg_light.png', 'gbg': (246,175,108), 'gmn': '#AAAAAA', 'gmna': '#AAAAAA', \
+            'gmni': '#AAAAAA', 'gmns': '#AAAAAA', 'gmno': '#AAAAAA', 'gmnw': '#AAAAAA', \
+            'gsc': '#AAAAAA', 'ggo': '#AAAAAA'}
 
-colorScheme = Colors()
+        self.active = 'light'
+
+    def setScheme(self, arg = 'light'):
+        if arg == 'light':
+            arg = self.light
+            self.active = 'light'
+        elif arg == 'dark':
+            arg = self.dark
+            self.active = 'dark'
+        else:
+            arg = self.light
+            self.active = 'light'
+
+        # Main menu color options
+        self.MAINMENUBG =           toRGBA(arg['mmbg']  )
+        self.MAINMENUTITLE =        toRGBA(arg['mmtt']  )
+        self.MAINMENUACTIVE =       toRGBA(arg['mmna'] )
+        self.MAINMENUINACTIVE =     toRGBA(arg['mmni'] )
+
+        # Options screen color options
+        self.OPTIONSBG =            toRGBA(arg['opbg']  )
+        self.OPTIONSTITLE =         toRGBA(arg['optt']  )
+        self.OPTMENUTAG =           toRGBA(arg['opmt'])
+        self.OPTMENUACTIVE =        toRGBA(arg['opmna']  )
+        self.OPTMENUINACTIVE =      toRGBA(arg['opmni']  )
+
+        # Game color options
+        self.GAMEBGIMAGE =          load_png(arg['gbgimg'])
+        self.GAMEBG =               toRGBA(arg['gbg'] )
+        self.GAMEMENU =             toRGBA(arg['gmn']  )
+        self.GAMEMENUACTIVE =       toRGBA(arg['gmna'] )
+        self.GAMEMENUINACTIVE =     toRGBA(arg['gmni'] )
+        self.GAMEMENUSWITCHEDOFF =  toRGBA(arg['gmns'] )
+        self.GAMEMENUWARNING =      toRGBA(arg['gmnw'] )
+        self.GAMESCORE =            toRGBA(arg['gsc']  )
+        self.GAMEOVER =             toRGBA(arg['ggo']  )
+
+    def getScheme(self):
+        print(self.__dict__)
+
+    def __getstate__(self):
+        # Copy the object's state from self.__dict__ which contains
+        # all our instance attributes. Always use the dict.copy()
+        # method to avoid modifying the original state.
+        state = self.__dict__.copy()
+        # Remove the unpicklable entries.
+        del state['GAMEBGIMAGE']
+        return state
+
+    def __setstate__(self, state):
+        # Restore instance attributes.
+        self.__dict__.update(state)
+        if self.active == 'light':
+            self.GAMEBGIMAGE = load_png(self.light['gbgimg'])
+        elif self.active == 'dark':
+            self.GAMEBGIMAGE = load_png(self.dark['gbgimg'])
+        else:
+            self.GAMEBGIMAGE = load_png(self.light['gbgimg'])
