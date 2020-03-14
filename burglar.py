@@ -58,13 +58,19 @@ class Stone(pygame.sprite.Sprite):
     Functions: update
     Attributes: area"""
 
-    def __init__(self, image = None, x = 0, y = 0, center = None, tag = None):
+    def __init__(self,
+        image = None,
+        x = 0,
+        y = 0,
+        center = None,
+        tag = None):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         if (x, y) == center:
             self.rect = self.image.get_rect(center = center)
         else:
-            self.rect = self.image.get_rect(center = (center.x + x, center.y + y))
+            self.rect = self.image.get_rect(center = (center.x + x,
+                center.y + y))
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
 
@@ -78,14 +84,19 @@ class Stone(pygame.sprite.Sprite):
 
 class Score:
 
-    def __init__(self, font = None, size = 10, color = (0, 0, 0), bgcolor = None):
+    def __init__(self,
+        font = None,
+        size = 10,
+        color = (0, 0, 0),
+        bgcolor = None):
         fullname = os.path.join('fonts', font)
         self.font = pygame.font.Font(fullname, size)
         self.color = color
         self.bgcolor = bgcolor
         self.points = 0
         if bgcolor:
-            self.score = self.font.render(str(self.points), True, self.color, self.bgcolor)
+            self.score = self.font.render(
+                str(self.points), True, self.color, self.bgcolor)
         else:
             self.score = self.font.render(str(self.points), True, self.color)
         self.score = self.score.convert_alpha()
@@ -93,7 +104,8 @@ class Score:
 
     def updateScore(self, newScore):
         self.points = newScore
-        self.score = self.font.render(str(self.points), True, self.color, self.bgcolor)
+        self.score = self.font.render(
+            str(self.points), True, self.color, self.bgcolor)
         self.score = self.score.convert_alpha()
         self.scorepos = self.score.get_rect()
         return
@@ -116,14 +128,21 @@ class Game:
         self.track = pygame.mixer.music
 
         try:
-            self.track.load(os.path.join('sounds', '392395__shadydave__cello-marcato-loop.wav'))
-            self.splashTrack = pygame.mixer.Sound(os.path.join('sounds', '270657__shadydave__deep-bass-growl.wav'))
-            self.flip = pygame.mixer.Sound(os.path.join('sounds','167045__drminky__slime-jump.wav'))
-            self.click = pygame.mixer.Sound(os.path.join('sounds','256116__kwahmah-02__click.wav'))
-            self.toggle = pygame.mixer.Sound(os.path.join('sounds','202312__7778__dbl-click.wav'))
-            self.gOverSound = pygame.mixer.Sound(os.path.join('sounds','145438__soughtaftersounds__old-music-box-5.wav'))
+            self.track.load(os.path.join(
+                'sounds', '392395__shadydave__cello-marcato-loop.wav'))
+            self.splashTrack = pygame.mixer.Sound(os.path.join(
+                'sounds', '270657__shadydave__deep-bass-growl.wav'))
+            self.flip = pygame.mixer.Sound(os.path.join(
+                'sounds','167045__drminky__slime-jump.wav'))
+            self.click = pygame.mixer.Sound(os.path.join(
+                'sounds','256116__kwahmah-02__click.wav'))
+            self.toggle = pygame.mixer.Sound(os.path.join(
+                'sounds','202312__7778__dbl-click.wav'))
+            self.gOverSound = pygame.mixer.Sound(os.path.join(
+                'sounds','145438__soughtaftersounds__old-music-box-5.wav'))
         except:
-            raise UserWarning("could not load or play soundfiles in 'sounds' folder :-(")
+            raise UserWarning(
+                "could not load or play soundfiles in 'sounds' folder :-(")
 
         if configurations:
             self.music = configurations[1]
@@ -134,7 +153,8 @@ class Game:
 
     def on_init(self):
 
-        self.screen = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self.screen = pygame.display.set_mode(
+            self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
 
@@ -152,30 +172,98 @@ class Game:
         self.pause = False
         self.help_ = 0
 
-        from menus import ListMenu, SwitchableListMenu, FlattenedMenu, CreditsTextBlock
+        from menus import (
+            ListMenu,
+            SwitchableListMenu,
+            FlattenedMenu,
+            CreditsTextBlock,
+            )
 
-        self.mm = ListMenu(('easy', 'normal', 'hard', 'options', 'help', 'credits'), sizes = (58, 63), \
-            bg = colorScheme.MAINMENUBG, mncolors = (colorScheme.MAINMENUINACTIVE, colorScheme.MAINMENUACTIVE), align = 'center')
-        self.gm = SwitchableListMenu(('pause', 'quit'), sizes = (52, 58, 52), \
-            mncolors = (colorScheme.GAMEMENUINACTIVE, colorScheme.GAMEMENUACTIVE), align = 'right')
-        self.rsm = ListMenu(('resume',), sizes = (52, 58), mncolors = (colorScheme.GAMEMENUINACTIVE, colorScheme.GAMEMENUACTIVE), align = 'right')
-        self.govm = ListMenu((('new game', self.level), 'back'), sizes = (52, 58), mncolors = (colorScheme.GAMEMENUINACTIVE, colorScheme.GAMEMENUACTIVE), align = 'right')
-        self.optm = FlattenedMenu(({'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'), \
-            sizes = (52, 58), align = 'center', bg = colorScheme.OPTIONSBG, \
-            mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), hpad = 20, vpad = 20)
-        self.hm = ListMenu(('back',), sizes = (58, 63), mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), align = 'center')
+        self.mm = ListMenu(
+            ('easy', 'normal', 'hard', 'options', 'help', 'credits'),
+            sizes = (58, 63),
+            bg = colorScheme.MAINMENUBG,
+            mncolors = (
+                colorScheme.MAINMENUINACTIVE,
+                colorScheme.MAINMENUACTIVE),
+            align = 'center'
+            )
+        self.gm = SwitchableListMenu(
+            ('pause', 'quit'),
+            sizes = (52, 58, 52),
+            mncolors = (
+                colorScheme.GAMEMENUINACTIVE,
+                colorScheme.GAMEMENUACTIVE),
+            align = 'right',
+            )
+        self.rsm = ListMenu(
+            ('resume',),
+            sizes = (52, 58),
+            mncolors = (
+                colorScheme.GAMEMENUINACTIVE,
+                colorScheme.GAMEMENUACTIVE),
+            align = 'right',
+            )
+        self.govm = ListMenu(
+            (('new game', self.level), 'back'),
+            sizes = (52, 58),
+            mncolors = (
+                colorScheme.GAMEMENUINACTIVE,
+                colorScheme.GAMEMENUACTIVE),
+            align = 'right',
+            )
+        self.optm = FlattenedMenu(
+            ({'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'),
+            sizes = (52, 58),
+            align = 'center',
+            bg = colorScheme.OPTIONSBG,
+            mncolors = (
+                colorScheme.OPTMENUINACTIVE,
+                colorScheme.OPTMENUACTIVE),
+            hpad = 20,
+            vpad = 20,
+            )
+        self.hm = ListMenu(
+            ('back',),
+            sizes = (58, 63),
+            mncolors = (
+                colorScheme.OPTMENUINACTIVE,
+                colorScheme.OPTMENUACTIVE),
+            align = 'center',
+            )
 
-
-        creditsTexts = (('Produced by', 'BUEY - Games and Stuff'), ('Programming, Testing, Artwork, Coffee', 'Alexandre Paloschi'),
+        creditsTexts = (
+            ('Produced by', 'BUEY - Games and Stuff'),
+            ('Programming, Testing, Artwork, Coffee', 'Alexandre Paloschi'),
             ('Website', 'www.buey.net.br'), ('Made with', 'Pygame'),
-            ('Music', ('Marcato loop by Shady Dave', 'https://www.freesound.org/people/ShadyDave/')))
+            ('Music', (
+                'Marcato loop by Shady Dave',
+                'https://www.freesound.org/people/ShadyDave/'))
+            )
             # ('Sound Effects', ('https://freesound.org/people/DrMinky/sounds/167045/', '(https://creativecommons.org/licenses/by/3.0/)',
             #     'https://freesound.org/people/kwahmah_02/sounds/256116/', '(https://creativecommons.org/publicdomain/zero/1.0/)',
             #     'https://freesound.org/people/7778/sounds/202312/', '(https://creativecommons.org/publicdomain/zero/1.0/)',
             #     'https://freesound.org/people/ShadyDave/sounds/270657/', '(https://creativecommons.org/licenses/by/3.0/)')))
-        self.credits_ = CreditsTextBlock(creditsTexts, sizes = (26, 26), align = 'center', bg = colorScheme.OPTIONSBG, \
-            mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), hpad = 20, vpad = 10)
-        self.cm = ListMenu(('back',), sizes = (58, 63), mncolors = (colorScheme.OPTMENUINACTIVE, colorScheme.OPTMENUACTIVE), align = 'center')
+
+        self.credits_ = CreditsTextBlock(
+            creditsTexts,
+            sizes = (26, 26),
+            align = 'center',
+            bg = colorScheme.OPTIONSBG,
+            mncolors = (
+                colorScheme.OPTMENUINACTIVE,
+                colorScheme.OPTMENUACTIVE),
+            hpad = 20,
+            vpad = 10,
+            )
+        self.cm = ListMenu(
+            ('back',),
+            sizes = (58, 63),
+            mncolors = (
+                colorScheme.OPTMENUINACTIVE,
+                colorScheme.OPTMENUACTIVE),
+            align = 'center',
+            )
 
     def splashScreen(self):
         self.background.fill((0, 0, 0))
