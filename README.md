@@ -15,3 +15,6 @@ Marcato loop by Shady Dave found on https://www.freesound.org/people/ShadyDave/
 
 ### Hacks
 Image with per pixel transparency blitted on lowered transparency surface: https://nerdparadise.com/programming/pygameblitopacity
+
+## Concept
+http://www.buey.net.br
