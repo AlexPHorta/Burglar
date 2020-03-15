@@ -30,7 +30,7 @@ try:
     from socket import *
     from pygame.locals import *
 except ImportError as err:
-    print("Couldn't load module: {}.".format(err))
+    print(f"Couldn't load module: {err}.")
     sys.exit(2)
 
 
@@ -40,8 +40,16 @@ from utils import write, toRGBA
 
 class ListMenu:
 
-    def __init__(self, opt, align = 'left', font = 'Multicolore.otf', sizes = (10, 10), \
-        bg = '#AAAAAA', mncolors = ('#FFFFFF', '#AAAAAA'), hpad = 0, vpad = 0):
+    def __init__(self,
+        opt,
+        align = 'left',
+        font = 'Multicolore.otf',
+        sizes = (10, 10),
+        bg = '#AAAAAA',
+        mncolors = ('#FFFFFF', '#AAAAAA'),
+        hpad = 0,
+        vpad = 0
+        ):
         self.options = opt
         self.selected = 0
         self.align = str(align)

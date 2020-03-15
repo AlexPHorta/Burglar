@@ -586,105 +586,108 @@ class Game:
         if event.type == pygame.QUIT:
             self._running = False
 
-        if self.activeScreen == 0: #self.mainMenu:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    self.mm.up()
-                    if self.sound: self.flip.play()
-                elif event.key == pygame.K_DOWN:
-                    self.mm.down()
-                    if self.sound: self.flip.play()
-                elif event.key == pygame.K_RETURN:
-                    if self.sound: self.click.play()
-                    self.load(self.mm.select())
+        def main_menu(event_):
+            if event_.key == pygame.K_UP:
+                self.mm.up()
+                if self.sound: self.flip.play()
+            elif event_.key == pygame.K_DOWN:
+                self.mm.down()
+                if self.sound: self.flip.play()
+            elif event_.key == pygame.K_RETURN:
+                if self.sound: self.click.play()
+                self.load(self.mm.select())
 
-        elif self.activeScreen == 1: #self.optionsScreen:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    self.optm.up()
-                    if self.sound: self.flip.play()
-                elif event.key == pygame.K_DOWN:
-                    self.optm.down()
-                    if self.sound: self.flip.play()
-                if event.key == pygame.K_LEFT:
-                    self.optm.left()
-                elif event.key == pygame.K_RIGHT:
-                    self.optm.right()
-                elif event.key == pygame.K_RETURN:
-                    self.load(*self.optm.select())
+        def options_screen(event_):
+            if event_.key == pygame.K_UP:
+                self.optm.up()
+                if self.sound: self.flip.play()
+            elif event_.key == pygame.K_DOWN:
+                self.optm.down()
+                if self.sound: self.flip.play()
+            if event_.key == pygame.K_LEFT:
+                self.optm.left()
+            elif event_.key == pygame.K_RIGHT:
+                self.optm.right()
+            elif event_.key == pygame.K_RETURN:
+                self.load(*self.optm.select())
 
-        elif self.activeScreen == 2: #self.gameOn:
-
+        def game_on(event_):
             # Check if user pressed the right keys, turn things accordingly
-            if event.type == pygame.KEYDOWN:
+            if not (self.gameOver or self.pause):
+                if (event_.key == pygame.K_LEFT) or (event_.key == pygame.K_RIGHT):
+                    self.game.where_to_turn(self.gameKeys[pygame.key.name(event_.key)])
+                    self.game.new_round()
 
-                if not (self.gameOver or self.pause):
-                    if (event.key == pygame.K_LEFT) or (event.key == pygame.K_RIGHT):
-                        self.game.where_to_turn(self.gameKeys[pygame.key.name(event.key)])
-                        self.game.new_round()
+                    if self.game.current_bag == []:
+                        self.game.bag()
 
-                        if self.game.current_bag == []:
-                            self.game.bag()
+                    self.game.insert_stone()
 
-                        self.game.insert_stone()
+                elif (event_.key == pygame.K_RCTRL) or (event_.key == pygame.K_LCTRL):
+                    if self.gm.switchedOn:
+                        if self.sound: self.toggle.play()
+                        self.gm.switch('off')
+                    else:
+                        if self.sound: self.toggle.play()
+                        self.gm.switch('on')
 
-                    elif (event.key == pygame.K_RCTRL) or (event.key == pygame.K_LCTRL):
-                        if self.gm.switchedOn:
-                            if self.sound: self.toggle.play()
-                            self.gm.switch('off')
-                        else:
-                            if self.sound: self.toggle.play()
-                            self.gm.switch('on')
-
-                if self.gameOver:
-                    if event.key == pygame.K_UP:
-                        self.govm.up()
-                        if self.sound: self.flip.play()
-                    elif event.key == pygame.K_DOWN:
-                        self.govm.down()
-                        if self.sound: self.flip.play()
-                    elif event.key == pygame.K_RETURN:
-                        if self.sound: self.click.play()
-                        self.load(self.govm.select())
-
-                if self.pause:
-                    if event.key == pygame.K_RETURN:
-                        if self.sound: self.click.play()
-                        self.load(self.rsm.select())
-
-                if self.gm.switchedOn:
-                    if event.key == pygame.K_UP:
-                        self.gm.up()
-                        if self.sound: self.flip.play()
-                    elif event.key == pygame.K_DOWN:
-                        self.gm.down()
-                        if self.sound: self.flip.play()
-                    elif event.key == pygame.K_RETURN:
-                        if self.sound: self.click.play()
-                        self.load(self.gm.select())
-
-        elif self.activeScreen == 3:
-
-            if event.type == pygame.KEYDOWN:
-
-                if event.key == pygame.K_LEFT:
-                    self.help_ = abs((self.help_ - 1) % 6)
+            if self.gameOver:
+                if event_.key == pygame.K_UP:
+                    self.govm.up()
                     if self.sound: self.flip.play()
-                    self.load('help')
-                elif event.key == pygame.K_RIGHT:
-                    self.help_ = abs((self.help_ + 1) % 6)
+                elif event_.key == pygame.K_DOWN:
+                    self.govm.down()
                     if self.sound: self.flip.play()
-                    self.load('help')
-                elif event.key == pygame.K_RETURN:
+                elif event_.key == pygame.K_RETURN:
                     if self.sound: self.click.play()
-                    self.load(self.hm.select())
+                    self.load(self.govm.select())
 
-        elif self.activeScreen == 4:
+            if self.pause:
+                if event_.key == pygame.K_RETURN:
+                    if self.sound: self.click.play()
+                    self.load(self.rsm.select())
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                        if self.sound: self.click.play()
-                        self.load(self.cm.select())
+            if self.gm.switchedOn:
+                if event_.key == pygame.K_UP:
+                    self.gm.up()
+                    if self.sound: self.flip.play()
+                elif event_.key == pygame.K_DOWN:
+                    self.gm.down()
+                    if self.sound: self.flip.play()
+                elif event_.key == pygame.K_RETURN:
+                    if self.sound: self.click.play()
+                    self.load(self.gm.select())
+
+        def help_screen(event_):
+            if event_.key == pygame.K_LEFT:
+                self.help_ = abs((self.help_ - 1) % 6)
+                if self.sound: self.flip.play()
+                self.load('help')
+            elif event_.key == pygame.K_RIGHT:
+                self.help_ = abs((self.help_ + 1) % 6)
+                if self.sound: self.flip.play()
+                self.load('help')
+            elif event_.key == pygame.K_RETURN:
+                if self.sound: self.click.play()
+                self.load(self.hm.select())
+
+        def credits_screen(event_):
+            if event_.key == pygame.K_RETURN:
+                    if self.sound: self.click.play()
+                    self.load(self.cm.select())
+
+        screens = {
+            0: main_menu,
+            1: options_screen,
+            2: game_on,
+            3: help_screen,
+            4: credits_screen,
+        }
+
+        if event.type == pygame.KEYDOWN:
+            screens[self.activeScreen](event)
+
+        return
 
     def on_loop(self):
 
@@ -796,21 +799,15 @@ class Game:
         self.on_cleanup()
 
     def fill_rings(self, engine_ring, screen_ring):
-        for indice, hole in enumerate(engine_ring):
-            if engine_ring[indice] == 0:
-                screen_ring[indice].updateImg(stones.BLANK)
-            elif engine_ring[indice] == 1:
-                screen_ring[indice].updateImg(stones.RED)
-            elif engine_ring[indice] == 2:
-                screen_ring[indice].updateImg(stones.BLUE)
-            elif engine_ring[indice] == 3:
-                screen_ring[indice].updateImg(stones.GREEN)
-            elif engine_ring[indice] == 4:
-                screen_ring[indice].updateImg(stones.YELLOW)
-            elif engine_ring[indice] == 5:
-                screen_ring[indice].updateImg(stones.PURPLE)
-            else:
-                continue
+        stones_ = {
+            0: stones.BLANK,
+            1: stones.RED,
+            2: stones.BLUE,
+            3: stones.GREEN,
+            4: stones.YELLOW,
+            5: stones.PURPLE,}
+        for index, hole in enumerate(engine_ring):
+            screen_ring[index].updateImg(stones_[hole])
         return
 
 
