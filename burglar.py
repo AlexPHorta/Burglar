@@ -736,7 +736,12 @@ class Game:
             self.background.blit(self.score.score, self.score.scorepos)
 
             # Blit rings
-            for ring in (self.big_outer_ring, self.outer_ring, self.middle_ring, self.inner_ring):
+            for ring in (
+                self.big_outer_ring,
+                self.outer_ring,
+                self.middle_ring,
+                self.inner_ring,
+                ):
                 for element in ring:
                     self.background.blit(element.image, element.rect)
 
@@ -748,7 +753,11 @@ class Game:
                 gOverSemiTransPos = gOverSemiTrans.get_rect()
                 gOverSemiTransPos.center = self.frameCENTER
 
-                gOver, gOverpos = write('Game Over', 124, 'Multicolore.otf', colorScheme.GAMEOVER)
+                gOver, gOverpos = write(
+                    'Game Over', 124,
+                    'Multicolore.otf',
+                    colorScheme.GAMEOVER,
+                    )
                 gOverpos.centerx, gOverpos.centery = self.frame.get_rect().center
 
                 self.background.blit(gOverSemiTrans, gOverSemiTransPos)
