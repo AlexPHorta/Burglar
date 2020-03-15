@@ -27,20 +27,19 @@ class GameEngine_Easy:
     def __init__(self, inner = None, middle = None, outer = None, bag = None,
         points = 0, no_trades = False, one_place_to_insert = False, game_over = False):
         if not inner:
-            self.inner_ring = [0, 0, 0, 0]
+            self.inner_ring = [0] * 4
         else:
             self.inner_ring = inner
         if not middle:
-            self.middle_ring = [0, 0, 0, 0, 0, 0, 0, 0]
+            self.middle_ring = [0] * 8
         else:
             self.middle_ring = middle
         if not outer:
-            self.outer_ring = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.outer_ring = [0] * 16
         else:
             self.outer_ring = outer
         if not outer:
-            self.big_outer_ring = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.big_outer_ring = [0] * 32
         else:
             self.big_outer_ring = outer
         self._bag = bag
@@ -49,6 +48,11 @@ class GameEngine_Easy:
         self.no_trades = no_trades
         self.one_place_to_insert = one_place_to_insert
         self.game_over = game_over
+        self.blanks = sum(map(len, (
+            self.inner_ring,
+            self.middle_ring,
+            self.outer_ring,
+            self.big_outer_ring,)))
 
     def __str__(self):
         return "%s(direction: %r; inner: %r;middle: %r;outer: %r)" % (self.__class__,
@@ -90,22 +94,22 @@ class GameEngine_Easy:
         return self.current_bag
 
     def insert_stone(self):
-        ok = False
+        done = False
         where_to_insert = None
 
-        while not ok:
+        while not done:
             if self.inner.count(0) == 0:
-                ok = True
+                done = True
             else:
                 where_to_insert = random.randrange(4)
                 if self.inner[where_to_insert] != 0:
                     continue
                 else:
                     self.inner[where_to_insert] = self._bag.pop()
-                    ok = True
+                    self.blanks -= 1
+                    done = True
 
-        if max(self.inner.count(0), self.middle.count(0), self.outer.count(0), \
-            self.big_outer.count(0)) == 0:
+        if self.blanks == 0:
             self.game_over = True
 
         return where_to_insert
@@ -196,6 +200,7 @@ class GameEngine_Easy:
         points = 0
         for item in mapping:
             points += item[2] * 10
+            self.blanks += item[2]
         return points
 
     def new_round(self):

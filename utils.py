@@ -82,7 +82,7 @@ def write(text, size, font = None, color = (255, 255, 255)):
     return text, textpos
 
 def toRGBA(color):
-    if isinstance(color, tuple) and (len(color) == 3 or len(color) == 4):
+    if isinstance(color, tuple) and len(color) in (3, 4):
         return color
     color = list(str(color))
     it = zip(islice(color, 1, len(color) - 1, 2), islice(color, 2, len(color), 2))
