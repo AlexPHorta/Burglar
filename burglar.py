@@ -335,17 +335,22 @@ class Game:
                 self.gm.menuPos.right = 1300
                 self.background.blit(self.gm.menu, self.gm.menuPos)
 
-                warning, warningpos = write('Press CTRL to toggle menu on/off.', 22, 'MankSans-Medium.ttf', colorScheme.GAMEMENUWARNING)
+                warning, warningpos = write(
+                    'Press CTRL to toggle menu on/off.', 22,
+                    'MankSans-Medium.ttf',
+                    colorScheme.GAMEMENUWARNING)
 
                 # Print menu warning
                 warningpos.right = right
                 warningpos.bottom = 950
                 self.background.blit(warning, warningpos)
+
             else:
                 self.rsm.assemble()
                 self.rsm.menuPos.bottom = bottommenupos
                 self.rsm.menuPos.right = 1300
                 self.background.blit(self.rsm.menu, self.rsm.menuPos)
+
         else:
             self.govm.options = (('new game', self.level), 'back') # Ugly, ugly, ugly!!!!!
             self.govm.assemble()
@@ -359,7 +364,11 @@ class Game:
         self.game = None
 
         # Print Options tag
-        title, titlepos = write('Options', 96, 'Multicolore.otf', colorScheme.OPTIONSTITLE)
+        title, titlepos = write(
+            'Options', 96,
+            'Multicolore.otf',
+            colorScheme.OPTIONSTITLE,
+            )
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.centery = self.background.get_rect().height / 3
         self.background.blit(title, titlepos)
@@ -375,7 +384,11 @@ class Game:
         helpFile = 'help0{}.png'.format(str(self.help_))
 
         # Print Title
-        title, titlepos = write('Help', 96, 'Multicolore.otf', colorScheme.OPTIONSTITLE)
+        title, titlepos = write(
+            'Help', 96,
+            'Multicolore.otf',
+            colorScheme.OPTIONSTITLE,
+            )
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.centery = self.background.get_rect().height / 6
         self.background.blit(title, titlepos)
@@ -396,7 +409,11 @@ class Game:
         self.game = None
 
         # Print Options tag
-        title, titlepos = write('Credits', 96, 'Multicolore.otf', colorScheme.OPTIONSTITLE)
+        title, titlepos = write(
+            'Credits', 96,
+            'Multicolore.otf',
+            colorScheme.OPTIONSTITLE,
+            )
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.centery = self.background.get_rect().height / 8
         self.background.blit(title, titlepos)
