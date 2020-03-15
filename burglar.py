@@ -720,15 +720,18 @@ class Game:
         # Empty the screen
         self.screen.blit(self.background, (0, 0))
 
-        if self.activeScreen == 0: #self.mainMenu:
+        def main_menu():
+        # if self.activeScreen == 0: #self.mainMenu:
             self.background.fill(colorScheme.MAINMENUBG)
             self.menuMain()
 
-        elif self.activeScreen == 1: #self.optionsScreen:
+        def options_screen():
+        # elif self.activeScreen == 1: #self.optionsScreen:
             self.background.fill(colorScheme.OPTIONSBG)
             self.options()
 
-        elif self.activeScreen == 2: #self.gameOn:
+        def game_on():
+        # elif self.activeScreen == 2: #self.gameOn:
 
             # self.background.fill(self.syscolors.BACKGROUND)
             self.background.blit(self.gamebg, (0, 0))
@@ -767,15 +770,27 @@ class Game:
 
                 self.background.blit(gOver, gOverpos)
 
-        elif self.activeScreen == 3:
+        def help_screen():
+        # elif self.activeScreen == 3:
 
             self.background.fill(colorScheme.OPTIONSBG)
             self.help()
 
-        elif self.activeScreen == 4:
+        def credits_screen():
+        # elif self.activeScreen == 4:
 
             self.background.fill(colorScheme.OPTIONSBG)
             self.credits()
+
+        screens = {
+            0: main_menu,
+            1: options_screen,
+            2: game_on,
+            3: help_screen,
+            4: credits_screen,
+        }
+
+        screens[self.activeScreen]()
 
         self.screen.blit(self.background, (0, 0))
 
