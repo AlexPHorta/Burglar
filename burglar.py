@@ -493,99 +493,57 @@ class Game:
         self.middle_ring.clear()
         self.outer_ring.clear()
         self.big_outer_ring.clear()
-        inner_ring_coords = (
-            (45, 1, 45, -1, "i0"), (45, 1, 45, 1, "i1"),
-            (45, -1, 45, 1, "i2"), (45, -1, 45, -1, "i3"),
-            )
-        middle_ring_coords = (
-            (22.5, 1,  22.5, -1, "m0"), (67.5, 1,  67.5, -1,  "m1"),
-            (67.5, 1, 67.5, 1,  "m2"), (22.5, 1, 22.5, 1, "m3"),
-            (22.5, -1,  22.5, 1, "m4"), (67.5, -1,  67.5, 1,  "m5"),
-            (67.5, -1, 67.5, -1,  "m6"), (22.5, -1, 22.5, -1, "m7"),
-            )
-        outer_ring_coords = (
-            (11.25, 1,  11.25, -1, "o0"), (33.75, 1,  33.75, -1,  "o1"),
-            (56.25, 1, 56.25, -1,  "o2"), (78.75, 1, 78.75, -1, "o3"),
-            (78.75, 1,  78.75, 1, "o4"), (56.25, 1,  56.25, 1,  "o5"),
-            (33.75, 1, 33.75, 1,  "o6"), (11.25, 1, 11.25, 1, "o7"),
-            (11.25, -1,  11.25, 1, "o8"), (33.75, -1,  33.75, 1,  "o9"),
-            (56.25, -1, 56.25, 1,  "o10"), (78.75, -1, 78.75, 1, "o11"),
-            (78.75, -1,  78.75, -1, "o12"), (56.25, -1,  56.25, -1,  "o13"),
-            (33.75, -1, 33.75, -1,  "o14"), (11.25, -1, 11.25, -1, "o16"),
-            )
-        for coordx , multx, coordy, multy, tagg in inner_ring_coords:
-            self.inner_ring.append(Stone(
-                image = stones.BLANK,
-                x = multx*(math.sin(math.radians(coordx)) * 80),
-                y = multy*(math.cos(math.radians(coordy)) * 80),
-                center = self.frameCENTER,
-                tag = tagg))
+        coords = (
+            ("inner_ring", 80, (
+                (45, 1, 45, -1, "i0"), (45, 1, 45, 1, "i1"),
+                (45, -1, 45, 1, "i2"), (45, -1, 45, -1, "i3"),
+                )),
+            ("middle_ring", 195, (
+                (22.5, 1,  22.5, -1, "m0"), (67.5, 1,  67.5, -1,  "m1"),
+                (67.5, 1, 67.5, 1,  "m2"), (22.5, 1, 22.5, 1, "m3"),
+                (22.5, -1,  22.5, 1, "m4"), (67.5, -1,  67.5, 1,  "m5"),
+                (67.5, -1, 67.5, -1,  "m6"), (22.5, -1, 22.5, -1, "m7"),
+                )),
+            ("outer_ring", 310, (
+                (11.25, 1,  11.25, -1, "o0"), (33.75, 1,  33.75, -1,  "o1"),
+                (56.25, 1, 56.25, -1,  "o2"), (78.75, 1, 78.75, -1, "o3"),
+                (78.75, 1,  78.75, 1, "o4"), (56.25, 1,  56.25, 1,  "o5"),
+                (33.75, 1, 33.75, 1,  "o6"), (11.25, 1, 11.25, 1, "o7"),
+                (11.25, -1,  11.25, 1, "o8"), (33.75, -1,  33.75, 1,  "o9"),
+                (56.25, -1, 56.25, 1,  "o10"), (78.75, -1, 78.75, 1, "o11"),
+                (78.75, -1,  78.75, -1, "o12"), (56.25, -1,  56.25, -1,  "o13"),
+                (33.75, -1, 33.75, -1,  "o14"), (11.25, -1, 11.25, -1, "o16"),
+                )),
+            ("big_outer_ring", 430, (
+                (5.625, 1,  5.625, -1, "b0"), (16.875, 1,  16.875, -1,  "b1"),
+                (28.125, 1, 28.125, -1,  "b2"), (39.375, 1, 39.375, -1, "b3"),
+                (50.625, 1,  50.625, -1, "b4"), (61.875, 1,  61.875, -1,  "b5"),
+                (73.125, 1, 73.125, -1,  "b6"), (84.375, 1, 84.375, -1, "b7"),
+                (84.375, 1,  84.375, 1, "b8"), (73.125, 1,  73.125, 1,  "b9"),
+                (61.875, 1, 61.875, 1,  "b10"), (50.625, 1, 50.625, 1, "b11"),
+                (39.375, 1,  39.375, 1, "b12"), (28.125, 1,  28.125, 1,  "b13"),
+                (16.875, 1, 16.875, 1,  "b14"), (5.625, 1, 5.625, 1, "b16"),
+                (5.625, -1,  5.625, 1, "b17"), (16.875, -1,  16.875, 1,  "b18"),
+                (28.125, -1, 28.125, 1,  "b19"), (39.375, -1, 39.375, 1, "b20"),
+                (50.625, -1,  50.625, 1, "b21"), (61.875, -1,  61.875, 1,  "b22"),
+                (73.125, -1, 73.125, 1,  "b23"), (84.375, -1, 84.375, 1, "b24"),
+                (84.375, -1,  84.375, -1, "b25"), (73.125, -1,  73.125, -1,  "b26"),
+                (61.875, -1, 61.875, -1,  "b27"), (50.625, -1, 50.625, -1, "b28"),
+                (39.375, -1,  39.375, -1, "b29"), (28.125, -1,  28.125, -1,  "b30"),
+                (16.875, -1, 16.875, -1,  "b31"), (5.625, -1, 5.625, -1, "b32"),
+                )),
+        )
 
-        for coordx , multx, coordy, multy, tagg in middle_ring_coords:
-            self.middle_ring.append(Stone(
-                image = stones.BLANK,
-                x = multx*(math.sin(math.radians(coordx)) * 195),
-                y = multy*(math.cos(math.radians(coordy)) * 195),
-                center = self.frameCENTER,
-                tag = tagg))
+        for index, coord in enumerate(coords):
+            ring = getattr(self, coords[index][0])
+            for coordx , multx, coordy, multy, tagg in coords[index][2]:
+                ring.append(Stone(
+                    image = stones.BLANK,
+                    x = multx*(math.sin(math.radians(coordx)) * coords[index][1]),
+                    y = multy*(math.cos(math.radians(coordy)) * coords[index][1]),
+                    center = self.frameCENTER,
+                    tag = tagg))
 
-        for coordx , multx, coordy, multy, tagg in outer_ring_coords:
-            self.outer_ring.append(Stone(
-                image = stones.BLANK,
-                x = multx*(math.sin(math.radians(coordx)) * 310),
-                y = multy*(math.cos(math.radians(coordy)) * 310),
-                center = self.frameCENTER,
-                tag = tagg))
-
-        # self.outer_ring.append( Stone(image = stones.BLANK, x =  (math.sin(math.radians(11.25)) * 310),   y = -(math.cos(math.radians(11.25)) * 310),  center = self.frameCENTER, tag = "o0"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x =  (math.sin(math.radians(33.75)) * 310),   y = -(math.cos(math.radians(33.75)) * 310),  center = self.frameCENTER, tag = "o1"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x =  (math.sin(math.radians(56.25)) * 310),   y = -(math.cos(math.radians(56.25)) * 310), center = self.frameCENTER, tag = "o2"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x =  (math.sin(math.radians(78.75)) * 310),   y = -(math.cos(math.radians(78.75)) * 310), center = self.frameCENTER, tag = "o3"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x =  (math.sin(math.radians(78.75)) * 310),    y = (math.cos(math.radians(78.75)) * 310),  center = self.frameCENTER, tag = "o4"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x =  (math.sin(math.radians(56.25)) * 310),    y = (math.cos(math.radians(56.25)) * 310),  center = self.frameCENTER, tag = "o5"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x =  (math.sin(math.radians(33.75)) * 310),    y = (math.cos(math.radians(33.75)) * 310), center = self.frameCENTER, tag = "o6"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x =  (math.sin(math.radians(11.25)) * 310),    y = (math.cos(math.radians(11.25)) * 310), center = self.frameCENTER, tag = "o7"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(11.25)) * 310),   y =  (math.cos(math.radians(11.25)) * 310),  center = self.frameCENTER, tag = "o8"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(33.75)) * 310),   y =  (math.cos(math.radians(33.75)) * 310), center = self.frameCENTER, tag = "o9"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(56.25)) * 310),   y =  (math.cos(math.radians(56.25)) * 310), center = self.frameCENTER, tag = "o10"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(78.75)) * 310),   y =  (math.cos(math.radians(78.75)) * 310),  center = self.frameCENTER, tag = "o11"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(78.75)) * 310),  y = - (math.cos(math.radians(78.75)) * 310),   center = self.frameCENTER, tag = "o12"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(56.25)) * 310),  y = - (math.cos(math.radians(56.25)) * 310),  center = self.frameCENTER, tag = "o13"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(33.75)) * 310),  y = - (math.cos(math.radians(33.75)) * 310),  center = self.frameCENTER, tag = "o14"))
-        # self.outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(11.25)) * 310),  y = - (math.cos(math.radians(11.25)) * 310),   center = self.frameCENTER, tag = "o15"))
-
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(5.625)) *   430),   y = -(math.cos(math.radians(5.625)) *  430),  center = self.frameCENTER, tag = "b0"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(16.875)) *  430),   y = -(math.cos(math.radians(16.875)) * 430),  center = self.frameCENTER, tag = "b1"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(28.125)) *  430),   y = -(math.cos(math.radians(28.125)) * 430), center = self.frameCENTER, tag = "b2"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(39.375)) *  430),   y = -(math.cos(math.radians(39.375)) * 430), center = self.frameCENTER, tag = "b3"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(50.625)) *  430),   y = -(math.cos(math.radians(50.625)) * 430),  center = self.frameCENTER, tag = "b4"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(61.875)) *  430),   y = -(math.cos(math.radians(61.875)) * 430),  center = self.frameCENTER, tag = "b5"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(73.125)) *  430),   y = -(math.cos(math.radians(73.125)) * 430), center = self.frameCENTER, tag = "b6"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(84.375)) *  430),   y = -(math.cos(math.radians(84.375)) * 430), center = self.frameCENTER, tag = "b7"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(84.375)) *  430),    y = (math.cos(math.radians(84.375)) * 430), center = self.frameCENTER, tag = "b8"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(73.125)) *  430),    y = (math.cos(math.radians(73.125)) * 430), center = self.frameCENTER, tag = "b9"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(61.875)) *  430),    y = (math.cos(math.radians(61.875)) * 430),  center = self.frameCENTER, tag = "b10"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(50.625)) *  430),    y = (math.cos(math.radians(50.625)) * 430),  center = self.frameCENTER, tag = "b11"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(39.375)) *  430),    y = (math.cos(math.radians(39.375)) * 430), center = self.frameCENTER, tag = "b12"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(28.125)) *  430),    y = (math.cos(math.radians(28.125)) * 430), center = self.frameCENTER, tag = "b13"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(16.875)) *  430),    y = (math.cos(math.radians(16.875)) * 430),  center = self.frameCENTER, tag = "b14"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = (math.sin(math.radians(5.625)) *   430),     y = (math.cos(math.radians(5.625)) * 430),  center = self.frameCENTER, tag = "b15"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(5.625)) *  430),     y = (math.cos(math.radians(5.625)) * 430),  center = self.frameCENTER, tag = "b16"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(16.875)) * 430),    y = (math.cos(math.radians(16.875)) * 430),  center = self.frameCENTER, tag = "b17"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(28.125)) * 430),    y = (math.cos(math.radians(28.125)) * 430), center = self.frameCENTER, tag = "b18"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(39.375)) * 430),    y = (math.cos(math.radians(39.375)) * 430), center = self.frameCENTER, tag = "b19"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(50.625)) * 430),    y = (math.cos(math.radians(50.625)) * 430),  center = self.frameCENTER, tag = "b20"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(61.875)) * 430),    y = (math.cos(math.radians(61.875)) * 430),  center = self.frameCENTER, tag = "b21"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(73.125)) * 430),    y = (math.cos(math.radians(73.125)) * 430), center = self.frameCENTER, tag = "b22"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(84.375)) * 430),    y = (math.cos(math.radians(84.375)) * 430), center = self.frameCENTER, tag = "b23"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(84.375)) * 430),   y = -(math.cos(math.radians(84.375)) * 430), center = self.frameCENTER, tag = "b24"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(73.125)) * 430),   y = -(math.cos(math.radians(73.125)) * 430), center = self.frameCENTER, tag = "b25"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(61.875)) * 430),   y = -(math.cos(math.radians(61.875)) * 430),  center = self.frameCENTER, tag = "b26"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(50.625)) * 430),   y = -(math.cos(math.radians(50.625)) * 430),  center = self.frameCENTER, tag = "b27"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(39.375)) * 430),   y = -(math.cos(math.radians(39.375)) * 430), center = self.frameCENTER, tag = "b28"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(28.125)) * 430),   y = -(math.cos(math.radians(28.125)) * 430), center = self.frameCENTER, tag = "b29"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(16.875)) * 430),   y = -(math.cos(math.radians(16.875)) * 430),  center = self.frameCENTER, tag = "b30"))
-        self.big_outer_ring.append( Stone(image = stones.BLANK, x = -(math.sin(math.radians(5.625)) *  430),    y = -(math.cos(math.radians(5.625)) * 430),  center = self.frameCENTER, tag = "b31"))
 
         if self.level == 'easy':
             self.game = engine.GameEngine_Easy()
