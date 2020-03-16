@@ -544,13 +544,14 @@ class Game:
                     center = self.frameCENTER,
                     tag = tagg))
 
-
-        if self.level == 'easy':
-            self.game = engine.GameEngine_Easy()
-        elif self.level == 'normal':
-            self.game = engine.GameEngine_Normal()
-        elif self.level == 'hard':
-            self.game = engine.GameEngine_Hard()
+        levels = {'easy': engine.GameEngine_Easy, 'normal': engine.GameEngine_Normal, 'hard': engine.GameEngine_Hard}
+        self.game = levels[self.level]()
+        # if self.level == 'easy':
+        #     self.game = engine.GameEngine_Easy()
+        # elif self.level == 'normal':
+        #     self.game = engine.GameEngine_Normal()
+        # elif self.level == 'hard':
+        #     self.game = engine.GameEngine_Hard()
         self.game.bag()
         self.game.insert_stone()
 
