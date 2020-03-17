@@ -558,12 +558,15 @@ class Game:
         if event.type == pygame.QUIT:
             self._running = False
 
+        keys = {
+            pygame.K_UP: ('up', 'flip'),
+            pygame.K_DOWN: ('down', 'flip'),
+            pygame.K_LEFT: ('left', 'click'),
+            pygame.K_RIGHT: ('right', 'click'),
+            pygame.K_RETURN: ('select', 'click'),
+        }
+
         def main_menu(event_):
-            keys = {
-                pygame.K_UP: ('up', 'flip'),
-                pygame.K_DOWN: ('down', 'flip'),
-                pygame.K_RETURN: ('select', 'click'),
-            }
             opt_ = getattr(self.mm, keys[event_.key][0])
             snd = getattr(self, keys[event_.key][1])
             if self.sound: snd.play()
@@ -571,29 +574,15 @@ class Game:
                 opt_()
             else:
                 self.load(opt_())
-            # if event_.key == pygame.K_UP:
-            #     self.mm.up()
-            #     if self.sound: self.flip.play()
-            # elif event_.key == pygame.K_DOWN:
-            #     self.mm.down()
-            #     if self.sound: self.flip.play()
-            # elif event_.key == pygame.K_RETURN:
-            #     if self.sound: self.click.play()
-            #     self.load(self.mm.select())
 
         def options_screen(event_):
-            if event_.key == pygame.K_UP:
-                self.optm.up()
-                if self.sound: self.flip.play()
-            elif event_.key == pygame.K_DOWN:
-                self.optm.down()
-                if self.sound: self.flip.play()
-            if event_.key == pygame.K_LEFT:
-                self.optm.left()
-            elif event_.key == pygame.K_RIGHT:
-                self.optm.right()
-            elif event_.key == pygame.K_RETURN:
-                self.load(*self.optm.select())
+            opt_ = getattr(self.optm, keys[event_.key][0])
+            snd = getattr(self, keys[event_.key][1])
+            if self.sound: snd.play()
+            if event_.key != pygame.K_RETURN:
+                opt_()
+            else:
+                self.load(*opt_())
 
         def game_on(event_):
             # Check if user pressed the right keys, turn things accordingly
@@ -607,7 +596,7 @@ class Game:
 
                     self.game.insert_stone()
 
-                elif (event_.key == pygame.K_RCTRL) or (event_.key == pygame.K_LCTRL):
+                elif event_.key in (pygame.K_RCTRL, pygame.K_LCTRL):
                     if self.gm.switchedOn:
                         if self.sound: self.toggle.play()
                         self.gm.switch('off')
