@@ -566,23 +566,20 @@ class Game:
             pygame.K_RETURN: ('select', 'click'),
         }
 
-        def main_menu(event_):
-            opt_ = getattr(self.mm, keys[event_.key][0])
+        def main_menu(event_, screen = self.mm):
+            opt_ = getattr(screen, keys[event_.key][0])
             snd = getattr(self, keys[event_.key][1])
             if self.sound: snd.play()
             if event_.key != pygame.K_RETURN:
                 opt_()
             else:
-                self.load(opt_())
+                if screen == self.mm:
+                    self.load(opt_())
+                elif screen == self.optm:
+                    self.load(*opt_())
 
         def options_screen(event_):
-            opt_ = getattr(self.optm, keys[event_.key][0])
-            snd = getattr(self, keys[event_.key][1])
-            if self.sound: snd.play()
-            if event_.key != pygame.K_RETURN:
-                opt_()
-            else:
-                self.load(*opt_())
+            main_menu(event_, screen = self.optm)
 
         def game_on(event_):
             # Check if user pressed the right keys, turn things accordingly
