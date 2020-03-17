@@ -429,38 +429,23 @@ class Game:
         self.background.blit(self.cm.menu, self.cm.menuPos)
 
     def load(self, choice, option = None):
+        levels = ('easy', 'normal', 'hard',)
+        secondaries = {'options': 1, 'help': 3, 'credits': 4, 'quit': 0, 'back': 0,}
         choice = str(choice)
         option = str(option)
-        if choice == 'easy':
+        if choice in levels:
             self.activeScreen = 2
-            self.level = 'easy'
+            self.level = choice
             self.loadGame()
-        elif choice == 'normal':
-            self.activeScreen = 2
-            self.level = 'normal'
-            self.loadGame()
-        elif choice == 'hard':
-            self.activeScreen = 2
-            self.level = 'hard'
-            self.loadGame()
-        elif choice == 'options':
-            self.activeScreen = 1
+        elif choice in secondaries:
+            self.activeScreen = secondaries[choice]
             self.gm.switch('off')
-            self.options()
-        elif choice == 'light':
-            colorScheme.setScheme('light')
-            # self.optm.assemble()
-        elif choice == 'dark':
-            colorScheme.setScheme('dark')
-            # self.optm.assemble()
-        elif choice == 'help':
-            self.activeScreen = 3
-            self.gm.switch('off')
-            self.help()
-        elif choice == 'credits':
-            self.activeScreen = 4
-            self.gm.switch('off')
-            self.credits()
+            if choice not in ('quit', 'back'):
+                getattr(self, choice)()
+            else:
+                self.menuMain()
+        elif choice in ('light', 'dark'):
+            colorScheme.setScheme(choice)
         elif choice == 'pause':
             self.pause = True
         elif choice == 'resume':
@@ -478,16 +463,13 @@ class Game:
                 self.track.stop()
             elif option == 'sound':
                 self.sound = False
-        elif choice == 'quit' or choice == 'back':
-            self.activeScreen = 0
-            self.gm.switch('off')
-            self.menuMain()
 
     def loadGame(self):
 
         self.gameOver = False
         self.frame = pygame.Surface(self.frameSize)
-        self.frameCENTER = Center(self.frame.get_rect().centerx, self.frame.get_rect().centery)
+        self.frameCENTER = Center(
+            self.frame.get_rect().centerx, self.frame.get_rect().centery)
 
         self.inner_ring.clear()
         self.middle_ring.clear()
@@ -539,19 +521,20 @@ class Game:
             for coordx , multx, coordy, multy, tagg in coords[index][2]:
                 ring.append(Stone(
                     image = stones.BLANK,
-                    x = multx*(math.sin(math.radians(coordx)) * coords[index][1]),
-                    y = multy*(math.cos(math.radians(coordy)) * coords[index][1]),
+                    x = multx*(
+                        math.sin(math.radians(coordx)) * coords[index][1]),
+                    y = multy*(
+                        math.cos(math.radians(coordy)) * coords[index][1]),
                     center = self.frameCENTER,
                     tag = tagg))
 
-        levels = {'easy': engine.GameEngine_Easy, 'normal': engine.GameEngine_Normal, 'hard': engine.GameEngine_Hard}
+        levels = {
+            'easy': engine.GameEngine_Easy,
+            'normal': engine.GameEngine_Normal,
+            'hard': engine.GameEngine_Hard
+        }
         self.game = levels[self.level]()
-        # if self.level == 'easy':
-        #     self.game = engine.GameEngine_Easy()
-        # elif self.level == 'normal':
-        #     self.game = engine.GameEngine_Normal()
-        # elif self.level == 'hard':
-        #     self.game = engine.GameEngine_Hard()
+
         self.game.bag()
         self.game.insert_stone()
 
@@ -576,15 +559,27 @@ class Game:
             self._running = False
 
         def main_menu(event_):
-            if event_.key == pygame.K_UP:
-                self.mm.up()
-                if self.sound: self.flip.play()
-            elif event_.key == pygame.K_DOWN:
-                self.mm.down()
-                if self.sound: self.flip.play()
-            elif event_.key == pygame.K_RETURN:
-                if self.sound: self.click.play()
-                self.load(self.mm.select())
+            keys = {
+                pygame.K_UP: ('up', 'flip'),
+                pygame.K_DOWN: ('down', 'flip'),
+                pygame.K_RETURN: ('select', 'click'),
+            }
+            opt_ = getattr(self.mm, keys[event_.key][0])
+            snd = getattr(self, keys[event_.key][1])
+            if self.sound: snd.play()
+            if event_.key != pygame.K_RETURN:
+                opt_()
+            else:
+                self.load(opt_())
+            # if event_.key == pygame.K_UP:
+            #     self.mm.up()
+            #     if self.sound: self.flip.play()
+            # elif event_.key == pygame.K_DOWN:
+            #     self.mm.down()
+            #     if self.sound: self.flip.play()
+            # elif event_.key == pygame.K_RETURN:
+            #     if self.sound: self.click.play()
+            #     self.load(self.mm.select())
 
         def options_screen(event_):
             if event_.key == pygame.K_UP:
