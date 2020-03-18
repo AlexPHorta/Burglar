@@ -81,18 +81,10 @@ class ListMenu:
         self.toPrint = []
         self.signals = []
         for index, item in enumerate(self.options):
-            if not isinstance(item, tuple):
-                self.signals.append(item)
-                if index == self.selected:
-                    menuItem, menuItemPos = write(item, self.fontSelected['size'], self.font, self.fontSelected['color'])
-                else:
-                    menuItem, menuItemPos = write(item, self.fontDefault['size'], self.font, self.fontDefault['color'])
-            else:
-                self.signals.append(item[1])
-                if index == self.selected:
-                    menuItem, menuItemPos = write(item[0], self.fontSelected['size'], self.font, self.fontSelected['color'])
-                else:
-                    menuItem, menuItemPos = write(item[0], self.fontDefault['size'], self.font, self.fontDefault['color'])
+            fontMenuItem = self.fontSelected if index == self.selected else self.fontDefault
+            toWrite = item if not isinstance(item, tuple) else item[0]
+            self.signals.append(item) if not isinstance(item, tuple) else self.signals.append(item[1])
+            menuItem, menuItemPos = write(toWrite, fontMenuItem['size'], self.font, fontMenuItem['color'])
             self.toPrint.append((menuItem, menuItemPos))
         self.menuWidth = int(max([x[0].get_width() for x in self.toPrint]))
         self.menuHeight = int(sum([x[0].get_height() for x in self.toPrint]) + (len(self.toPrint) * self.vpad))
