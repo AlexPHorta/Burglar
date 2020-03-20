@@ -65,6 +65,7 @@ class ListMenu:
             self.defaultOpt, self.selectedOpt, off = sizes
             self.off = off
 
+
     def up(self):
         self.selected = abs((self.selected - 1) % len(self.options))
 
@@ -112,8 +113,10 @@ class SwitchableListMenu(ListMenu):
         self.switchedOn = False
 
     def switch(self, state):
-        switch = {'on': True, 'off': False}
-        self.switchedOn = switch[state]
+        if state == 'on':
+            self.switchedOn = True
+        if state == 'off':
+            self.switchedOn = False
 
     def prepare(self):
         self.fontDefault = {'size': self.defaultOpt, 'color': self.mncolors[0]}
@@ -123,13 +126,30 @@ class SwitchableListMenu(ListMenu):
         if not self.switchedOn:
             self.selected = 0
         for index, item in enumerate(self.options):
-            itemOption = item if not isinstance(item, tuple) else item[1]
-            self.signals.append(itemOption)
-            if self.switchedOn:
-                fontSelectedMenuItem = self.fontSelected if index == self.selected else self.fontDefault
-                menuItem, menuItemPos = write(itemOption, fontSelectedMenuItem['size'], self.font, fontSelectedMenuItem['color'])
+            if not isinstance(item, tuple):
+                self.signals.append(item)
+                if index == self.selected:
+                    if self.switchedOn:
+                        menuItem, menuItemPos = write(item, self.fontSelected['size'], self.font, self.fontSelected['color'])
+                    else:
+                        menuItem, menuItemPos = write(item, self.fontSwitchedOff['size'], self.font, self.fontSwitchedOff['color'])
+                else:
+                    if self.switchedOn:
+                        menuItem, menuItemPos = write(item, self.fontDefault['size'], self.font, self.fontDefault['color'])
+                    else:
+                        menuItem, menuItemPos = write(item, self.fontSwitchedOff['size'], self.font, self.fontSwitchedOff['color'])
             else:
-                menuItem, menuItemPos = write(itemOption, self.fontSwitchedOff['size'], self.font, self.fontSwitchedOff['color'])
+                self.signals.append(item[1])
+                if index == self.selected:
+                    if self.switchedOn:
+                        menuItem, menuItemPos = write(item[1], self.fontSelected['size'], self.font, self.fontSelected['color'])
+                    else:
+                        menuItem, menuItemPos = write(item[1], self.fontSwitchedOff['size'], self.font, self.fontSwitchedOff['color'])
+                else:
+                    if self.switchedOn:
+                        menuItem, menuItemPos = write(item[1], self.fontDefault['size'], self.font, self.fontDefault['color'])
+                    else:
+                        menuItem, menuItemPos = write(item[1], self.fontSwitchedOff['size'], self.font, self.fontSwitchedOff['color'])
             self.toPrint.append((menuItem, menuItemPos))
         self.menuWidth = int(max([x[0].get_width() for x in self.toPrint]))
         self.menuHeight = int(sum([x[0].get_height() for x in self.toPrint]))
