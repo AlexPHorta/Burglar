@@ -162,7 +162,6 @@ class FlattenedMenu(ListMenu):
         super().__init__(*args, **kwargs)
         self.active = 0
 
-
     def prepare(self):
         self.fontDefault = {'size': self.defaultOpt, 'color': self.mncolors[0]}
         self.fontSelected = {'size': self.selectedOpt, 'color': self.mncolors[1]}
