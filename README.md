@@ -8,52 +8,28 @@ Prebuilt packages of Burglar are available at [Itch.io](https://bueybr.itch.io/b
 ## Getting Started
 
 To contribute in the development, you just need to clone the repository with:
-
 ```
 $ git clone https://github.com/AlexPHorta/Burglar.git
 ```
 Create a virtualenv with at least Python 3.7:
-
 ```
 $ virtualenv -p3.7 burglar
 ```
 Activate the virtual env:
-
 ```
 $ source burglar/bin/activate
 ```
-
 Install the dependencies:
-
 ```
 $ pip install -r requirements.txt
 ```
-
 ### Prerequisites
 
 Burglar depends on the following software to work:
 
-Python 3.7
-PyGame 1.9.6
-Pyinstaller 3.6
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+* Python 3.7
+* PyGame 1.9.6
+* Pyinstaller 3.6 (just to create the packages)
 
 ## Running the tests
 
