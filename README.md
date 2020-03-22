@@ -40,11 +40,9 @@ You can run the tests with ...
 Burglar is deployed in standalone packages, built with Pyinstaller. The [burglar.spec](burglar.spec) file has been tested in Linux Mint 19.3 and Windows 10.
 
 The package can be generated with:
-
 ```
 $ pyinstaller burglar.spec
 ```
-
 If you have another system you want available, edit the [burglar.spec](burglar.spec) file accordingly, generate and test the package. In case everything works fine, open a PR.
 
 ## Built With
@@ -57,10 +55,10 @@ If you have another system you want available, edit the [burglar.spec](burglar.s
 * [Copyright © 2011 Varazuvi™ (www.varazuvi.com)](https://freesound.org/people/Soughtaftersounds/sounds/145438/) - [CC 3.0](https://creativecommons.org/licenses/by/3.0/)
 
 ### Music
-*Marcato loop* by Shady Dave found on (https://www.freesound.org/people/ShadyDave/)
+* *Marcato loop* by Shady Dave found on (https://www.freesound.org/people/ShadyDave/)
 
 ### Hacks
-Image with per pixel transparency blitted on lowered transparency surface: https://nerdparadise.com/programming/pygameblitopacity
+* Image with per pixel transparency blitted on lowered transparency surface: https://nerdparadise.com/programming/pygameblitopacity
 
 ## Contributing
 
@@ -68,7 +66,7 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Burglar/tags).
 
 ## Authors
 
