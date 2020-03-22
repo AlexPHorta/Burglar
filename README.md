@@ -3,7 +3,7 @@ Burglar is an innovative game in the 'match 3' style that will twist your head o
 
 ## Getting a Package to Play
 
-Prebuilt packages of Burglar are available at XXX for download. Versions for Linux (32 bits) and Windows 10 (64 bits).
+Prebuilt packages of Burglar are available at [Itch.io](https://bueybr.itch.io/burglar) for download. Versions for Linux (32 bits) and Windows 10 (64 bits).
 
 ## Getting Started
 
@@ -55,11 +55,11 @@ If you have another system you want available, edit the [burglar.spec](burglar.s
 ## Built With
 
 ### Sound effects
-[https://freesound.org/people/DrMinky/sounds/167045/](https://freesound.org/people/DrMinky/sounds/167045/) - [CC 3.0](https://creativecommons.org/licenses/by/3.0/)
-[https://freesound.org/people/kwahmah_02/sounds/256116/](https://freesound.org/people/kwahmah_02/sounds/256116/) - [CC 3.0](https://creativecommons.org/publicdomain/zero/1.0/)
-[https://freesound.org/people/7778/sounds/202312/](https://freesound.org/people/7778/sounds/202312/) - [CC 3.0](https://creativecommons.org/publicdomain/zero/1.0/)
-[https://freesound.org/people/ShadyDave/sounds/270657/](https://freesound.org/people/ShadyDave/sounds/270657/) - [CC 3.0](https://creativecommons.org/licenses/by/3.0/)
-[Copyright © 2011 Varazuvi™ (www.varazuvi.com)](https://freesound.org/people/Soughtaftersounds/sounds/145438/) - [CC 3.0](https://creativecommons.org/licenses/by/3.0/)
+* [https://freesound.org/people/DrMinky/sounds/167045/](https://freesound.org/people/DrMinky/sounds/167045/) - [CC 3.0](https://creativecommons.org/licenses/by/3.0/)
+* [https://freesound.org/people/kwahmah_02/sounds/256116/](https://freesound.org/people/kwahmah_02/sounds/256116/) - [CC 3.0](https://creativecommons.org/publicdomain/zero/1.0/)
+* [https://freesound.org/people/7778/sounds/202312/](https://freesound.org/people/7778/sounds/202312/) - [CC 3.0](https://creativecommons.org/publicdomain/zero/1.0/)
+* [https://freesound.org/people/ShadyDave/sounds/270657/](https://freesound.org/people/ShadyDave/sounds/270657/) - [CC 3.0](https://creativecommons.org/licenses/by/3.0/)
+* [Copyright © 2011 Varazuvi™ (www.varazuvi.com)](https://freesound.org/people/Soughtaftersounds/sounds/145438/) - [CC 3.0](https://creativecommons.org/licenses/by/3.0/)
 
 ### Music
 *Marcato loop* by Shady Dave found on (https://www.freesound.org/people/ShadyDave/)
