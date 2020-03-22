@@ -60,10 +60,6 @@ If you have another system you want available, edit the [burglar.spec](burglar.s
 ### Hacks
 * Image with per pixel transparency blitted on lowered transparency surface: https://nerdparadise.com/programming/pygameblitopacity
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Burglar/tags).
@@ -73,7 +69,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 * **Alexandre Paloschi Horta - Buey.net.br** - *Initial work* - [AlexPHorta](https://github.com/AlexPHorta)
 
 ### Concept
-http://www.buey.net.br
+* http://www.buey.net.br
 
 See also the list of [contributors](https://github.com/Burglar/contributors) who participated in this project.
 
