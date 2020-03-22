@@ -1,4 +1,7 @@
 # Burglar
+
+![Burglar](images/logo.png)
+
 Burglar is an innovative game in the 'match 3' style that will twist your head off.
 
 ## Getting a Package to Play
