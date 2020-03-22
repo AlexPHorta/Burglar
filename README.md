@@ -40,7 +40,7 @@ You can run the tests with ...
 
 ## Deployment
 
-Burglar is deployed in standalone packages, built with Pyinstaller. The [burglar.spec](burglar.spec) file has been tested in Linux Mint 19.3 and Windows 10.
+Burglar is available in standalone packages, built with Pyinstaller. The [burglar.spec](burglar.spec) file has been tested in Linux Mint 19.3 and Windows 10.
 
 The package can be generated with:
 ```
