@@ -121,6 +121,10 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
+# Sublime Text files
+*.sublime-project
+*.sublime-workspace
+
 # mkdocs documentation
 /site
 

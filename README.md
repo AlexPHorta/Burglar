@@ -72,9 +72,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 * **Alexandre Paloschi Horta - Buey.net.br** - *Initial work* - [AlexPHorta](https://github.com/AlexPHorta)
 
 ### Concept
-* http://www.buey.net.br
-
-See also the list of [contributors](https://github.com/Burglar/contributors) who participated in this project.
+* **Alexandre Paloschi Horta** - (https://www.buey.net.br)
 
 ## License
 
@@ -82,5 +80,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Guido, the guys from Pygame;
+* Guido, and the guys from Pygame;
 * My wife, Thays, and my daughters, Bárbara and Lavínia.
