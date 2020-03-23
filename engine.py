@@ -6,8 +6,16 @@ import random
 
 class GameEngine_Easy:
 
-    def __init__(self, inner = None, middle = None, outer = None, bag = None,
-        points = 0, no_trades = False, one_place_to_insert = False, game_over = False):
+    def __init__(self,
+        inner = None,
+        middle = None,
+        outer = None,
+        bag = None,
+        points = 0,
+        no_trades = False,
+        one_place_to_insert = False,
+        game_over = False
+        ):
         if not inner:
             self.inner_ring = [0] * 4
         else:
@@ -83,7 +91,7 @@ class GameEngine_Easy:
             if self.inner.count(0) == 0:
                 done = True
             else:
-                where_to_insert = random.randrange(4)
+                where_to_insert = self.place_to_insert()
                 if self.inner[where_to_insert] != 0:
                     continue
                 else:
@@ -95,6 +103,9 @@ class GameEngine_Easy:
             self.game_over = True
 
         return where_to_insert
+
+    def place_to_insert(self):
+        return random.randrange(4)
 
     def where_to_turn(self, direction):
         self._turn = direction
