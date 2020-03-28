@@ -189,10 +189,12 @@ class GameEngine_Easy:
         return ring
 
     def calc_points(self, mapping):
+        multiplier = 10
         points = 0
         for item in mapping:
-            points += item[2] * 10
-            self.blanks += item[2]
+            clearedStones = item[2]
+            points += clearedStones * multiplier
+            self.blanks += clearedStones
         return points
 
     def new_round(self):
