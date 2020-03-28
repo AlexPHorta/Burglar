@@ -33,8 +33,9 @@ class GameEngine_Easy:
         else:
             self.big_outer_ring = outer
         self._bag = bag
+        self.colors = {1, 2, 3}
         self._turn = None
-        self._points = points
+        self.points = points
         self.no_trades = no_trades
         self.one_place_to_insert = one_place_to_insert
         self.game_over = game_over
@@ -51,7 +52,7 @@ class GameEngine_Easy:
     def get_state(self):
         return "inner = %r, middle = %r, outer = %r, bag = %r, points = %r, \
         no_trades = %r, one_place_to_insert = %r, game_over = %r" % (self.inner, \
-            self.middle, self.outer, self._bag, self._points, self.no_trades, \
+            self.middle, self.outer, self._bag, self.points, self.no_trades, \
             self.one_place_to_insert, self.game_over)
 
     @property
@@ -70,16 +71,11 @@ class GameEngine_Easy:
     def big_outer(self):
         return self.big_outer_ring
 
-    @property
-    def points(self):
-        return self._points
-
     def bag(self):
-        colors = (1, 2, 3)
         try:
             assert len(self._bag) > 0
         except AssertionError:
-            self._bag = random.sample(colors, len(colors))
+            self._bag = random.sample(self.colors, len(self.colors))
         finally:
             return self._bag.pop()
 
@@ -189,7 +185,7 @@ class GameEngine_Easy:
         for index, color, lgt in marked_for_clearing:
             for _ in range(index, index + lgt):
                 ring[_] = 0
-        self._points += self.calc_points(marked_for_clearing)
+        self.points += self.calc_points(marked_for_clearing)
         return ring
 
     def calc_points(self, mapping):
@@ -201,13 +197,16 @@ class GameEngine_Easy:
 
     def new_round(self):
         turn_choice = self._turn
-        self.big_outer_ring, self.outer_ring, dummy_ = self.trade_stones(self.big_outer, self.outer, turn_choice)
+        self.big_outer_ring, self.outer_ring, dummy_ = self.trade_stones(
+            self.big_outer, self.outer, turn_choice)
         self.big_outer_ring = self.turn(self.big_outer, turn_choice)
         self.big_outer_ring = self.clear_stones(self.big_outer)
-        self.outer_ring, self.middle_ring, self.no_trades = self.trade_stones(self.outer, self.middle, turn_choice)
+        self.outer_ring, self.middle_ring, self.no_trades = self.trade_stones(
+            self.outer, self.middle, turn_choice)
         self.outer_ring = self.turn(self.outer, turn_choice)
         self.outer_ring = self.clear_stones(self.outer)
-        self.middle_ring, self.inner_ring, self.no_trades = self.trade_stones(self.middle, self.inner, turn_choice)
+        self.middle_ring, self.inner_ring, self.no_trades = self.trade_stones(
+            self.middle, self.inner, turn_choice)
         self.middle_ring = self.turn(self.middle, turn_choice)
         self.middle_ring = self.clear_stones(self.middle)
         self.inner_ring = self.turn(self.inner, turn_choice)
@@ -218,11 +217,7 @@ class GameEngine_Normal(GameEngine_Easy):
 
     def __init__(self):
         super().__init__()
-
-    def bag(self):
-        colors = (1, 2, 5)
-        self._bag = random.sample(colors, len(colors))
-        return self.current_bag
+        self.colors = {1, 2, 5}
 
     def mark_for_clearing(self, ring):
         pick = 0
@@ -269,10 +264,6 @@ class GameEngine_Hard(GameEngine_Easy):
 
     def __init__(self):
         super().__init__()
-
-    def bag(self):
         colors1_4 = (1, 2, 3, 4)
         colors3_4 = (1, 2, 3)
-        colors = colors1_4 + colors3_4 + colors3_4 + colors3_4
-        self._bag = random.sample(colors, len(colors))
-        return self.current_bag
+        self.colors = colors1_4 + colors3_4 + colors3_4 + colors3_4

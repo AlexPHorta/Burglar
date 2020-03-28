@@ -267,7 +267,8 @@ class Game:
 
         for i in range(0, 255, 4):
             self.background.blit(bg, (0, 0))
-            blit_alpha(self.background, buey_spritesheet, buey_spritesheetPos, i)
+            blit_alpha(
+                self.background, buey_spritesheet, buey_spritesheetPos, i)
             self.screen.blit(self.background, (0, 0))
             pygame.display.flip()
             pygame.time.wait(10)
@@ -294,7 +295,8 @@ class Game:
         self.game = None
 
         # Print game name
-        title, titlepos = write('Burglar', 124, 'Multicolore.otf', colorScheme.MAINMENUTITLE)
+        title, titlepos = write(
+            'Burglar', 124, 'Multicolore.otf', colorScheme.MAINMENUTITLE)
         titlepos.centerx = self.background.get_rect().centerx
         titlepos.centery = self.background.get_rect().height / 3
         self.background.blit(title, titlepos)
@@ -411,7 +413,8 @@ class Game:
 
     def load(self, choice, option = None):
         levels = ('easy', 'normal', 'hard',)
-        secondaries = {'options': 1, 'help': 3, 'credits': 4, 'quit': 0, 'back': 0,}
+        secondaries = {
+            'options': 1, 'help': 3, 'credits': 4, 'quit': 0, 'back': 0,}
         choice = str(choice)
         option = str(option)
         if choice in levels:

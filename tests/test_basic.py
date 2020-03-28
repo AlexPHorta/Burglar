@@ -22,10 +22,10 @@ class TestGameEngine_Easy:
         assert easy.big_outer_ring == [0] * 32
         assert easy.blanks == 60
 
-    def testBag(self, easy):
-        bag = easy.bag()
-        assert bag.sort() is None
-        assert sorted(easy.current_bag) == [1, 2, 3]
+    # def testBag(self, easy):
+    #     bag = easy.bag()
+    #     assert bag.sort() is None
+    #     assert sorted(easy.current_bag) == [1, 2, 3]
 
     @pytest.fixture()
     def insertStoneInitial(self):
