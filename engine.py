@@ -83,9 +83,9 @@ class GameEngine_Easy:
         finally:
             return self._bag.pop()
 
-    # def game_done(self):
-    #     done = True if self.blanks == 0 else False
-    #     return done
+    def check_game_over(self):
+        done = True if self.blanks == 0 else False
+        self.game_over = done
 
     def insert_stone(self):
         done = False
@@ -103,13 +103,12 @@ class GameEngine_Easy:
                     self.blanks -= 1
                     done = True
 
-        if self.blanks == 0:
-            self.game_over = True
+        self.check_game_over()
 
         return where_to_insert
 
     def place_to_insert(self):
-        return random.randrange(4)
+        return random.randrange(len(self.inner))
 
     def where_to_turn(self, direction):
         self._turn = direction

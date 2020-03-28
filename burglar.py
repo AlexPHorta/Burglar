@@ -606,17 +606,15 @@ class Game:
                     self.load(self.gm.select())
 
         def help_screen(event_):
-            if event_.key == pygame.K_LEFT:
-                self.help_ = abs((self.help_ - 1) % 6)
-                if self.sound: self.flip.play()
-                self.load('help')
-            elif event_.key == pygame.K_RIGHT:
-                self.help_ = abs((self.help_ + 1) % 6)
-                if self.sound: self.flip.play()
-                self.load('help')
-            elif event_.key == pygame.K_RETURN:
-                if self.sound: self.click.play()
-                self.load(self.hm.select())
+            keys = {
+                pygame.K_LEFT: (-1, self.flip, lambda: 'help'),
+                pygame.K_RIGHT: (1, self.flip, lambda: 'help'),
+                pygame.K_RETURN: (0, self.click, self.hm.select),
+            }
+            if event_.key in keys:
+                self.help_ = abs((self.help_ + keys[event_.key][0]) % 6) #TODO Remove this 6
+                if self.sound: keys[event_.key][1].play()
+                self.load(keys[event_.key][2]())
 
         def credits_screen(event_):
             if event_.key == pygame.K_RETURN:
