@@ -10,7 +10,7 @@ class GameEngine_Easy:
         inner = None,
         middle = None,
         outer = None,
-        bag = None,
+        bag = [],
         points = 0,
         no_trades = False,
         one_place_to_insert = False,
@@ -71,17 +71,21 @@ class GameEngine_Easy:
         return self.big_outer_ring
 
     @property
-    def current_bag(self):
-        return self._bag
-
-    @property
     def points(self):
         return self._points
 
     def bag(self):
         colors = (1, 2, 3)
-        self._bag = random.sample(colors, len(colors))
-        return self.current_bag
+        try:
+            assert len(self._bag) > 0
+        except AssertionError:
+            self._bag = random.sample(colors, len(colors))
+        finally:
+            return self._bag.pop()
+
+    # def game_done(self):
+    #     done = True if self.blanks == 0 else False
+    #     return done
 
     def insert_stone(self):
         done = False
@@ -95,7 +99,7 @@ class GameEngine_Easy:
                 if self.inner[where_to_insert] != 0:
                     continue
                 else:
-                    self.inner[where_to_insert] = self._bag.pop()
+                    self.inner[where_to_insert] = self.bag()
                     self.blanks -= 1
                     done = True
 

@@ -516,7 +516,6 @@ class Game:
         }
         self.game = levels[self.level]()
 
-        self.game.bag()
         self.game.insert_stone()
 
         self.fill_rings(self.game.big_outer, self.big_outer_ring)
@@ -568,9 +567,6 @@ class Game:
                 if (event_.key == pygame.K_LEFT) or (event_.key == pygame.K_RIGHT):
                     self.game.where_to_turn(self.gameKeys[pygame.key.name(event_.key)])
                     self.game.new_round()
-
-                    if self.game.current_bag == []:
-                        self.game.bag()
 
                     self.game.insert_stone()
 
