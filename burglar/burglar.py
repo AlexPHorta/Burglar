@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-VERSION = "0.1"
+__VERSION__ = "0.1.0"
 
 try:
     import sys
@@ -31,65 +31,6 @@ pygame.display.set_caption('Burglar')
 
 from utils import load_png, blit_alpha, write, Center, stones
 from tools import saveConfigs, colorScheme, configurations
-
-
-class Stone(pygame.sprite.Sprite):
-    """A stone that sits still and just changes colors.
-    Returns: stone object
-    Functions: update
-    Attributes: area"""
-
-    def __init__(self,
-        image = None,
-        x = 0,
-        y = 0,
-        center = None,
-        tag = None):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = image
-        if (x, y) == center:
-            self.rect = self.image.get_rect(center = center)
-        else:
-            self.rect = self.image.get_rect(center = (center.x + x,
-                center.y + y))
-        screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
-
-    def updateImg(self, newStoneType = None):
-        self.image = newStoneType
-
-    def surge(self):
-        pass
-
-
-
-class Score:
-
-    def __init__(self,
-        font = None,
-        size = 10,
-        color = (0, 0, 0),
-        bgcolor = None):
-        fullname = os.path.join('fonts', font)
-        self.font = pygame.font.Font(fullname, size)
-        self.color = color
-        self.bgcolor = bgcolor
-        self.points = 0
-        if bgcolor:
-            self.score = self.font.render(
-                str(self.points), True, self.color, self.bgcolor)
-        else:
-            self.score = self.font.render(str(self.points), True, self.color)
-        self.score = self.score.convert_alpha()
-        self.scorepos = self.score.get_rect()
-
-    def updateScore(self, newScore):
-        self.points = newScore
-        self.score = self.font.render(
-            str(self.points), True, self.color, self.bgcolor)
-        self.score = self.score.convert_alpha()
-        self.scorepos = self.score.get_rect()
-        return
 
 
 class Game:
@@ -771,6 +712,64 @@ class Game:
             5: stones.PURPLE,}
         for index, hole in enumerate(engine_ring):
             screen_ring[index].updateImg(stones_[hole])
+        return
+
+
+class Stone(pygame.sprite.Sprite):
+    """A stone that sits still and just changes colors.
+    Returns: stone object
+    Functions: update
+    Attributes: area"""
+
+    def __init__(self,
+        image = None,
+        x = 0,
+        y = 0,
+        center = None,
+        tag = None):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = image
+        if (x, y) == center:
+            self.rect = self.image.get_rect(center = center)
+        else:
+            self.rect = self.image.get_rect(center = (center.x + x,
+                center.y + y))
+        screen = pygame.display.get_surface()
+        self.area = screen.get_rect()
+
+    def updateImg(self, newStoneType = None):
+        self.image = newStoneType
+
+    def surge(self):
+        pass
+
+
+class Score:
+
+    def __init__(self,
+        font = None,
+        size = 10,
+        color = (0, 0, 0),
+        bgcolor = None):
+        fullname = os.path.join('fonts', font)
+        self.font = pygame.font.Font(fullname, size)
+        self.color = color
+        self.bgcolor = bgcolor
+        self.points = 0
+        if bgcolor:
+            self.score = self.font.render(
+                str(self.points), True, self.color, self.bgcolor)
+        else:
+            self.score = self.font.render(str(self.points), True, self.color)
+        self.score = self.score.convert_alpha()
+        self.scorepos = self.score.get_rect()
+
+    def updateScore(self, newScore):
+        self.points = newScore
+        self.score = self.font.render(
+            str(self.points), True, self.color, self.bgcolor)
+        self.score = self.score.convert_alpha()
+        self.scorepos = self.score.get_rect()
         return
 
 

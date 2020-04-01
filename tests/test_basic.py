@@ -1,6 +1,6 @@
 import pytest
 
-from ..engine import GameEngine_Easy
+from ..burglar.engine import GameEngine_Easy
 
 
 class TestGameEngine_Easy:
