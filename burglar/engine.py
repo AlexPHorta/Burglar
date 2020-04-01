@@ -34,6 +34,7 @@ class GameEngine_Easy:
             self.big_outer_ring = outer
         self._bag = bag
         self.colors = {1, 2, 3}
+        self.matches = (3, 3, 3)
         self._turn = None
         self.points = points
         self.no_trades = no_trades
@@ -152,7 +153,7 @@ class GameEngine_Easy:
             if (ring.count(stone_) == len(ring)) and (stone_ != 0):
                 marked.append((0, stone_, len(ring)))
                 break
-            if count >= 3 and stone_ != stone:
+            if self.mark_matches(count, stone_, stone):
                 marked.append((pick, stone, count))
             if stone_ == stone and stone_ != 0:
                 count += 1
@@ -178,6 +179,10 @@ class GameEngine_Easy:
         else:
             pass
         return marked
+
+    def mark_matches(self, count, actual, ref):
+        if actual == ref: return False
+        return count >= 3 and actual != ref
 
     def clear_stones(self, ring):
         ring_intern = ring
@@ -221,45 +226,13 @@ class GameEngine_Normal(GameEngine_Easy):
         super().__init__()
         self.colors = {1, 2, 5}
 
-    def mark_for_clearing(self, ring):
-        pick = 0
-        stone = 0
-        count = 0
-        marked = []
-        for index, stone_ in enumerate(ring * 2):
-            if (ring.count(stone_) == len(ring)) and (stone_ != 0):
-                marked.append((0, stone_, len(ring)))
-                break
-            if stone == 5:
-                if count >= 4 and stone_ != stone:
-                    marked.append((pick, stone, count))
-            else:
-                if count >= 3 and stone_ != stone:
-                    marked.append((pick, stone, count))
-            if stone_ == stone and stone_ != 0:
-                count += 1
-            elif stone_ != 0:
-                pick, stone, count = index, stone_, 1
-            elif stone_ == 0:
-                pick, stone, count = 0, 0, 0
-        marked = list(filter(lambda x: x[0] < len(ring), marked))
-        if len(marked) != 0:
-            first, last = marked[0], marked[-1]
-            lgt = last[0] + last[2]
-            diff = lgt - len(ring)
-            if lgt - 1 >= len(ring):
-                if first[0] == 0:
-                    last = (last[0], last[1], (diff - 2))
-                    marked.pop()
-                    marked.append(last)
-                else:
-                    marked.insert(0, (0, last[1], (diff)))
-                    marked.pop()
-                    last = (last[0], last[1], last[2] - diff)
-                    marked.append(last)
+    def mark_matches(self, count, actual, ref):
+        print(f'Count: {count}, Actual: {actual}, Ref: {ref}')
+        if actual == ref: return False
+        if ref == 5:
+            return count >= 4 and actual != ref
         else:
-            pass
-        return marked
+            return count >= 3 and actual != ref
 
 
 class GameEngine_Hard(GameEngine_Easy):
