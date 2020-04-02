@@ -80,17 +80,15 @@ class Game:
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
 
-        self.splashScreen()
-
         self.background.fill(colorScheme.GAMEBG)
         self.gamebg = colorScheme.GAMEBGIMAGE
         self.activeScreen = 0
         self.mainMenu = True
         self.optionsScreen = False
         self.activeOption = 0
-        self.menuGameActive = False
         self.gameOn = False
         self.gameOver = False
+        self.menuGameActive = False
         self.pause = False
         self.help_ = 0
 
@@ -186,6 +184,8 @@ class Game:
                 colorScheme.OPTMENUACTIVE),
             align = 'center',
             )
+
+        self.splashScreen()
 
     def splashScreen(self):
         self.background.fill((0, 0, 0))
@@ -491,16 +491,16 @@ class Game:
         }
 
         def main_menu(event_, screen = self.mm):
-            opt_ = getattr(screen, keys[event_.key][0])
-            snd = getattr(self, keys[event_.key][1])
-            if self.sound: snd.play()
+            selectedOption = getattr(screen, keys[event_.key][0])
+            selectedOptionSound = getattr(self, keys[event_.key][1])
+            if self.sound: selectedOptionSound.play()
             if event_.key != pygame.K_RETURN:
-                opt_()
+                selectedOption()
             else:
                 if screen == self.mm:
-                    self.load(opt_())
+                    self.load(selectedOption())
                 elif screen == self.optm:
-                    self.load(*opt_())
+                    self.load(*selectedOption())
 
         def options_screen(event_):
             main_menu(event_, screen = self.optm)
