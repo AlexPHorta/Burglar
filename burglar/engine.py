@@ -227,7 +227,7 @@ class GameEngine_Normal(GameEngine_Easy):
         self.colors = {1, 2, 5}
 
     def mark_matches(self, count, actual, ref):
-        print(f'Count: {count}, Actual: {actual}, Ref: {ref}')
+        # print(f'Count: {count}, Actual: {actual}, Ref: {ref}')
         if actual == ref: return False
         if ref == 5:
             return count >= 4 and actual != ref
