@@ -25,6 +25,7 @@ from itertools import islice, chain, cycle
 
 pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
+os.environ['SDL_VIDEO_CENTERED'] = "True"
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
 pygame.display.set_caption('Burglar')
