@@ -39,6 +39,7 @@ def load_png(name):
         raise SystemExit(message)
     return image
 
+
 def blit_alpha(target, source, location, opacity):
     x = location[0]
     y = location[1]
@@ -47,6 +48,7 @@ def blit_alpha(target, source, location, opacity):
     temp.blit(source, (0, 0))
     temp.set_alpha(opacity)
     target.blit(temp, location)
+
 
 def write(text, size, font = None, color = (255, 255, 255)):
     if not font:
@@ -61,6 +63,7 @@ def write(text, size, font = None, color = (255, 255, 255)):
         text = text.convert_alpha()
     textpos = text.get_rect()
     return text, textpos
+
 
 def toRGBA(color):
     if isinstance(color, tuple) and len(color) in (3, 4):
