@@ -16,12 +16,9 @@ except ImportError as err:
     print("Couldn't load module. %s") % (err)
     sys.exit(2)
 
-import engine
-
 from collections import namedtuple
 from enum import Enum, unique
 from itertools import islice, chain, cycle
-
 
 pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
@@ -30,6 +27,7 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
 pygame.display.set_caption('Burglar')
 
+import engine
 from utils import load_png, blit_alpha, write, Center, stones
 from tools import saveConfigs, colorScheme, configurations
 
@@ -188,6 +186,8 @@ class Game:
 
         self.splashScreen()
 
+    # Screen functions
+
     def splashScreen(self):
         self.background.fill((0, 0, 0))
         bg = load_png('splash_bg.png')
@@ -231,58 +231,6 @@ class Game:
         self.splashTrack.stop()
 
         pygame.time.wait(200)
-
-    def menuMain(self):
-
-        self.game = None
-
-        # Print game name
-        title, titlepos = write(
-            'Burglar', 124, 'Multicolore.otf', colorScheme.MAINMENUTITLE)
-        titlepos.centerx = self.background.get_rect().centerx
-        titlepos.centery = self.background.get_rect().height / 3
-        self.background.blit(title, titlepos)
-
-        self.mm.assemble()
-        self.mm.menuPos.centery = 2 * (self.background.get_rect().height / 3)
-        self.mm.menuPos.centerx = self.background.get_rect().centerx
-        self.background.blit(self.mm.menu, self.mm.menuPos)
-
-    def menuGame(self):
-
-        bottommenupos = 920
-        right = 1300
-
-        if not self.gameOver:
-            if not self.pause:
-                self.gm.assemble()
-                self.gm.menuPos.bottom = bottommenupos
-                self.gm.menuPos.right = 1300
-                self.background.blit(self.gm.menu, self.gm.menuPos)
-
-                warning, warningpos = write(
-                    'Press CTRL to toggle menu on/off.', 22,
-                    'MankSans-Medium.ttf',
-                    colorScheme.GAMEMENUWARNING)
-
-                # Print menu warning
-                warningpos.right = right
-                warningpos.bottom = 950
-                self.background.blit(warning, warningpos)
-
-            else:
-                self.rsm.assemble()
-                self.rsm.menuPos.bottom = bottommenupos
-                self.rsm.menuPos.right = 1300
-                self.background.blit(self.rsm.menu, self.rsm.menuPos)
-
-        else:
-            self.govm.options = (('new game', self.level), 'back') # Ugly, ugly, ugly!!!!!
-            self.govm.assemble()
-            self.govm.menuPos.bottom = bottommenupos
-            self.govm.menuPos.right = 1300
-            self.background.blit(self.govm.menu, self.govm.menuPos)
-
 
     def options(self):
 
@@ -353,49 +301,67 @@ class Game:
         self.cm.menuPos.centery = 7 * (self.background.get_rect().height / 8)
         self.background.blit(self.cm.menu, self.cm.menuPos)
 
-    def load(self, choice, option = None):
-        levels = ('easy', 'normal', 'hard',)
-        secondaries = {
-            'options': 1, 'help': 3, 'credits': 4, 'quit': 0, 'back': 0,}
-        choice = str(choice)
-        option = str(option)
-        if choice in levels:
-            self.activeScreen = 2
-            self.level = choice
-            self.loadGame()
-        elif choice in secondaries:
-            self.activeScreen = secondaries[choice]
-            self.gm.switch('off')
-            if choice not in ('quit', 'back'):
-                getattr(self, choice)()
+
+    # Menus functions
+
+    def menuMain(self):
+
+        self.game = None
+
+        # Print game name
+        title, titlepos = write(
+            'Burglar', 124, 'Multicolore.otf', colorScheme.MAINMENUTITLE)
+        titlepos.centerx = self.background.get_rect().centerx
+        titlepos.centery = self.background.get_rect().height / 3
+        self.background.blit(title, titlepos)
+
+        self.mm.assemble()
+        self.mm.menuPos.centery = 2 * (self.background.get_rect().height / 3)
+        self.mm.menuPos.centerx = self.background.get_rect().centerx
+        self.background.blit(self.mm.menu, self.mm.menuPos)
+
+    def menuGame(self):
+
+        bottommenupos = 920
+        right = 1300
+
+        if not self.gameOver:
+            if not self.pause:
+                self.gm.assemble()
+                self.gm.menuPos.bottom = bottommenupos
+                self.gm.menuPos.right = 1300
+                self.background.blit(self.gm.menu, self.gm.menuPos)
+
+                warning, warningpos = write(
+                    'Press CTRL to toggle menu on/off.', 22,
+                    'MankSans-Medium.ttf',
+                    colorScheme.GAMEMENUWARNING)
+
+                # Print menu warning
+                warningpos.right = right
+                warningpos.bottom = 950
+                self.background.blit(warning, warningpos)
+
             else:
-                self.menuMain()
-        elif choice in ('light', 'dark'):
-            colorScheme.setScheme(choice)
-        elif choice == 'pause':
-            self.pause = True
-        elif choice == 'resume':
-            self.pause = False
-            self.gm.switch('off')
-        elif choice == 'on':
-            if option == 'music':
-                self.music = True
-                self.track.play(-1)
-            elif option == 'sound':
-                self.sound = True
-        elif choice == 'off':
-            if option == 'music':
-                self.music = False
-                self.track.stop()
-            elif option == 'sound':
-                self.sound = False
+                self.rsm.assemble()
+                self.rsm.menuPos.bottom = bottommenupos
+                self.rsm.menuPos.right = 1300
+                self.background.blit(self.rsm.menu, self.rsm.menuPos)
+
+        else:
+            self.govm.options = (('new game', self.level), 'back') # Ugly, ugly, ugly!!!!!
+            self.govm.assemble()
+            self.govm.menuPos.bottom = bottommenupos
+            self.govm.menuPos.right = 1300
+            self.background.blit(self.govm.menu, self.govm.menuPos)
 
     def loadGame(self):
 
         self.gameOver = False
         self.frame = pygame.Surface(self.frameSize)
+        self.frame_rect = self.frame.get_rect()
         self.frameCENTER = Center(
-            self.frame.get_rect().centerx, self.frame.get_rect().centery)
+            self.frame_rect.centerx, self.frame_rect.centery)
 
         self.inner_ring.clear()
         self.middle_ring.clear()
@@ -476,6 +442,43 @@ class Game:
             self.gOverSoundPlayed = False
 
         self._running = True
+
+    def load(self, choice, option = None):
+        levels = ('easy', 'normal', 'hard',)
+        secondaries = {
+            'options': 1, 'help': 3, 'credits': 4, 'quit': 0, 'back': 0,}
+        choice = str(choice)
+        option = str(option)
+        if choice in levels:
+            self.activeScreen = 2
+            self.level = choice
+            self.loadGame()
+        elif choice in secondaries:
+            self.activeScreen = secondaries[choice]
+            self.gm.switch('off')
+            if choice not in ('quit', 'back'):
+                getattr(self, choice)()
+            else:
+                self.menuMain()
+        elif choice in ('light', 'dark'):
+            colorScheme.setScheme(choice)
+        elif choice == 'pause':
+            self.pause = True
+        elif choice == 'resume':
+            self.pause = False
+            self.gm.switch('off')
+        elif choice == 'on':
+            if option == 'music':
+                self.music = True
+                self.track.play(-1)
+            elif option == 'sound':
+                self.sound = True
+        elif choice == 'off':
+            if option == 'music':
+                self.music = False
+                self.track.stop()
+            elif option == 'sound':
+                self.sound = False
 
     def on_event(self, event):
 
