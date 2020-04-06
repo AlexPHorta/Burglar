@@ -34,14 +34,14 @@ from tools import saveConfigs, colorScheme, configurations
 
 class Game:
 
-    gameKeys = {"left": 1, "right": 2}
+    game_keys = {"left": 1, "right": 2}
 
     def __init__(self):
         self._running = True
         self.level = 'normal'
         self._display_surf = None
         self.size = self.width, self.height = 1350, 1000
-        self.frameSize = self.frameWidth, self.frameHeight = 1100, 1000
+        self.frame_size = self.frame_width, self.frame_height = 1100, 1000
         self.inner_ring = []
         self.middle_ring = []
         self.outer_ring = []
@@ -51,7 +51,7 @@ class Game:
         try:
             self.track.load(os.path.join(
                 'sounds', '392395__shadydave__cello-marcato-loop.wav'))
-            self.splashTrack = pygame.mixer.Sound(os.path.join(
+            self.splash_track = pygame.mixer.Sound(os.path.join(
                 'sounds', '270657__shadydave__deep-bass-growl.wav'))
             self.flip = pygame.mixer.Sound(os.path.join(
                 'sounds','167045__drminky__slime-jump.wav'))
@@ -59,7 +59,7 @@ class Game:
                 'sounds','256116__kwahmah-02__click.wav'))
             self.toggle = pygame.mixer.Sound(os.path.join(
                 'sounds','202312__7778__dbl-click.wav'))
-            self.gOverSound = pygame.mixer.Sound(os.path.join(
+            self.game_over_sound = pygame.mixer.Sound(os.path.join(
                 'sounds','145438__soughtaftersounds__old-music-box-5.wav'))
         except:
             raise UserWarning(
@@ -81,13 +81,13 @@ class Game:
 
         self.background.fill(colorScheme.GAMEBG)
         self.gamebg = colorScheme.GAMEBGIMAGE
-        self.activeScreen = 0
-        self.mainMenu = True
-        self.optionsScreen = False
-        self.activeOption = 0
-        self.gameOn = False
-        self.gameOver = False
-        self.menuGameActive = False
+        self.active_screen = 0
+        self.main_menu = True
+        self.options_screen = False
+        self.active_option = 0
+        self.game_on = False
+        self.game_over = False
+        self.menu_game_active = False
         self.pause = False
         self.help_ = 0
 
@@ -107,6 +107,7 @@ class Game:
                 colorScheme.MAINMENUACTIVE),
             align = 'center'
             )
+
         self.gm = SwitchableListMenu(
             ('pause', 'quit'),
             sizes = (52, 58, 52),
@@ -115,6 +116,7 @@ class Game:
                 colorScheme.GAMEMENUACTIVE),
             align = 'right',
             )
+
         self.rsm = ListMenu(
             ('resume',),
             sizes = (52, 58),
@@ -123,6 +125,7 @@ class Game:
                 colorScheme.GAMEMENUACTIVE),
             align = 'right',
             )
+
         self.govm = ListMenu(
             (('new game', self.level), 'back'),
             sizes = (52, 58),
@@ -131,6 +134,7 @@ class Game:
                 colorScheme.GAMEMENUACTIVE),
             align = 'right',
             )
+
         self.optm = FlattenedMenu(
             ({'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'),
             sizes = (52, 58),
@@ -142,6 +146,7 @@ class Game:
             hpad = 20,
             vpad = 20,
             )
+
         self.hm = ListMenu(
             ('back',),
             sizes = (58, 63),
@@ -151,7 +156,7 @@ class Game:
             align = 'center',
             )
 
-        creditsTexts = (
+        credits_texts = (
             ('Produced by', 'BUEY - Games and Stuff'),
             ('Programming, Testing, Artwork, Coffee', 'Alexandre Paloschi'),
             ('Website', 'www.buey.net.br'), ('Made with', 'Pygame'),
@@ -165,7 +170,7 @@ class Game:
             #     'https://freesound.org/people/ShadyDave/sounds/270657/', '(https://creativecommons.org/licenses/by/3.0/)')))
 
         self.credits_ = CreditsTextBlock(
-            creditsTexts,
+            credits_texts,
             sizes = (26, 26),
             align = 'center',
             bg = colorScheme.OPTIONSBG,
@@ -175,6 +180,7 @@ class Game:
             hpad = 20,
             vpad = 10,
             )
+
         self.cm = ListMenu(
             ('back',),
             sizes = (58, 63),
@@ -184,17 +190,17 @@ class Game:
             align = 'center',
             )
 
-        self.splashScreen()
+        self.splash_screen()
 
     # Screen functions
 
-    def splashScreen(self):
+    def splash_screen(self):
         self.background.fill((0, 0, 0))
         bg = load_png('splash_bg.png')
 
         self.background.blit(bg, (0, 0))
 
-        self.splashTrack.play(1)
+        self.splash_track.play(1)
 
         for i in range(0, 255, 10):
             self.background.set_alpha(i)
@@ -203,32 +209,32 @@ class Game:
             pygame.time.wait(10)
 
         buey_spritesheet = load_png('buey_sprite.png')
-        buey_spritesheetPos = buey_spritesheet.get_rect()
-        buey_spritesheetPos.centerx = self.background.get_rect().centerx
-        buey_spritesheetPos.centery = self.background.get_rect().centery
+        buey_spritesheet_pos = buey_spritesheet.get_rect()
+        buey_spritesheet_pos.centerx = self.background.get_rect().centerx
+        buey_spritesheet_pos.centery = self.background.get_rect().centery
 
         for i in range(0, 255, 4):
             self.background.blit(bg, (0, 0))
             blit_alpha(
-                self.background, buey_spritesheet, buey_spritesheetPos, i)
+                self.background, buey_spritesheet, buey_spritesheet_pos, i)
             self.screen.blit(self.background, (0, 0))
             pygame.display.flip()
             pygame.time.wait(10)
 
         pygame.time.wait(1500)
 
-        fadeOut = pygame.Surface(self.screen.get_size())
+        fade_out = pygame.Surface(self.screen.get_size())
 
         for i in range(0, 255, 10):
             self.background.blit(bg, (0, 0))
-            self.background.blit(buey_spritesheet, buey_spritesheetPos)
-            fadeOut.set_alpha(i)
-            self.background.blit(fadeOut, (0, 0))
+            self.background.blit(buey_spritesheet, buey_spritesheet_pos)
+            fade_out.set_alpha(i)
+            self.background.blit(fade_out, (0, 0))
             self.screen.blit(self.background, (0, 0))
             pygame.display.flip()
             pygame.time.wait(10)
 
-        self.splashTrack.stop()
+        self.splash_track.stop()
 
         pygame.time.wait(200)
 
@@ -237,100 +243,100 @@ class Game:
         self.game = None
 
         # Print Options tag
-        title, titlepos = write(
+        title, title_pos = write(
             'Options', 96,
             'Multicolore.otf',
             colorScheme.OPTIONSTITLE,
             )
-        titlepos.centerx = self.background.get_rect().centerx
-        titlepos.centery = self.background.get_rect().height / 3
-        self.background.blit(title, titlepos)
+        title_pos.centerx = self.background.get_rect().centerx
+        title_pos.centery = self.background.get_rect().height / 3
+        self.background.blit(title, title_pos)
 
         self.optm.assemble()
-        self.optm.menuPos.centerx = self.background.get_rect().centerx
-        self.optm.menuPos.centery = 2 * (self.background.get_rect().height / 3)
-        self.background.blit(self.optm.menu, self.optm.menuPos)
+        self.optm.menu_pos.centerx = self.background.get_rect().centerx
+        self.optm.menu_pos.centery = 2 * (self.background.get_rect().height / 3)
+        self.background.blit(self.optm.menu, self.optm.menu_pos)
 
     def help(self):
 
         self.game = None
-        helpFile = 'help0{}.png'.format(str(self.help_))
+        help_file = 'help0{}.png'.format(str(self.help_))
 
         # Print Title
-        title, titlepos = write(
+        title, title_pos = write(
             'Help', 96,
             'Multicolore.otf',
             colorScheme.OPTIONSTITLE,
             )
-        titlepos.centerx = self.background.get_rect().centerx
-        titlepos.centery = self.background.get_rect().height / 6
-        self.background.blit(title, titlepos)
+        title_pos.centerx = self.background.get_rect().centerx
+        title_pos.centery = self.background.get_rect().height / 6
+        self.background.blit(title, title_pos)
 
-        helpImage = load_png(helpFile)
-        helpImagePos = helpImage.get_rect()
-        helpImagePos.centerx = self.background.get_rect().centerx
-        helpImagePos.centery = self.background.get_rect().centery
-        self.background.blit(helpImage, helpImagePos)
+        help_image = load_png(help_file)
+        help_image_pos = help_image.get_rect()
+        help_image_pos.centerx = self.background.get_rect().centerx
+        help_image_pos.centery = self.background.get_rect().centery
+        self.background.blit(help_image, help_image_pos)
 
         self.hm.assemble()
-        self.hm.menuPos.centerx = self.background.get_rect().centerx
-        self.hm.menuPos.centery = 5 * (self.background.get_rect().height / 6)
-        self.background.blit(self.hm.menu, self.hm.menuPos)
+        self.hm.menu_pos.centerx = self.background.get_rect().centerx
+        self.hm.menu_pos.centery = 5 * (self.background.get_rect().height / 6)
+        self.background.blit(self.hm.menu, self.hm.menu_pos)
 
     def credits(self):
 
         self.game = None
 
         # Print Options tag
-        title, titlepos = write(
+        title, title_pos = write(
             'Credits', 96,
             'Multicolore.otf',
             colorScheme.OPTIONSTITLE,
             )
-        titlepos.centerx = self.background.get_rect().centerx
-        titlepos.centery = self.background.get_rect().height / 8
-        self.background.blit(title, titlepos)
+        title_pos.centerx = self.background.get_rect().centerx
+        title_pos.centery = self.background.get_rect().height / 8
+        self.background.blit(title, title_pos)
 
         self.credits_.assemble()
-        self.credits_.menuPos.centerx = self.background.get_rect().centerx
-        self.credits_.menuPos.centery = self.background.get_rect().centery
-        self.background.blit(self.credits_.menu, self.credits_.menuPos)
+        self.credits_.menu_pos.centerx = self.background.get_rect().centerx
+        self.credits_.menu_pos.centery = self.background.get_rect().centery
+        self.background.blit(self.credits_.menu, self.credits_.menu_pos)
 
         self.cm.assemble()
-        self.cm.menuPos.centerx = self.background.get_rect().centerx
-        self.cm.menuPos.centery = 7 * (self.background.get_rect().height / 8)
-        self.background.blit(self.cm.menu, self.cm.menuPos)
+        self.cm.menu_pos.centerx = self.background.get_rect().centerx
+        self.cm.menu_pos.centery = 7 * (self.background.get_rect().height / 8)
+        self.background.blit(self.cm.menu, self.cm.menu_pos)
 
 
     # Menus functions
 
-    def menuMain(self):
+    def menu_main(self):
 
         self.game = None
 
         # Print game name
-        title, titlepos = write(
+        title, title_pos = write(
             'Burglar', 124, 'Multicolore.otf', colorScheme.MAINMENUTITLE)
-        titlepos.centerx = self.background.get_rect().centerx
-        titlepos.centery = self.background.get_rect().height / 3
-        self.background.blit(title, titlepos)
+        title_pos.centerx = self.background.get_rect().centerx
+        title_pos.centery = self.background.get_rect().height / 3
+        self.background.blit(title, title_pos)
 
         self.mm.assemble()
-        self.mm.menuPos.centery = 2 * (self.background.get_rect().height / 3)
-        self.mm.menuPos.centerx = self.background.get_rect().centerx
-        self.background.blit(self.mm.menu, self.mm.menuPos)
+        self.mm.menu_pos.centery = 2 * (self.background.get_rect().height / 3)
+        self.mm.menu_pos.centerx = self.background.get_rect().centerx
+        self.background.blit(self.mm.menu, self.mm.menu_pos)
 
-    def menuGame(self):
+    def menu_game(self):
 
-        bottommenupos = 920
-        right = 1300
+        BOTTOM_MENU_POS = 920
+        RIGHT = 1300
 
-        if not self.gameOver:
+        if not self.game_over:
             if not self.pause:
                 self.gm.assemble()
-                self.gm.menuPos.bottom = bottommenupos
-                self.gm.menuPos.right = 1300
-                self.background.blit(self.gm.menu, self.gm.menuPos)
+                self.gm.menu_pos.bottom = BOTTOM_MENU_POS
+                self.gm.menu_pos.right = 1300
+                self.background.blit(self.gm.menu, self.gm.menu_pos)
 
                 warning, warningpos = write(
                     'Press CTRL to toggle menu on/off.', 22,
@@ -338,27 +344,27 @@ class Game:
                     colorScheme.GAMEMENUWARNING)
 
                 # Print menu warning
-                warningpos.right = right
+                warningpos.right = RIGHT
                 warningpos.bottom = 950
                 self.background.blit(warning, warningpos)
 
             else:
                 self.rsm.assemble()
-                self.rsm.menuPos.bottom = bottommenupos
-                self.rsm.menuPos.right = 1300
-                self.background.blit(self.rsm.menu, self.rsm.menuPos)
+                self.rsm.menu_pos.bottom = BOTTOM_MENU_POS
+                self.rsm.menu_pos.right = 1300
+                self.background.blit(self.rsm.menu, self.rsm.menu_pos)
 
         else:
             self.govm.options = (('new game', self.level), 'back') # Ugly, ugly, ugly!!!!!
             self.govm.assemble()
-            self.govm.menuPos.bottom = bottommenupos
-            self.govm.menuPos.right = 1300
-            self.background.blit(self.govm.menu, self.govm.menuPos)
+            self.govm.menu_pos.bottom = BOTTOM_MENU_POS
+            self.govm.menu_pos.right = 1300
+            self.background.blit(self.govm.menu, self.govm.menu_pos)
 
-    def loadGame(self):
+    def load_game(self):
 
-        self.gameOver = False
-        self.frame = pygame.Surface(self.frameSize)
+        self.game_over = False
+        self.frame = pygame.Surface(self.frame_size)
         self.frame_rect = self.frame.get_rect()
         self.frameCENTER = Center(
             self.frame_rect.centerx, self.frame_rect.centery)
@@ -410,7 +416,7 @@ class Game:
 
         for index, coord in enumerate(coords):
             ring = getattr(self, coords[index][0])
-            for coordx , multx, coordy, multy, tagg in coords[index][2]:
+            for coordx, multx, coordy, multy, tagg in coords[index][2]:
                 ring.append(Stone(
                     image = stones.BLANK,
                     x = multx*(
@@ -435,11 +441,11 @@ class Game:
         self.fill_rings(self.game.inner, self.inner_ring)
 
         self.score = Score('Multicolore.otf', 106, colorScheme.GAMESCORE)
-        self.score.updateScore(self.game.points)
+        self.score.update_score(self.game.points)
 
         if self.music:
             self.track.play(-1)
-            self.gOverSoundPlayed = False
+            self.game_over_sound_played = False
 
         self._running = True
 
@@ -450,16 +456,16 @@ class Game:
         choice = str(choice)
         option = str(option)
         if choice in levels:
-            self.activeScreen = 2
+            self.active_screen = 2
             self.level = choice
-            self.loadGame()
+            self.load_game()
         elif choice in secondaries:
-            self.activeScreen = secondaries[choice]
+            self.active_screen = secondaries[choice]
             self.gm.switch('off')
             if choice not in ('quit', 'back'):
                 getattr(self, choice)()
             else:
-                self.menuMain()
+                self.menu_main()
         elif choice in ('light', 'dark'):
             colorScheme.setScheme(choice)
         elif choice == 'pause':
@@ -495,25 +501,25 @@ class Game:
         }
 
         def main_menu(event_, screen = self.mm):
-            selectedOption = getattr(screen, keys[event_.key][0])
-            selectedOptionSound = getattr(self, keys[event_.key][1])
-            if self.sound: selectedOptionSound.play()
+            selected_option = getattr(screen, keys[event_.key][0])
+            selected_option_sound = getattr(self, keys[event_.key][1])
+            if self.sound: selected_option_sound.play()
             if event_.key != pygame.K_RETURN:
-                selectedOption()
+                selected_option()
             else:
                 if screen == self.mm:
-                    self.load(selectedOption())
+                    self.load(selected_option())
                 elif screen == self.optm:
-                    self.load(*selectedOption())
+                    self.load(*selected_option())
 
         def options_screen(event_):
             main_menu(event_, screen = self.optm)
 
         def game_on(event_):
             # Check if user pressed the right keys, turn things accordingly
-            if not (self.gameOver or self.pause):
+            if not (self.game_over or self.pause):
                 if (event_.key == pygame.K_LEFT) or (event_.key == pygame.K_RIGHT):
-                    self.game.where_to_turn(self.gameKeys[pygame.key.name(event_.key)])
+                    self.game.where_to_turn(self.game_keys[pygame.key.name(event_.key)])
                     self.game.new_round()
 
                     self.game.insert_stone()
@@ -526,7 +532,7 @@ class Game:
                         if self.sound: self.toggle.play()
                         self.gm.switch('on')
 
-            if self.gameOver:
+            if self.game_over:
                 if event_.key == pygame.K_UP:
                     self.govm.up()
                     if self.sound: self.flip.play()
@@ -578,7 +584,7 @@ class Game:
         }
 
         if event.type == pygame.KEYDOWN:
-            screens[self.activeScreen](event)
+            screens[self.active_screen](event)
 
         return
 
@@ -587,7 +593,7 @@ class Game:
         # Slow down things a bit
         clock.tick(20)
 
-        if self.activeScreen == 2: #self.gameOn:
+        if self.active_screen == 2: #self.game_on:
 
             # Refresh the state of the rings
             self.fill_rings(self.game.big_outer, self.big_outer_ring)
@@ -596,16 +602,16 @@ class Game:
             self.fill_rings(self.game.inner, self.inner_ring)
 
             # Refresh the score
-            self.score.updateScore(self.game.points)
+            self.score.update_score(self.game.points)
 
-            self.gameOver = self.game.game_over
+            self.game_over = self.game.game_over
 
-            if self.gameOver:
+            if self.game_over:
                 self.track.stop()
 
-                if not self.gOverSoundPlayed:
-                    self.gOverSound.play()
-                    self.gOverSoundPlayed = True
+                if not self.game_over_sound_played:
+                    self.game_over_sound.play()
+                    self.game_over_sound_played = True
 
         return
 
@@ -614,17 +620,17 @@ class Game:
         self.screen.blit(self.background, (0, 0))
 
         def main_menu():
-        # if self.activeScreen == 0: #self.mainMenu:
+        # if self.active_screen == 0: #self.main_menu:
             self.background.fill(colorScheme.MAINMENUBG)
-            self.menuMain()
+            self.menu_main()
 
         def options_screen():
-        # elif self.activeScreen == 1: #self.optionsScreen:
+        # elif self.active_screen == 1: #self.options_screen:
             self.background.fill(colorScheme.OPTIONSBG)
             self.options()
 
         def game_on():
-        # elif self.activeScreen == 2: #self.gameOn:
+        # elif self.active_screen == 2: #self.game_on:
 
             # self.background.fill(self.syscolors.BACKGROUND)
             self.background.blit(self.gamebg, (0, 0))
@@ -644,33 +650,35 @@ class Game:
                 for element in ring:
                     self.background.blit(element.image, element.rect)
 
-            self.menuGame()
+            self.menu_game()
 
             # Blit game over
-            if self.gameOver:
-                gOverSemiTrans = load_png('game_over.png')
-                gOverSemiTransPos = gOverSemiTrans.get_rect()
-                gOverSemiTransPos.center = self.frameCENTER
+            if self.game_over:
+                game_over_semi_trans = load_png('game_over.png')
+                game_over_semi_trans_pos = game_over_semi_trans.get_rect()
+                game_over_semi_trans_pos.center = self.frameCENTER
 
-                gOver, gOverpos = write(
+                game_over, game_over_pos = write(
                     'Game Over', 124,
                     'Multicolore.otf',
                     colorScheme.GAMEOVER,
                     )
-                gOverpos.centerx, gOverpos.centery = self.frame.get_rect().center
+                game_over_pos.centerx, game_over_pos.centery = (
+                    self.frame.get_rect().center)
 
-                self.background.blit(gOverSemiTrans, gOverSemiTransPos)
+                self.background.blit(
+                    game_over_semi_trans, game_over_semi_trans_pos)
 
-                self.background.blit(gOver, gOverpos)
+                self.background.blit(game_over, game_over_pos)
 
         def help_screen():
-        # elif self.activeScreen == 3:
+        # elif self.active_screen == 3:
 
             self.background.fill(colorScheme.OPTIONSBG)
             self.help()
 
         def credits_screen():
-        # elif self.activeScreen == 4:
+        # elif self.active_screen == 4:
 
             self.background.fill(colorScheme.OPTIONSBG)
             self.credits()
@@ -683,7 +691,7 @@ class Game:
             4: credits_screen,
         }
 
-        screens[self.activeScreen]()
+        screens[self.active_screen]()
 
         self.screen.blit(self.background, (0, 0))
 
@@ -768,7 +776,7 @@ class Score:
         self.score = self.score.convert_alpha()
         self.scorepos = self.score.get_rect()
 
-    def updateScore(self, newScore):
+    def update_score(self, newScore):
         self.points = newScore
         self.score = self.font.render(
             str(self.points), True, self.color, self.bgcolor)

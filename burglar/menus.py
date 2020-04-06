@@ -93,7 +93,7 @@ class ListMenu:
                 item[1].right = self.menuFrame.get_rect().right
             self.menuFrame.blit(item[0], (item[1].x, (item[1].y + dispBy)))
             dispBy += item[0].get_height() + self.vpad
-        self.menu, self.menuPos = self.menuFrame, self.menuFrame.get_rect()
+        self.menu, self.menu_pos = self.menuFrame, self.menuFrame.get_rect()
 
 
 class SwitchableListMenu(ListMenu):
