@@ -5,30 +5,46 @@ import random
 
 
 class GameEngine_Easy:
+    """Define the game logic in the easy mode."""
 
     def __init__(self,
         inner = None,
         middle = None,
         outer = None,
+        big_outer = None,
         bag = [],
         points = 0,
         no_trades = False,
         one_place_to_insert = False,
         game_over = False
         ):
-        if not inner:
+    """Initialize the game engine.
+
+    Keyword arguments:
+        inner -- The inner ring. A List with four integers.
+        middle -- The middle ring. A List with eight integers.
+        outer -- The small outer ring. A List with sixteen integers.
+        big_outer -- The big outer ring. A List with thirty two integers.
+        bag -- The bag with the stones from a specific round. A List with integers.
+        points -- The number of points. An integer.
+        no_trades -- Whether there are trades to be made or not. A boolean.
+        one_place_to_insert -- Whether there's only one place to insert a stone
+            in the inner ring. A boolean.
+        game_over -- Whether the game is over or not. A boolean.
+    """
+        if inner is None:
             self.inner_ring = [0] * 4
         else:
             self.inner_ring = inner
-        if not middle:
+        if middle is None:
             self.middle_ring = [0] * 8
         else:
             self.middle_ring = middle
-        if not outer:
+        if outer is None:
             self.outer_ring = [0] * 16
         else:
             self.outer_ring = outer
-        if not outer:
+        if big_outer is None:
             self.big_outer_ring = [0] * 32
         else:
             self.big_outer_ring = outer
@@ -73,6 +89,7 @@ class GameEngine_Easy:
         return self.big_outer_ring
 
     def bag(self):
+        """Pick a stone from the bag and return it."""
         try:
             assert len(self._bag) > 0
         except AssertionError:
@@ -81,10 +98,12 @@ class GameEngine_Easy:
             return self._bag.pop()
 
     def check_game_over(self):
+        """Check if the game is over."""
         done = True if self.blanks == 0 else False
         self.game_over = done
 
     def insert_stone(self):
+        """Insert a stone in an empty place in the inner ring."""
         done = False
         where_to_insert = None
 
@@ -105,13 +124,29 @@ class GameEngine_Easy:
         return where_to_insert
 
     def place_to_insert(self):
+        """Pick a random place to insert a stone in the inner ring.
+
+        Called by insert_stone."""
         return random.randrange(len(self.inner))
 
     def where_to_turn(self, direction):
+        """Change the direction to turn the rings.
+
+        Positional arguments:
+        direction -- The direction to turn the ring (clockwise or
+            counter-clockwise). An integer.
+        """
         self._turn = direction
-        return
 
     def turn(self, which_ring, turn_choice):
+        """Shift the position of the stones in one ring.
+
+        Positional arguments:
+        which_ring -- Which of the rings to turn. A list (one of the ring
+            attributes).
+        turn_choice -- The direction to turn the ring (clockwise or
+            counter-clockwise). An integer.
+        """
         if turn_choice == 1:
             retrieved = which_ring.pop(0)
             which_ring.append(retrieved)
@@ -121,6 +156,17 @@ class GameEngine_Easy:
         return which_ring
 
     def trade_stones(self, external, internal, turn_direction):
+        """Trade the stones from an internal to an external ring, at the end of
+        the round.
+
+        Positional arguments:
+        external -- The external ring (where the stones will be placed). A list
+            (one of the ring attributes).
+        internal -- The internal ring (from where the stones are retrieved).
+            A list (one of the ring attributes).
+        turn_direction -- The direction to turn the ring (clockwise or
+            counter-clockwise). An integer.
+        """
         external_ = external
         internal_ = internal
         no_trades = True
@@ -161,7 +207,9 @@ class GameEngine_Easy:
                 pick, stone, count = index, stone_, 1
             elif stone_ == 0:
                 pick, stone, count = 0, 0, 0
+
         marked = list(filter(lambda x: x[0] < len(ring), marked))
+
         if len(marked) != 0:
             first, last = marked[0], marked[-1]
             lgt = last[0] + last[2]
@@ -178,6 +226,7 @@ class GameEngine_Easy:
                     marked.append(last)
         else:
             pass
+
         return marked
 
     def mark_matches(self, count, actual, ref):
