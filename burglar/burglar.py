@@ -33,10 +33,12 @@ from tools import saveConfigs, colorScheme, configurations
 
 
 class Game:
+    """The game class."""
 
     game_keys = {"left": 1, "right": 2}
 
     def __init__(self):
+        """Initialize the game."""
         self._running = True
         self.level = 'normal'
         self._display_surf = None
@@ -73,7 +75,7 @@ class Game:
             self.sound = True
 
     def on_init(self):
-
+        """Build the graphical interface of the game."""
         self.screen = pygame.display.set_mode(
             self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.background = pygame.Surface(self.screen.get_size())
@@ -90,6 +92,8 @@ class Game:
         self.menu_game_active = False
         self.pause = False
         self.help_ = 0
+
+        # Build the menus
 
         from menus import (
             ListMenu,
@@ -195,6 +199,7 @@ class Game:
     # Screen functions
 
     def splash_screen(self):
+        """Generate the initial Buey splashscreen."""
         self.background.fill((0, 0, 0))
         bg = load_png('splash_bg.png')
 
@@ -239,7 +244,7 @@ class Game:
         pygame.time.wait(200)
 
     def options(self):
-
+        """Build the options screen."""
         self.game = None
 
         # Print Options tag
@@ -258,7 +263,7 @@ class Game:
         self.background.blit(self.optm.menu, self.optm.menu_pos)
 
     def help(self):
-
+        """Build the help screen."""
         self.game = None
         help_file = 'help0{}.png'.format(str(self.help_))
 
@@ -284,7 +289,7 @@ class Game:
         self.background.blit(self.hm.menu, self.hm.menu_pos)
 
     def credits(self):
-
+        """Build the credits screen."""
         self.game = None
 
         # Print Options tag
@@ -311,7 +316,7 @@ class Game:
     # Menus functions
 
     def menu_main(self):
-
+        """Build the main menu."""
         self.game = None
 
         # Print game name
@@ -327,7 +332,7 @@ class Game:
         self.background.blit(self.mm.menu, self.mm.menu_pos)
 
     def menu_game(self):
-
+        """Build the in-game menu."""
         BOTTOM_MENU_POS = 920
         RIGHT = 1300
 
@@ -362,7 +367,7 @@ class Game:
             self.background.blit(self.govm.menu, self.govm.menu_pos)
 
     def load_game(self):
-
+        """Load the game interface."""
         self.game_over = False
         self.frame = pygame.Surface(self.frame_size)
         self.frame_rect = self.frame.get_rect()
@@ -450,6 +455,7 @@ class Game:
         self._running = True
 
     def load(self, choice, option = None):
+        """Load the respective option on every menu in the game."""
         levels = ('easy', 'normal', 'hard',)
         secondaries = {
             'options': 1, 'help': 3, 'credits': 4, 'quit': 0, 'back': 0,}
@@ -487,6 +493,7 @@ class Game:
                 self.sound = False
 
     def on_event(self, event):
+        """Run the event checking routine."""
 
         # Check if user wants to drop the game (unlikely)
         if event.type == pygame.QUIT:
@@ -589,6 +596,7 @@ class Game:
         return
 
     def on_loop(self):
+        """Run the loop routine."""
 
         # Slow down things a bit
         clock.tick(20)
@@ -616,6 +624,7 @@ class Game:
         return
 
     def on_render(self):
+        """Run the screen renderization routine."""
         # Empty the screen
         self.screen.blit(self.background, (0, 0))
 
@@ -700,12 +709,14 @@ class Game:
         return
 
     def on_cleanup(self):
+        """Prepare the game for exiting."""
         confs = (colorScheme, self.music, self.sound)
         saveConfigs(confs)
         pygame.quit()
         return
 
     def on_execute(self):
+        """Run the main game loop."""
         if self.on_init() == False:
             self._running = False
         while self._running:
@@ -715,6 +726,7 @@ class Game:
         self.on_cleanup()
 
     def fill_rings(self, engine_ring, screen_ring):
+        """Fill the grid with stones."""
         stones_ = {
             0: stones.BLANK,
             1: stones.RED,
@@ -731,7 +743,8 @@ class Stone(pygame.sprite.Sprite):
     """A stone that sits still and just changes colors.
     Returns: stone object
     Functions: update
-    Attributes: area"""
+    Attributes: area
+    """
 
     def __init__(self,
         image = None,
@@ -757,12 +770,21 @@ class Stone(pygame.sprite.Sprite):
 
 
 class Score:
+    """The game score class."""
 
     def __init__(self,
         font = None,
         size = 10,
         color = (0, 0, 0),
         bgcolor = None):
+        """Build the game score.
+
+        Keyword arguments:
+        font -- A font name (string).
+        size -- The size of the font (int).
+        color -- The color of the font, in format r, g, b (tuple).
+        bgcolor -- The background color of the score, in format r, g, b (tuple).
+        """
         fullname = os.path.join('fonts', font)
         self.font = pygame.font.Font(fullname, size)
         self.color = color
@@ -777,6 +799,7 @@ class Score:
         self.scorepos = self.score.get_rect()
 
     def update_score(self, newScore):
+        """Update the score."""
         self.points = newScore
         self.score = self.font.render(
             str(self.points), True, self.color, self.bgcolor)
