@@ -1,5 +1,8 @@
 #!/usr/bin/env python
+<<<<<<< HEAD
+=======
 
+>>>>>>> 967d75ed7bce211b3baed5daf4af71adc764f8d2
 
 __VERSION__ = "0.1.0"
 
