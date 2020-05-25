@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8 -*-
+
 
 __VERSION__ = "0.1.0"
 
@@ -48,19 +48,20 @@ class Game:
         self.big_outer_ring = []
         self.track = pygame.mixer.music
 
+        sound_files = {
+            'splash_track': '270657__shadydave__deep-bass-growl.wav',
+            'flip': '167045__drminky__slime-jump.wav',
+            'click': '256116__kwahmah-02__click.wav',
+            'toggle': '202312__7778__dbl-click.wav',
+            'game_over_sound': '145438__soughtaftersounds__old-music-box-5.wav',
+        }
+
         try:
             self.track.load(os.path.join(
                 'sounds', '392395__shadydave__cello-marcato-loop.wav'))
-            self.splash_track = pygame.mixer.Sound(os.path.join(
-                'sounds', '270657__shadydave__deep-bass-growl.wav'))
-            self.flip = pygame.mixer.Sound(os.path.join(
-                'sounds','167045__drminky__slime-jump.wav'))
-            self.click = pygame.mixer.Sound(os.path.join(
-                'sounds','256116__kwahmah-02__click.wav'))
-            self.toggle = pygame.mixer.Sound(os.path.join(
-                'sounds','202312__7778__dbl-click.wav'))
-            self.game_over_sound = pygame.mixer.Sound(os.path.join(
-                'sounds','145438__soughtaftersounds__old-music-box-5.wav'))
+            for attr, sound_file in sound_files.items():
+                setattr(self, attr, pygame.mixer.Sound(
+                    os.path.join('sounds', sound_file)))
         except:
             raise UserWarning(
                 "could not load or play soundfiles in 'sounds' folder :-(")
@@ -98,63 +99,78 @@ class Game:
             CreditsTextBlock,
             )
 
-        self.mm = ListMenu(
-            ('easy', 'normal', 'hard', 'options', 'help', 'credits'),
-            sizes = (58, 63),
-            bg = colorScheme.MAINMENUBG,
-            mncolors = (
-                colorScheme.MAINMENUINACTIVE,
-                colorScheme.MAINMENUACTIVE),
-            align = 'center'
-            )
+        menus_configs = {
+            'mm': (
+                ListMenu(
+                    ('easy', 'normal', 'hard', 'options', 'help', 'credits'),
+                    sizes = (58, 63),
+                    bg = colorScheme.MAINMENUBG,
+                    mncolors = (
+                        colorScheme.MAINMENUINACTIVE,
+                        colorScheme.MAINMENUACTIVE),
+                    align = 'center'
+                )),
+            'gm': (
+                SwitchableListMenu(
+                    ('pause', 'quit'),
+                    sizes = (52, 58, 52),
+                    mncolors = (
+                        colorScheme.GAMEMENUINACTIVE,
+                        colorScheme.GAMEMENUACTIVE),
+                    align = 'right',
+                )),
+            'rsm': (
+                ListMenu(
+                    ('resume',),
+                    sizes = (52, 58),
+                    mncolors = (
+                        colorScheme.GAMEMENUINACTIVE,
+                        colorScheme.GAMEMENUACTIVE),
+                    align = 'right',
+                )),
+            'govm': (
+                ListMenu(
+                    (('new game', self.level), 'back'),
+                    sizes = (52, 58),
+                    mncolors = (
+                        colorScheme.GAMEMENUINACTIVE,
+                        colorScheme.GAMEMENUACTIVE),
+                    align = 'right',
+                )),
+            'optm': (
+                FlattenedMenu(
+                    ({'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'),
+                    sizes = (52, 58),
+                    align = 'center',
+                    bg = colorScheme.OPTIONSBG,
+                    mncolors = (
+                        colorScheme.OPTMENUINACTIVE,
+                        colorScheme.OPTMENUACTIVE),
+                    hpad = 20,
+                    vpad = 20,
+                )),
+            'hm': (
+                ListMenu(
+                    ('back',),
+                    sizes = (58, 63),
+                    mncolors = (
+                        colorScheme.OPTMENUINACTIVE,
+                        colorScheme.OPTMENUACTIVE),
+                    align = 'center',
+                )),
+            'cm': (
+                ListMenu(
+                    ('back',),
+                    sizes = (58, 63),
+                    mncolors = (
+                        colorScheme.OPTMENUINACTIVE,
+                        colorScheme.OPTMENUACTIVE),
+                    align = 'center',
+                )),
+        }
 
-        self.gm = SwitchableListMenu(
-            ('pause', 'quit'),
-            sizes = (52, 58, 52),
-            mncolors = (
-                colorScheme.GAMEMENUINACTIVE,
-                colorScheme.GAMEMENUACTIVE),
-            align = 'right',
-            )
-
-        self.rsm = ListMenu(
-            ('resume',),
-            sizes = (52, 58),
-            mncolors = (
-                colorScheme.GAMEMENUINACTIVE,
-                colorScheme.GAMEMENUACTIVE),
-            align = 'right',
-            )
-
-        self.govm = ListMenu(
-            (('new game', self.level), 'back'),
-            sizes = (52, 58),
-            mncolors = (
-                colorScheme.GAMEMENUINACTIVE,
-                colorScheme.GAMEMENUACTIVE),
-            align = 'right',
-            )
-
-        self.optm = FlattenedMenu(
-            ({'Sound': ('on', 'off')}, {'Music': ('on', 'off')}, 'back'),
-            sizes = (52, 58),
-            align = 'center',
-            bg = colorScheme.OPTIONSBG,
-            mncolors = (
-                colorScheme.OPTMENUINACTIVE,
-                colorScheme.OPTMENUACTIVE),
-            hpad = 20,
-            vpad = 20,
-            )
-
-        self.hm = ListMenu(
-            ('back',),
-            sizes = (58, 63),
-            mncolors = (
-                colorScheme.OPTMENUINACTIVE,
-                colorScheme.OPTMENUACTIVE),
-            align = 'center',
-            )
+        for menu, conf in menus_configs.items():
+            setattr(self, menu, conf)
 
         credits_texts = (
             ('Produced by', 'BUEY - Games and Stuff'),
@@ -164,10 +180,6 @@ class Game:
                 'Marcato loop by Shady Dave',
                 'https://www.freesound.org/people/ShadyDave/'))
             )
-            # ('Sound Effects', ('https://freesound.org/people/DrMinky/sounds/167045/', '(https://creativecommons.org/licenses/by/3.0/)',
-            #     'https://freesound.org/people/kwahmah_02/sounds/256116/', '(https://creativecommons.org/publicdomain/zero/1.0/)',
-            #     'https://freesound.org/people/7778/sounds/202312/', '(https://creativecommons.org/publicdomain/zero/1.0/)',
-            #     'https://freesound.org/people/ShadyDave/sounds/270657/', '(https://creativecommons.org/licenses/by/3.0/)')))
 
         self.credits_ = CreditsTextBlock(
             credits_texts,
@@ -179,15 +191,6 @@ class Game:
                 colorScheme.OPTMENUACTIVE),
             hpad = 20,
             vpad = 10,
-            )
-
-        self.cm = ListMenu(
-            ('back',),
-            sizes = (58, 63),
-            mncolors = (
-                colorScheme.OPTMENUINACTIVE,
-                colorScheme.OPTMENUACTIVE),
-            align = 'center',
             )
 
         self.splash_screen()
