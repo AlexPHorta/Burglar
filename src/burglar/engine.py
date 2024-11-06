@@ -18,20 +18,20 @@ class GameEngine_Easy:
         one_place_to_insert = False,
         game_over = False
         ):
-    """Initialize the game engine.
+        """Initialize the game engine.
 
-    Keyword arguments:
-        inner -- The inner ring. A List with four integers.
-        middle -- The middle ring. A List with eight integers.
-        outer -- The small outer ring. A List with sixteen integers.
-        big_outer -- The big outer ring. A List with thirty two integers.
-        bag -- The bag with the stones from a specific round. A List with integers.
-        points -- The number of points. An integer.
-        no_trades -- Whether there are trades to be made or not. A boolean.
-        one_place_to_insert -- Whether there's only one place to insert a stone
-            in the inner ring. A boolean.
-        game_over -- Whether the game is over or not. A boolean.
-    """
+        Keyword arguments:
+            inner -- The inner ring. A List with four integers.
+            middle -- The middle ring. A List with eight integers.
+            outer -- The small outer ring. A List with sixteen integers.
+            big_outer -- The big outer ring. A List with thirty two integers.
+            bag -- The bag with the stones from a specific round. A List with integers.
+            points -- The number of points. An integer.
+            no_trades -- Whether there are trades to be made or not. A boolean.
+            one_place_to_insert -- Whether there's only one place to insert a stone
+                in the inner ring. A boolean.
+            game_over -- Whether the game is over or not. A boolean.
+        """
         if inner is None:
             self.inner_ring = [0] * 4
         else:

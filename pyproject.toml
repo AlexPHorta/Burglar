@@ -24,7 +24,9 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+"pygame",
+]
 
 [project.urls]
 Documentation = "https://github.com/AlexHorta/burglar#readme"
