@@ -27,6 +27,7 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
 pygame.display.set_caption('Burglar')
 
+import config
 import engine
 from utils import load_png, blit_alpha, write, Center, stones
 from tools import saveConfigs, colorScheme, configurations
@@ -60,10 +61,10 @@ class Game:
 
         try:
             self.track.load(os.path.join(
-                'sounds', '392395__shadydave__cello-marcato-loop.wav'))
+                config.SOUNDS_DIR, '392395__shadydave__cello-marcato-loop.wav'))
             for attr, sound_file in sound_files.items():
                 setattr(self, attr, pygame.mixer.Sound(
-                    os.path.join('sounds', sound_file)))
+                    os.path.join(config.SOUNDS_DIR, sound_file)))
         except:
             raise UserWarning(
                 "could not load or play soundfiles in 'sounds' folder :-(")

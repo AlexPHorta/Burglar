@@ -6,6 +6,7 @@ try:
     import random
     import math
     import os
+    import pathlib
     import getopt
     import pygame
     from socket import *
@@ -13,6 +14,8 @@ try:
 except ImportError as err:
     print("Couldn't load module. %s") % (err)
     sys.exit(2)
+
+import config
 
 from collections import namedtuple
 from itertools import islice
@@ -27,7 +30,7 @@ Center = namedtuple('Center', 'x y')
 # Some auxiliary functions
 def load_png(name):
     """ Load image and return image object"""
-    fullname = os.path.join('images', name)
+    fullname = os.path.join(config.IMAGES_DIR, name)
     try:
         image = pygame.image.load(fullname)
         if image.get_alpha() is None:
@@ -54,7 +57,7 @@ def write(text, size, font = None, color = (255, 255, 255)):
     if not font:
         font = pygame.font.SysFont('helvetica', size)
     else:
-        fullname = os.path.join('fonts', font)
+        fullname = os.path.join(config.FONTS_DIR, font)
         font = pygame.font.Font(fullname, size)
     text = font.render(str(text), True, color)
     if text.get_alpha() is None:
