@@ -13,7 +13,7 @@ try:
     from socket import *
     from pygame.locals import *
 except ImportError as err:
-    print("Couldn't load module. %s") % (err)
+    print(f"Couldn't load module. {err}")
     sys.exit(2)
 
 from collections import namedtuple
