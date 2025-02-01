@@ -5,7 +5,7 @@ from src.burglar.engine import GameEngine_Easy
 
 class TestGameEngine_Easy:
 
-    @pytest.fixture(scope = 'class')
+    @pytest.fixture(scope = 'function')
     def easy(self):
         return GameEngine_Easy()
 
@@ -20,6 +20,7 @@ class TestGameEngine_Easy:
         assert easy.middle_ring == [0] * 8
         assert easy.outer_ring == [0] * 16
         assert easy.big_outer_ring == [0] * 32
+        assert easy._start_places == 4
         assert easy.colors == {1, 2, 3}
         assert easy.matches == (3, 3, 3)
         assert easy.blanks == 60
@@ -54,4 +55,34 @@ class TestGameEngine_Easy:
         easy.blanks = 0
         assert easy.game_over is False
         easy.check_game_over()
+        assert easy.game_over is True
+
+    def test_place_to_insert(self, easy):
+        p = easy._start_places
+        assert 0 <= easy.place_to_insert(p) <= p
+
+    def test_place_to_insert_wrong(self, easy):
+        cases = (3, 5, "4", [4])
+        for case in cases:
+            with pytest.raises(ValueError):
+                easy.place_to_insert(case)
+
+    def test_insert_stone_empty(self, easy, monkeypatch):
+        easy.inner_ring = [0, 0, 0, 0]
+        monkeypatch.setattr("random.choice", lambda x: 2)
+        monkeypatch.setattr(easy, "bag", lambda: 1)
+        assert easy.blanks == 60
+        assert easy.bag() == 1
+        assert easy.insert_stone() == 2
+        assert easy.inner_ring == [0, 0, 1, 0]
+        assert easy.blanks == 59
+
+    def test_insert_stone_full(self, easy, monkeypatch):
+        monkeypatch.setattr(easy, "inner_ring", [0, 3, 2, 1])
+        monkeypatch.setattr(easy, "blanks", 1) 
+        monkeypatch.setattr("random.choice", lambda x: 0)
+        monkeypatch.setattr(easy, "bag", lambda: 3)
+        assert easy.bag() == 3
+        assert easy.insert_stone() == 0
+        assert easy.inner_ring == [3, 3, 2, 1]
         assert easy.game_over is True

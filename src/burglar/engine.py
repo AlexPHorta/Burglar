@@ -36,6 +36,7 @@ class GameEngine_Easy:
         self.middle_ring = [0] * 8 if inner is None else inner
         self.outer_ring = [0] * 16 if inner is None else inner
         self.big_outer_ring = [0] * 32 if inner is None else inner
+        self._start_places = len(self.inner_ring)
         self._bag = bag
         self.colors = {1, 2, 3}
         self.matches = (3, 3, 3)
@@ -94,32 +95,26 @@ class GameEngine_Easy:
         done = True if self.blanks == 0 else False
         self.game_over = done
 
-    def insert_stone(self):
-        """Insert a stone in an empty place in the inner ring."""
-        done = False
-        where_to_insert = None
+    def place_to_insert(self, num_places):
+        """Pick a random place to insert a stone in the inner ring.
 
-        while not done:
-            if self.inner.count(0) == 0:
-                done = True
-            else:
-                where_to_insert = self.place_to_insert()
-                if self.inner[where_to_insert] != 0:
-                    continue
-                else:
-                    self.inner[where_to_insert] = self.bag()
-                    self.blanks -= 1
-                    done = True
+        Called by insert_stone."""
+        try:
+            assert num_places == len(self.inner)
+        except Exception:
+            raise ValueError(f"Wrong parameter: {repr(num_places)}")
+        return random.randrange(num_places)
+
+    def insert_stone(self):
+        """Insert a stone in a random empty place in the inner ring."""
+        places_to_insert = [i for i, _ in enumerate(self.inner) if _ == 0]
+        where_to_insert = random.choice(places_to_insert)
+        self.inner[where_to_insert] = self.bag()
+        self.blanks -= 1
 
         self.check_game_over()
 
         return where_to_insert
-
-    def place_to_insert(self):
-        """Pick a random place to insert a stone in the inner ring.
-
-        Called by insert_stone."""
-        return random.randrange(len(self.inner))
 
     def where_to_turn(self, direction):
         """Change the direction to turn the rings.
