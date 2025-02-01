@@ -88,4 +88,9 @@ class TestGameEngine_Easy:
         assert easy.game_over is True
 
     def test_where_to_turn(self, easy):
-        ...
+        easy.where_to_turn(1)
+        assert easy._turn == 1
+        easy.where_to_turn(2)
+        assert easy._turn == 2
+        with pytest.raises(ValueError):
+            easy.where_to_turn(3)
