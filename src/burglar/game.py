@@ -1,37 +1,18 @@
-#!/usr/bin/env python
+import math
+import os
 
-
-__VERSION__ = "0.1.0"
-
-try:
-    import sys
-    import random
-    import math
-    import os
-    import getopt
-    import pygame
-    from socket import *
-    from pygame.locals import *
-except ImportError as err:
-    print(f"Couldn't load module. {err}")
-    sys.exit(2)
+import pygame
 
 from collections import namedtuple
 from enum import Enum, unique
 from itertools import islice, chain, cycle
 
-pygame.mixer.pre_init(44100, -16, 2, 4096)
-pygame.init()
-os.environ['SDL_VIDEO_CENTERED'] = "True"
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
-pygame.display.set_caption('Burglar')
-
 import config
 import engine
+
+from run import clock, ROOT_DIR
 from utils import load_png, blit_alpha, write, Center, stones
 from tools import saveConfigs, colorScheme, configurations
-
 
 class Game:
     """The game class."""
@@ -450,7 +431,7 @@ class Game:
         self.fill_rings(self.game.inner, self.inner_ring)
 
         self.score = Score('Multicolore.otf', 106, colorScheme.GAMESCORE)
-        self.score.update_score(self.game.points)
+        self.score.update_score(self.game._points)
 
         if self.music:
             self.track.play(-1)
@@ -614,7 +595,7 @@ class Game:
             self.fill_rings(self.game.inner, self.inner_ring)
 
             # Refresh the score
-            self.score.update_score(self.game.points)
+            self.score.update_score(self.game._points)
 
             self.game_over = self.game.game_over
 
@@ -789,7 +770,7 @@ class Score:
         color -- The color of the font, in format r, g, b (tuple).
         bgcolor -- The background color of the score, in format r, g, b (tuple).
         """
-        fullname = os.path.join('fonts', font)
+        fullname = os.path.join(ROOT_DIR, 'fonts', font)
         self.font = pygame.font.Font(fullname, size)
         self.color = color
         self.bgcolor = bgcolor
@@ -811,12 +792,3 @@ class Score:
         self.scorepos = self.score.get_rect()
         return
 
-
-def main():
-
-    game_ = Game()
-
-    game_.on_execute()
-
-
-if __name__ == '__main__': main()

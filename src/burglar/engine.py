@@ -32,27 +32,15 @@ class GameEngine_Easy:
                 in the inner ring. A boolean.
             game_over -- Whether the game is over or not. A boolean.
         """
-        if inner is None:
-            self.inner_ring = [0] * 4
-        else:
-            self.inner_ring = inner
-        if middle is None:
-            self.middle_ring = [0] * 8
-        else:
-            self.middle_ring = middle
-        if outer is None:
-            self.outer_ring = [0] * 16
-        else:
-            self.outer_ring = outer
-        if big_outer is None:
-            self.big_outer_ring = [0] * 32
-        else:
-            self.big_outer_ring = outer
+        self.inner_ring = [0] * 4 if inner is None else inner
+        self.middle_ring = [0] * 8 if inner is None else inner
+        self.outer_ring = [0] * 16 if inner is None else inner
+        self.big_outer_ring = [0] * 32 if inner is None else inner
         self._bag = bag
         self.colors = {1, 2, 3}
         self.matches = (3, 3, 3)
         self._turn = None
-        self.points = points
+        self._points = points
         self.no_trades = no_trades
         self.one_place_to_insert = one_place_to_insert
         self.game_over = game_over
@@ -63,14 +51,18 @@ class GameEngine_Easy:
             self.big_outer_ring,)))
 
     def __str__(self):
-        return "%s(direction: %r; inner: %r;middle: %r;outer: %r)" % (self.__class__,
-            self._turn, self.inner, self.middle, self.outer)
+        engine_str = (f"{self.__class__}(direction: {self._turn}; inner: {self.inner_ring};"
+                f"middle: {self.middle_ring};outer: {self.outer_ring};big_outer: {self.big_outer_ring})")
+        return engine_str
 
     def get_state(self):
-        return "inner = %r, middle = %r, outer = %r, bag = %r, points = %r, \
-        no_trades = %r, one_place_to_insert = %r, game_over = %r" % (self.inner, \
-            self.middle, self.outer, self._bag, self.points, self.no_trades, \
-            self.one_place_to_insert, self.game_over)
+        state = (f"inner = {self.inner_ring}, middle = {self.middle_ring}, "
+                 f"outer = {self.outer_ring}, big_outer = {self.big_outer_ring}, "
+                 f"bag = {self._bag}, points = {self._points}, "
+                 f"no_trades = {self.no_trades}, "
+                 f"one_place_to_insert = {self.one_place_to_insert}, "
+                 f"game_over = {self.game_over}")
+        return state
 
     @property
     def inner(self):
@@ -93,7 +85,7 @@ class GameEngine_Easy:
         try:
             assert len(self._bag) > 0
         except AssertionError:
-            self._bag = random.sample(self.colors, len(self.colors))
+            self._bag = random.sample(sorted(self.colors), len(self.colors))
         finally:
             return self._bag.pop()
 
@@ -239,7 +231,7 @@ class GameEngine_Easy:
         for index, color, lgt in marked_for_clearing:
             for _ in range(index, index + lgt):
                 ring[_] = 0
-        self.points += self.calc_points(marked_for_clearing)
+        self._points += self.calc_points(marked_for_clearing)
         return ring
 
     def calc_points(self, mapping):
