@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
 import random
+
+from enum import Enum
 
 
 class GameEngine_Easy:
@@ -40,6 +41,7 @@ class GameEngine_Easy:
         self._bag = bag
         self.colors = {1, 2, 3}
         self.matches = (3, 3, 3)
+        self.controls = Enum("Controls", [("LEFT", 1), ("RIGHT", 2)])
         self._turn = None
         self._points = points
         self.no_trades = no_trades
@@ -134,10 +136,10 @@ class GameEngine_Easy:
         turn_choice -- The direction to turn the ring (clockwise or
             counter-clockwise). An integer.
         """
-        if turn_choice == 1:
+        if turn_choice == self.controls.LEFT:
             retrieved = which_ring.pop(0)
             which_ring.append(retrieved)
-        elif turn_choice == 2:
+        elif turn_choice == self.controls.RIGHT:
             retrieved = which_ring.pop()
             which_ring.insert(0, retrieved)
         return which_ring

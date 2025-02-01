@@ -86,3 +86,6 @@ class TestGameEngine_Easy:
         assert easy.insert_stone() == 0
         assert easy.inner_ring == [3, 3, 2, 1]
         assert easy.game_over is True
+
+    def test_where_to_turn(self, easy):
+        ...
