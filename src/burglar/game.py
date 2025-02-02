@@ -10,7 +10,7 @@ from itertools import islice, chain, cycle
 import config
 import engine
 
-from run import clock, ROOT_DIR
+from run import clock, flags, info, screenW, screenH, ROOT_DIR
 from utils import load_png, blit_alpha, write, Center, stones
 from tools import saveConfigs, colorScheme, configurations
 
@@ -60,9 +60,9 @@ class Game:
     def on_init(self):
         """Build the graphical interface of the game."""
         self.screen = pygame.display.set_mode(
-            self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+            self.size, flags)
         self.background = pygame.Surface(self.screen.get_size())
-        self.background = self.background.convert()
+        self.background = pygame.transform.scale(self.background.convert(), self.size)
 
         self.background.fill(colorScheme.GAMEBG)
         self.gamebg = colorScheme.GAMEBGIMAGE

@@ -20,13 +20,17 @@ pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
 os.environ['SDL_VIDEO_CENTERED'] = "True"
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((1, 1), pygame.HWSURFACE | pygame.DOUBLEBUF)
+flags = pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.SCALED
+info = pygame.display.get_desktop_sizes()
+screenW = info[0][0]
+screenH = info[0][1]
+print(str(info))
+screen = pygame.display.set_mode((1, 1), flags)
 pygame.display.set_caption('Burglar')
 
 ROOT_DIR = pathlib.Path(os.path.abspath(__file__)).parent
 
 def main():
-
     from game import Game
 
     game_ = Game()
