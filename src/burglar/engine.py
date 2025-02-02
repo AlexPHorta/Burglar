@@ -126,7 +126,7 @@ class GameEngine_Easy:
             counter-clockwise). An integer.
         """
         if direction != 1 and direction != 2:
-            raise ValueError(f"Wrong parameter: {direction}")
+            raise ValueError(f"Wrong parameter: {repr(direction)}")
         self._turn = direction
 
     def turn(self, which_ring, turn_choice):

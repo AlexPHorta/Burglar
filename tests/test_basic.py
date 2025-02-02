@@ -92,5 +92,29 @@ class TestGameEngine_Easy:
         assert easy._turn == 1
         easy.where_to_turn(2)
         assert easy._turn == 2
+
+    def test_where_to_turn_wrong(self, easy):
+        cases = (3, 4.5, "3")
+        for case in cases:
+            with pytest.raises(ValueError):
+                easy.where_to_turn(case)
+
         with pytest.raises(ValueError):
-            easy.where_to_turn(3)
+            easy.where_to_turn([])
+
+    def test_turn(self, easy):
+        ring = [2, 1, 0, 0, 3, 1, 0, 0]
+        assert easy.turn(ring, 1) == [1, 0, 0, 3, 1, 0, 0, 2]
+        assert easy.turn(ring, 1) == [0, 0, 3, 1, 0, 0, 2, 1]
+        assert easy.turn(ring, 2) == [1, 0, 0, 3, 1, 0, 0, 2]
+        assert easy.turn(ring, 2) == [2, 1, 0, 0, 3, 1, 0, 0]
+        
+    def test_trade_stones_left(self, easy):
+        internal = [0, 0, 2, 0]
+        external = [0, 0, 0, 0, 0, 0, 0, 0]
+        assert easy.trade_stones(external, internal, 1) == ([0, 0, 0, 0, 2, 0, 0, 0], [0, 0, 0, 0], False)
+
+    def test_trade_stones_right(self, easy):
+        internal = [0, 0, 2, 0]
+        external = [0, 0, 0, 0, 0, 0, 0, 0]
+        assert easy.trade_stones(external, internal, 2) == ([0, 0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0], False)
